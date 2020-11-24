@@ -1,25 +1,30 @@
 import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
-function App() {
-  return (
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = { captionTop: '', captionBottom: ''};
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({[event.target.name]: event.target.value});
+  }
+
+  render () {
+    return (
     <div className="App">
-      <header className="App-header">
+      <div className="container">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+        <p className="top">{this.state.captionTop}</p>
+        <p className="bottom">{this.state.captionBottom}</p>
+      </div>
+      <input name="captionTop" value={this.state.captionTop} placeholder='Enter First Caption' onChange={this.handleChange}></input>
+      <input name="captionBottom" value={this.state.captionBottom} placeholder='Enter Second Caption' onChange={this.handleChange}></input>
+    </div>)
+  }
 }
 
 export default App;

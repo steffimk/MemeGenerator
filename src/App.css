@@ -28,6 +28,26 @@
   color: #61dafb;
 }
 
+.container {
+  position: relative;
+}
+
+.top {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+}
+
+.bottom {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
