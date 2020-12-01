@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './ImageCarousel.css'
+import './ImageGallery.css'
 
 export default class ImageGallery extends React.Component {
 
