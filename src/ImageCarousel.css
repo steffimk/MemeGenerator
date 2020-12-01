@@ -1,0 +1,25 @@
+img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+}
+
+.container {
+    position: relative;
+}
+
+.top {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+}
+
+.bottom {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+}
