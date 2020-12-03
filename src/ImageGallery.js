@@ -5,8 +5,16 @@ import './ImageGallery.css'
 
 export default class ImageGallery extends React.Component {
 
+    renderImage(image) {
+        return <img 
+                src={image.url}
+                onClick={this.props.changeCurrentImage.bind(this,image)}
+                key={image.id}
+                />
+    }
+
     render(){
-        const images = this.props.images.map((image) => (<img src={image.url}/>))
+        const images = this.props.images.map((image) => this.renderImage(image))
         return (
             <div className="image-gallery">
                 {images}
@@ -16,5 +24,7 @@ export default class ImageGallery extends React.Component {
 }
 
 ImageGallery.propTypes = {
-
+    currentImage: PropTypes.object.isRequired,
+    images: PropTypes.array.isRequired,
+    changeCurrentImage: PropTypes.func.isRequired
 }

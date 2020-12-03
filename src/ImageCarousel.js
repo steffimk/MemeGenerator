@@ -17,5 +17,6 @@ export default class ImageCarousel extends React.Component {
 }
 
 ImageCarousel.propTypes = {
-
+    image: PropTypes.object.isRequired,
+    captions: PropTypes.arrayOf(PropTypes.string).isRequired
 }
