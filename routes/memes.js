@@ -29,7 +29,17 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/', function(req, res, next){
-
+    req.json().then(body => {
+        if(
+            body.hasOwnProperty("name") &&
+            body.hasOwnProperty("url") &&
+            body.hasOwnProperty("width") &&
+            body.hasOwnProperty("height") &&
+            body.hasOwnProperty("box_count")
+        ){
+            memes.push(body)
+        }
+    })
 });
 
 module.exports = router;
