@@ -13,12 +13,13 @@ class App extends React.Component {
       currentImage: {},
     };
     this.handleChange = this.handleChange.bind(this);
-    this.get_memes();
+    this.url =  "http://localhost:3030/memes"; //"https://api.imgflip.com/get_memes"
+    this.get_memes(this.url);
   }
 
 
-  get_memes() {
-    fetch("https://api.imgflip.com/get_memes")
+  get_memes(url) {
+    fetch(url)
         .then(response => response.json())
         .then(json =>
           this.setState({
