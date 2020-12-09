@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const memes = [
+let memes = [
     {
         "id": "181913649",
         "name": "Drake Hotline Bling",
@@ -28,18 +28,26 @@ router.get('/', function (req, res, next) {
     })
 });
 
-router.post('/', function(req, res, next){
-    req.json().then(body => {
-        if(
-            body.hasOwnProperty("name") &&
-            body.hasOwnProperty("url") &&
-            body.hasOwnProperty("width") &&
-            body.hasOwnProperty("height") &&
-            body.hasOwnProperty("box_count")
-        ){
-            memes.push(body)
-        }
-    })
+router.post('/', function(req, res){
+    const memeTemplate = req.body
+    if(
+        memeTemplate.hasOwnProperty("name") &&
+        memeTemplate.hasOwnProperty("url") &&
+        memeTemplate.hasOwnProperty("width") &&
+        memeTemplate.hasOwnProperty("height") &&
+        memeTemplate.hasOwnProperty("box_count")
+    ){
+        memes.push(memeTemplate)
+        res.json({
+            "success": true,
+            "data": {"memes": memes}
+        })
+    } else {
+        res.json({
+            "success": false,
+            "data": {"memes": memes}
+        })
+    }
 });
 
 module.exports = router;
