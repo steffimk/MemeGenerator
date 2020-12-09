@@ -33,7 +33,7 @@ class App extends React.Component {
   }
 
   handleSaveAsTemplate = () => {
-    const memeTemplateToSave = {...this.state.currentImage, captions: this.state.captions}
+    const memeTemplateToSave = {...this.state.currentImage, captions: this.state.captions, id: this.state.currentImage.id + "mt"}
     console.log(memeTemplateToSave)
     fetch(this.url, {
       method: 'POST',
