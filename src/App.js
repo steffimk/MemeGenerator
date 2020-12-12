@@ -42,11 +42,17 @@ class App extends React.Component {
   render () {
     return (
     <div className="App">
-      <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
-      <ImageCarousel image={this.state.currentImage} captions={[this.state.captionTop, this.state.captionBottom]}/>
-      <input name="captionTop" value={this.state.captionTop} placeholder='Enter First Caption' onChange={this.handleChange}></input>
-      <input name="captionBottom" value={this.state.captionBottom} placeholder='Enter Second Caption' onChange={this.handleChange}></input>
-    </div>)
+      <div className="left">
+        <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
+      </div>
+      <div className="middle">
+        <ImageCarousel image={this.state.currentImage} captions={[this.state.captionTop, this.state.captionBottom]}/>
+      </div>
+      <div className="control right">
+        <input name="captionTop" value={this.state.captionTop} placeholder='Enter First Caption' onChange={this.handleChange}/>
+        <input name="captionBottom" value={this.state.captionBottom} placeholder='Enter Second Caption' onChange={this.handleChange}/>
+      </div>
+      </div>)
   }
 }
 
