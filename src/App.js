@@ -7,7 +7,8 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      captions: [],
+      captionTop: '',
+      captionBottom: '',
       images: [],
       currentImage: {},
     };
@@ -19,21 +20,19 @@ class App extends React.Component {
   get_memes(url) {
     fetch(url)
         .then(response => response.json())
-        .then(json => {
-          let currentImg = json.data.memes[0];
+        .then(json =>
           this.setState({
             'images': json.data.memes,
-            'currentImage': currentImg,
-            'captions': currentImg.captions ? currentImg.captions : Array(currentImg.box_count).fill('')
+            'currentImage': json.data.memes[0],
           })
-        });
+          );
   }
 
   componentDidMount(){
   }
 
   handleSaveAsTemplate = () => {
-    const memeTemplateToSave = {...this.state.currentImage, captions: this.state.captions, id: this.state.currentImage.id + "mt"}
+    const memeTemplateToSave = {...this.state.currentImage, captions: [this.state.captionTop, this.state.captionBottom], id: this.state.currentImage.id + "mt"}
     console.log(memeTemplateToSave)
     fetch(this.url, {
       method: 'POST',
@@ -41,7 +40,7 @@ class App extends React.Component {
       body: JSON.stringify(memeTemplateToSave),
       })
     .then(response => response.json())
-    .then(json => { 
+    .then(json => {
       if (json.success) {
         this.setState({images: json.data.memes})
         console.log('Success', json)
@@ -51,26 +50,27 @@ class App extends React.Component {
   }
 
   handleChange(event) {
-    let newCaptions = [...this.state.captions]
-    newCaptions[parseInt(event.target.name.slice(7))] = event.target.value
-    this.setState({captions: newCaptions})
+    this.setState({[event.target.name]: event.target.value});
   }
 
-  onChangeCurrentImage = (newCurImg) => 
-    this.setState({
-      currentImage: newCurImg, 
-      captions: newCurImg.captions ? newCurImg.captions : Array(newCurImg.box_count).fill('')
-    })
+  onChangeCurrentImage = (newCurrentImage) =>
+   this.setState({currentImage: newCurrentImage})
 
   render () {
     return (
     <div className="App">
-      <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
-      <ImageCarousel image={this.state.currentImage} captions={this.state.captions}/>
-      <input name="caption0" value={this.state.captions[0]} placeholder='Enter Caption 1' onChange={this.handleChange}></input>
-      <input name="caption1" value={this.state.captions[1]} placeholder='Enter Caption 2' onChange={this.handleChange}></input>
+      <div className="left">
+        <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
+      </div>
+      <div className="middle">
+        <ImageCarousel image={this.state.currentImage} captions={this.state.captions}/>
+      </div>
+      <div className="control right">
+        <input name="captionTop" value={this.state.captionTop} placeholder='Enter Caption 1' onChange={this.handleChange}/>
+        <input name="captionBottom" value={this.state.captionBottom} placeholder='Enter Caption 2' onChange={this.handleChange}/>
+      </div>
       <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
-    </div>)
+      </div>)
   }
 }
 
