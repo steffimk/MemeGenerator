@@ -63,7 +63,7 @@ class App extends React.Component {
         <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
       </div>
       <div className="middle">
-        <ImageCarousel image={this.state.currentImage} captions={this.state.captions}/>
+        <ImageCarousel image={this.state.currentImage} captionTop={this.state.captionTop} captionBottom={this.state.captionBottom}/>
       </div>
       <div className="control right">
         <input name="captionTop" value={this.state.captionTop} placeholder='Enter Caption 1' onChange={this.handleChange}/>
