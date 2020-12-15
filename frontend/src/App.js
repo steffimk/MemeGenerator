@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
-import ImageCarousel from "./ImageCarousel";
-import ImageGallery from "./ImageGallery";
+import ImageCarousel from "./components/ImageCarousel";
+import ImageGallery from "./components/ImageGallery";
+import EditorControl from "./components/EditorControl";
 
 class App extends React.Component {
   constructor() {
@@ -49,8 +50,15 @@ class App extends React.Component {
     .catch((error) => {console.error('Error:', error);})
   }
 
-  handleChange(event) {
-    this.setState({[event.target.name]: event.target.value});
+  handleChange = (event, index) => {
+    console.log(event)
+    if (index == 0) {
+      this.setState({captionTop: event.target.value});
+    } else if (index == 1){
+      this.setState({captionBottom: event.target.value});
+    } else {
+      this.setState({[event.target.name]: event.target.value});
+    }
   }
 
   onChangeCurrentImage = (newCurrentImage) =>
@@ -66,10 +74,10 @@ class App extends React.Component {
         <ImageCarousel image={this.state.currentImage} captionTop={this.state.captionTop} captionBottom={this.state.captionBottom}/>
       </div>
       <div className="control right">
-        <input name="captionTop" value={this.state.captionTop} placeholder='Enter Caption 1' onChange={this.handleChange}/>
-        <input name="captionBottom" value={this.state.captionBottom} placeholder='Enter Caption 2' onChange={this.handleChange}/>
+        <EditorControl captions={[this.state.captionTop, this.state.captionBottom]} changeListener={this.handleChange}/>
+        <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
-      <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
+      
       </div>)
   }
 }
