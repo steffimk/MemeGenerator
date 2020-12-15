@@ -9,8 +9,8 @@ export default class ImageCarousel extends React.Component {
         return (
             <div className="container">
                 <img src={this.props.image.url}/>
-                <p className="top">{this.props.captionsTop}</p>
-                <p className="bottom">{this.props.captionsBottom}</p>
+                <p className="top">{this.props.captionTop}</p>
+                <p className="bottom">{this.props.captionBottom}</p>
             </div>
         )
     }
