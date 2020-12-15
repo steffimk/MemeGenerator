@@ -13,7 +13,7 @@
 .top {
     position: absolute;
     top: 20%;
-    left: 50%;
+    left: 20%;
     transform: translate(-50%, -50%);
     font-size: 18px;
 }
@@ -21,7 +21,7 @@
 .bottom {
     position: absolute;
     top: 70%;
-    left: 50%;
+    left: 20%;
     transform: translate(-50%, -50%);
     font-size: 18px;
 }
