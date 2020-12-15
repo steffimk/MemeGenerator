@@ -9,8 +9,8 @@ export default class ImageCarousel extends React.Component {
         return (
             <div className="container">
                 <img src={this.props.image.url}/>
-                <p className="top">{this.props.captions[0]}</p>
-                <p className="bottom">{this.props.captions[1]}</p>
+                <p className="top">{this.props.captionsTop}</p>
+                <p className="bottom">{this.props.captionsBottom}</p>
             </div>
         )
     }
@@ -18,5 +18,6 @@ export default class ImageCarousel extends React.Component {
 
 ImageCarousel.propTypes = {
     image: PropTypes.object.isRequired,
-    captions: PropTypes.arrayOf(PropTypes.string).isRequired
+    captionTop: PropTypes.string.isRequired,
+    captionBottom: PropTypes.string.isRequired,
 }
