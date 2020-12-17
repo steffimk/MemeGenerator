@@ -68,7 +68,7 @@ router.get('/memeTemplate', function (req, res, next) {
         console.log(docs);
         res.json({
             "success": true,
-            "data": {"templates": docs}
+            "data": {"images": docs}
         })
     });
 });
@@ -79,12 +79,12 @@ router.get('/memes', function (req, res, next) {
         console.log(docs);
         res.json({
             "success": true,
-            "data": {"memes": docs}
+            "data": {"images": docs}
         })
     });
 });
 
-router.post('/', function(req, res){
+router.post('/memeTemplate', function(req, res){
     const memeTemplate = req.body
     if(
         memeTemplate.hasOwnProperty("name") &&
