@@ -20,16 +20,47 @@ let memes = [
     },
 ]
 
+function addToDB(db,collection, data) {
+    collection = db.get(collection);
+    collection.insert(data).then((docs) => console.log(docs));
+}
+
+function initializeDB(db, collection) {
+    collection = db.get(collection);
+    collection.find({}).then((res) => {
+        if (res.length === 0) {
+            collection.insert(memes);
+        }
+    });
+}
+
+function findAllFromDB(db,collection) {
+    collection = db.get(collection);
+    return collection.find({});
+}
+
+function findOneFromDB(db, collection, id) {
+    collection = db.get(collection);
+    collection.find(id).then((docs) => console.log(docs));
+}
+
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-    res.json({
-        "success": true,
-        "data": {"memes": memes}
-    })
+    db = req.db;
+    initializeDB(db, 'memes');
+    findAllFromDB(db,'memes').then((docs) => {
+        console.log(docs);
+        res.json({
+            "success": true,
+            "data": {"memes": docs}
+        })
+    });
+    //addToDB(db, 'memeTemplate', {"id": "181913649", "name": "Drake Hotline Bling", "url": "https://i.imgflip.com/30b1gx.jpg", "width": 1200, "height": 1200, "box_count": 2})
 });
 
 router.post('/', function(req, res){
-    const memeTemplate = req.body
+    const memeTemplate = req.bodcoy
     if(
         memeTemplate.hasOwnProperty("name") &&
         memeTemplate.hasOwnProperty("url") &&

@@ -4,12 +4,20 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+const db = require('monk')('localhost/ommOfficialDB');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var memesRouter = require('./routes/memes');
 
 var app = express();
+db.then(() => {
+  console.log('Connected correctly to server')
+})
+app.use(function(req,res,next){
+  req.db =db;
+  next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
