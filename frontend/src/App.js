@@ -123,6 +123,7 @@ class App extends React.Component {
         />
       </div>
       <div className="control right">
+        <h3 style={{fontWeight: 'bold'}}>Add Captions To Your Meme</h3>
         <EditorControl
             captions={this.state.captions}
             captionPositions_X={this.state.captionPositions_X}

@@ -10,30 +10,45 @@ export default class EditorControl extends React.Component {
     captionPosition_Y = (captionPosition_Y !== undefined ? captionPosition_Y : 50);
 
     return (
-        <div>
+      <div>
+        <p>Caption {count + 1}:</p>
+        <input
+          name="captions"
+          value={caption}
+          placeholder={placeholder}
+          onChange={(e) => this.props.changeListener(e, count)}
+          style={{ display: 'block' }}
+        />
+        <p>
+          x:
           <input
-              name="captions"
-              value={caption}
-              placeholder={placeholder}
-              onChange={(e) => this.props.changeListener(e, count)}
+            type="range"
+            min="1"
+            max="100"
+            value={captionPosition_X}
+            name="captionPositions_X"
+            key={'captionPositions_X' + count}
+            className="slider"
+            id={capName + '_X'}
+            onChange={(e) => this.props.changeListener(e, count)}
+            style={{alignmentBaseline: 'central'}}
           />
-            <input type="range" min="1" max="100"
-                   value={captionPosition_X}
-                   name="captionPositions_X"
-                   key={"captionPositions_X" + count}
-                   className="slider"
-                   id={capName + "_X"}
-                   onChange={(e) => this.props.changeListener(e, count)}
-            />
-            <input type="range" min="1" max="100"
-                   value={captionPosition_Y}
-                   name="captionPositions_Y"
-                   key={"captionPositions_Y" + count}
-                   className="slider"
-                   id={capName + "_Y"}
-                   onChange={(e) => this.props.changeListener(e, count)}
-            />
-        </div>
+        </p>
+        <p>
+          y:
+          <input
+            type="range"
+            min="1"
+            max="100"
+            value={captionPosition_Y}
+            name="captionPositions_Y"
+            key={'captionPositions_Y' + count}
+            className="slider"
+            id={capName + '_Y'}
+            onChange={(e) => this.props.changeListener(e, count)}
+          />
+        </p>
+      </div>
     );
   }
 
