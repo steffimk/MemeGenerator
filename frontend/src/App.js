@@ -124,7 +124,7 @@ class App extends React.Component {
       </div>
       <div className="control right">
         <EditorControl
-            captions={[this.state.captionTop, this.state.captionBottom]}
+            captions={this.state.captions}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
             changeListener={this.handleChange}
