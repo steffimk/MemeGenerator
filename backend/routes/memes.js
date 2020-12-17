@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
+const memeTemplateCollection = 'memeTemplate';
+const imageCollection = 'images';
+const memeCollection= 'memes';
+
 let memes = [
     {
         "id": "181913649",
@@ -46,17 +50,38 @@ function findOneFromDB(db, collection, id) {
 
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/images', function (req, res, next) {
     db = req.db;
-    initializeDB(db, 'memes');
-    findAllFromDB(db,'memes').then((docs) => {
+    initializeDB(db, imageCollection);
+    findAllFromDB(db,imageCollection).then((docs) => {
+        console.log(docs);
+        res.json({
+            "success": true,
+            "data": {"images": docs}
+        })
+    });
+});
+
+router.get('/memeTemplate', function (req, res, next) {
+    db = req.db;
+    findAllFromDB(db, memeTemplateCollection).then((docs) => {
+        console.log(docs);
+        res.json({
+            "success": true,
+            "data": {"templates": docs}
+        })
+    });
+});
+
+router.get('/memes', function (req, res, next) {
+    db = req.db;
+    findAllFromDB(db, memeCollection).then((docs) => {
         console.log(docs);
         res.json({
             "success": true,
             "data": {"memes": docs}
         })
     });
-    //addToDB(db, 'memeTemplate', {"id": "181913649", "name": "Drake Hotline Bling", "url": "https://i.imgflip.com/30b1gx.jpg", "width": 1200, "height": 1200, "box_count": 2})
 });
 
 router.post('/', function(req, res){
@@ -69,17 +94,14 @@ router.post('/', function(req, res){
         memeTemplate.hasOwnProperty("box_count")
     ){
         let db = req.db;
-        addToDB(db, 'memeTemplate', memeTemplate);
-        //memes.push(memeTemplate)
-        /*res.json({
-            "success": true,
-            "data": {"memes": memes}
-        })*/
+        addToDB(db, memeTemplateCollection, memeTemplate);
+        res.json({
+            "success": true
+        })
     } else {
-        /*res.json({
-            "success": false,
-            "data": {"memes": memes}
-        })*/
+        res.json({
+            "success": false
+        })
     }
 });
 
