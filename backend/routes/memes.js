@@ -60,7 +60,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/', function(req, res){
-    const memeTemplate = req.bodcoy
+    const memeTemplate = req.body
     if(
         memeTemplate.hasOwnProperty("name") &&
         memeTemplate.hasOwnProperty("url") &&
@@ -68,16 +68,18 @@ router.post('/', function(req, res){
         memeTemplate.hasOwnProperty("height") &&
         memeTemplate.hasOwnProperty("box_count")
     ){
-        memes.push(memeTemplate)
-        res.json({
+        let db = req.db;
+        addToDB(db, 'memeTemplate', memeTemplate);
+        //memes.push(memeTemplate)
+        /*res.json({
             "success": true,
             "data": {"memes": memes}
-        })
+        })*/
     } else {
-        res.json({
+        /*res.json({
             "success": false,
             "data": {"memes": memes}
-        })
+        })*/
     }
 });
 
