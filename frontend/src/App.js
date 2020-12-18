@@ -17,7 +17,8 @@ class App extends React.Component {
       captionPositions_Y: [],
       fontSize: 45,
       isItalic: false,
-      isBold: false
+      isBold: false,
+      fontColor: 'black'
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -47,6 +48,7 @@ class App extends React.Component {
       fontSize: this.state.fontSize,
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
+      fontColor: this.state.fontColor,
       id: this.state.currentImage.id + "mt"
     }
     console.log(memeTemplateToSave)
@@ -119,6 +121,7 @@ class App extends React.Component {
       fontSize: (newCurrentImage.hasOwnProperty("fontSize") ? newCurrentImage.fontSize : 45),
       isItalic: (newCurrentImage.hasOwnProperty("isItalic") ? newCurrentImage.isItalic : false),
       isBold: (newCurrentImage.hasOwnProperty("isBold") ? newCurrentImage.isBold : false),
+      fontColor: (newCurrentImage.hasOwnProperty("fontColor") ? newCurrentImage.fontColor : 'black')
     });
   }
 
@@ -136,6 +139,7 @@ class App extends React.Component {
             fontSize={this.state.fontSize}
             isItalic={this.state.isItalic}
             isBold={this.state.isBold}
+            fontColor={this.state.fontColor}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
         />
@@ -151,6 +155,7 @@ class App extends React.Component {
             fontSize={this.state.fontSize}
             isItalic={this.state.isItalic}
             isBold={this.state.isBold}
+            fontColor={this.state.fontColor}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>

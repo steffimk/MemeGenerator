@@ -43,6 +43,7 @@ export default class ImageCarousel extends React.Component {
             const italic = this.props.isItalic == true ? 'italic' : 'normal'
             const bold = this.props.isBold == true ? 'bold' : 'normal'
             context.font = italic + ' ' + bold + ' ' + this.props.fontSize + 'px sans-serif'
+            context.fillStyle = this.props.fontColor
             context.fillText(captionText, captionPosition_X * (canvas.width/100), 
                                 captionPosition_Y * (canvas.height/100))
         }
@@ -82,5 +83,6 @@ ImageCarousel.propTypes = {
     title: PropTypes.string.isRequired,
     fontSize: PropTypes.number.isRequired,
     isItalic: PropTypes.bool.isRequired,
-    isBold: PropTypes.bool.isRequired
+    isBold: PropTypes.bool.isRequired,
+    fontColor: PropTypes.string.isRequired
 }
