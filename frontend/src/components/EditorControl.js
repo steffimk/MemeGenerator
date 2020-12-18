@@ -10,7 +10,7 @@ export default class EditorControl extends React.Component {
     captionPosition_Y = (captionPosition_Y !== undefined ? captionPosition_Y : 50);
 
     return (
-      <div>
+      <form>
         <p>Caption {count + 1}:</p>
         <input
           name="captions"
@@ -48,7 +48,7 @@ export default class EditorControl extends React.Component {
             onChange={(e) => this.props.changeListener(e, count)}
           />
         </p>
-      </div>
+      </form>
     );
   }
 
@@ -62,6 +62,10 @@ export default class EditorControl extends React.Component {
     );
     return (
       <div>
+
+          <input name="title" value={this.props.title} placeholder="Enter title"
+                 onChange={this.props.changeListener}
+          />
           {captionInputs}
       </div>
     )
@@ -70,5 +74,8 @@ export default class EditorControl extends React.Component {
 
 EditorControl.propTypes = {
   captions: PropTypes.arrayOf(PropTypes.string).isRequired,
-  changeListener: PropTypes.func.isRequired
+  changeListener: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  captionPositions_X: PropTypes.array.isRequired,
+  captionPositions_Y: PropTypes.array.isRequired,
 }

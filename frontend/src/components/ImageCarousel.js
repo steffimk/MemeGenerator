@@ -33,9 +33,12 @@ export default class ImageCarousel extends React.Component {
             ));
 
         return (
-            <div className="container">
-                <img src={this.props.image.url}/>
-                {captions}
+            <div className="flex-container">
+                <h1>{this.props.title}</h1>
+                <div className="container">
+                    <img src={this.props.image.url} alt={this.props.image.name}/>
+                    {captions}
+                </div>
             </div>
         )
     }
@@ -46,4 +49,5 @@ ImageCarousel.propTypes = {
     captions: PropTypes.array.isRequired,
     captionPositions_X: PropTypes.array.isRequired,
     captionPositions_Y: PropTypes.array.isRequired,
+    title: PropTypes.string.isRequired,
 }

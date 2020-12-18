@@ -4,24 +4,31 @@
     object-fit: contain;
 }
 
+.flex-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+}
+
+.flex-container .h1 {
+    margin: 0;
+    flex-shrink: 1;
+    flex-grow: 0;
+}
+
 .container {
     position: relative;
-    height: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
     text-align: center;
+    height: 90%;
 }
 
 .top {
     position: absolute;
-    top: 20%;
-    left: 20%;
     transform: translate(-50%, -50%);
     font-size: 18px;
 }
 
-.bottom {
-    position: absolute;
-    top: 70%;
-    left: 20%;
-    transform: translate(-50%, -50%);
-    font-size: 18px;
-}

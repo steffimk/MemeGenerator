@@ -9,6 +9,7 @@ class App extends React.Component {
     super();
     this.state = {
       captions: [],
+      title: '',
       captionPositions_X: [],
       captionPositions_Y: [],
       images: [],
@@ -105,6 +106,7 @@ class App extends React.Component {
       captionPositions_X: captionPositions.map(x => x[0]),
       captionPositions_Y: captionPositions.map(y => y[1]),
       captions: getCaptions(newCurrentImage),
+      title: (newCurrentImage.hasOwnProperty("name") ? newCurrentImage.name : ''),
     });
   }
 
@@ -118,6 +120,7 @@ class App extends React.Component {
         <ImageCarousel
             image={this.state.currentImage}
             captions={this.state.captions}
+            title={this.state.title}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
         />
@@ -129,6 +132,7 @@ class App extends React.Component {
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
             changeListener={this.handleChange}
+            title={this.state.title}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
