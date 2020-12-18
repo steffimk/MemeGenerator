@@ -80,6 +80,10 @@ export default class EditorControl extends React.Component {
             style={{ width: '3ch' }}
           />
         </p>
+        <input type="checkbox" id="isItalic" name="isItalic" onChange={this.props.changeListener}/>
+        <label for="isItalic" style={{fontStyle: 'italic'}}>Italic&nbsp;&nbsp;</label>
+        <input type="checkbox" id="isBold" name="isBold" onChange={this.props.changeListener}/>
+        <label for="isBold"style={{fontWeight: 'bold'}}>Bold</label>
         {captionInputs}
       </div>
     );
@@ -92,5 +96,7 @@ EditorControl.propTypes = {
   title: PropTypes.string.isRequired,
   captionPositions_X: PropTypes.array.isRequired,
   captionPositions_Y: PropTypes.array.isRequired,
-  fontSize: PropTypes.number.isRequired
+  fontSize: PropTypes.number.isRequired,
+  isItalic: PropTypes.bool.isRequired,
+  isBold: PropTypes.bool.isRequired
 }

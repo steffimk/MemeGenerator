@@ -16,6 +16,8 @@ class App extends React.Component {
       captionPositions_X: [],
       captionPositions_Y: [],
       fontSize: 45,
+      isItalic: false,
+      isBold: false
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -43,6 +45,8 @@ class App extends React.Component {
       captionPositions: this.state.captionPositions_X
           .map((x, i) => [x, this.state.captionPositions_Y[i]]),
       fontSize: this.state.fontSize,
+      isItalic: this.state.isItalic,
+      isBold: this.state.isBold,
       id: this.state.currentImage.id + "mt"
     }
     console.log(memeTemplateToSave)
@@ -63,7 +67,9 @@ class App extends React.Component {
 
   handleChange = (event, index) => {
 
-    if (index !== undefined) {
+    if (event.target.type == 'checkbox') {
+      this.setState({[event.target.name]: event.target.checked})
+    } else if (index !== undefined) {
       this.setState((state) =>  {
         // make a shallow copy of the array to avoid writing directly to state
         let list_state = [...state[event.target.name]];
@@ -110,7 +116,9 @@ class App extends React.Component {
       captionPositions_Y: captionPositions.map(y => y[1]),
       captions: getCaptions(newCurrentImage),
       title: (newCurrentImage.hasOwnProperty("name") ? newCurrentImage.name : ''),
-      fontSize: (newCurrentImage.fontSize ? newCurrentImage.fontSize : 45)
+      fontSize: (newCurrentImage.hasOwnProperty("fontSize") ? newCurrentImage.fontSize : 45),
+      isItalic: (newCurrentImage.hasOwnProperty("isItalic") ? newCurrentImage.isItalic : false),
+      isBold: (newCurrentImage.hasOwnProperty("isBold") ? newCurrentImage.isBold : false),
     });
   }
 
@@ -126,6 +134,8 @@ class App extends React.Component {
             captions={this.state.captions}
             title={this.state.title}
             fontSize={this.state.fontSize}
+            isItalic={this.state.isItalic}
+            isBold={this.state.isBold}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
         />
@@ -139,6 +149,8 @@ class App extends React.Component {
             changeListener={this.handleChange}
             title={this.state.title}
             fontSize={this.state.fontSize}
+            isItalic={this.state.isItalic}
+            isBold={this.state.isBold}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
