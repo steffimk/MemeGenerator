@@ -13,7 +13,6 @@ export default class ImageCarousel extends React.Component {
 
     componentDidMount(){
         const canvas = this.canvasRef.current
-        const context = canvas.getContext("2d")
         const img = this.imgRef.current
 
         //Fixing canvas blur --> source: https://medium.com/wdstack/fixing-html5-2d-canvas-blur-8ebe27db07da
@@ -25,23 +24,27 @@ export default class ImageCarousel extends React.Component {
         //end of source
 
         img.onload = () => {
-            context.drawImage(img, 0,0, canvas.width, canvas.height);
+            this.setState({}); // fresh rendering of component
           }
     }
 
-    renderCaption(captionText, captionPosition_X, captionPosition_Y) {
+    renderCaption(captionText, captionPosition_X, captionPosition_Y, index) {
+
+        const canvas = this.canvasRef.current
+        const context = canvas.getContext("2d")
+        const img = this.imgRef.current
+
+        if (index == 0) {
+            context.clearRect(0, 0, canvas.width, canvas.height)
+            context.drawImage(img, 0, 0, canvas.width, canvas.height)
+        }
 
         let style = {};
         if(captionPosition_X !== undefined && captionPosition_Y !== undefined) {
-            style = {
-                left: captionPosition_X+"%",
-                top: captionPosition_Y+"%",
-            };
+            context.font = 'normal bold 45px sans-serif'
+            context.fillText(captionText, captionPosition_X * (canvas.width/100), 
+                                captionPosition_Y * (canvas.height/100))
         }
-
-        return (
-            <p className="top" style={style}>{captionText}</p>
-        );
     }
 
     render() {
@@ -53,7 +56,8 @@ export default class ImageCarousel extends React.Component {
             .map((captionText, index) => this.renderCaption(
                 captionText,
                 captionPositions_X[index],
-                captionPositions_Y[index]
+                captionPositions_Y[index],
+                index
             ));
 
         return (
