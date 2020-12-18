@@ -41,7 +41,7 @@ export default class ImageCarousel extends React.Component {
 
         let style = {};
         if(captionPosition_X !== undefined && captionPosition_Y !== undefined) {
-            context.font = 'normal bold 45px sans-serif'
+            context.font = 'normal bold ' + this.props.fontSize + 'px sans-serif'
             context.fillText(captionText, captionPosition_X * (canvas.width/100), 
                                 captionPosition_Y * (canvas.height/100))
         }
@@ -79,4 +79,5 @@ ImageCarousel.propTypes = {
     captionPositions_X: PropTypes.array.isRequired,
     captionPositions_Y: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
+    fontSize: PropTypes.number.isRequired
 }

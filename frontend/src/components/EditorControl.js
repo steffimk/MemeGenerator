@@ -20,7 +20,7 @@ export default class EditorControl extends React.Component {
           style={{ display: 'block' }}
         />
         <p>
-          x:
+          x:&nbsp;
           <input
             type="range"
             min="1"
@@ -35,7 +35,7 @@ export default class EditorControl extends React.Component {
           />
         </p>
         <p>
-          y:
+          y:&nbsp;
           <input
             type="range"
             min="1"
@@ -55,22 +55,34 @@ export default class EditorControl extends React.Component {
   render() {
       let captionPositions_X = this.props.captionPositions_X;
       let captionPositions_Y = this.props.captionPositions_Y;
-    let captionInputs = this.props.captions.map(
+      let captionInputs = this.props.captions.map(
         (caption, index) => this.renderCaption(
             caption, captionPositions_X[index], captionPositions_Y[index], index
         )
     );
     return (
       <div>
-          <p>
-            Title:
-            <input name="title" value={this.props.title} placeholder="Enter title"
-                  onChange={this.props.changeListener}
-            />
-          </p>
-          {captionInputs}
+        <p>
+          Title:&nbsp;
+          <input 
+            name="title"
+            value={this.props.title}
+            placeholder="Enter title"
+            onChange={this.props.changeListener}
+          />
+        </p>
+        <p>
+          Font Size:&nbsp;
+          <input
+            name="fontSize"
+            value={this.props.fontSize}
+            onChange={this.props.changeListener}
+            style={{ width: '3ch' }}
+          />
+        </p>
+        {captionInputs}
       </div>
-    )
+    );
   }
 }
 
@@ -80,4 +92,5 @@ EditorControl.propTypes = {
   title: PropTypes.string.isRequired,
   captionPositions_X: PropTypes.array.isRequired,
   captionPositions_Y: PropTypes.array.isRequired,
+  fontSize: PropTypes.number.isRequired
 }

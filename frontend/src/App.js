@@ -8,12 +8,14 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
+      images: [],
+      currentImage: {},
+      // Following properties belong to current image
       captions: [],
       title: '',
       captionPositions_X: [],
       captionPositions_Y: [],
-      images: [],
-      currentImage: {},
+      fontSize: 45,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -40,6 +42,7 @@ class App extends React.Component {
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
           .map((x, i) => [x, this.state.captionPositions_Y[i]]),
+      fontSize: this.state.fontSize,
       id: this.state.currentImage.id + "mt"
     }
     console.log(memeTemplateToSave)
@@ -107,6 +110,7 @@ class App extends React.Component {
       captionPositions_Y: captionPositions.map(y => y[1]),
       captions: getCaptions(newCurrentImage),
       title: (newCurrentImage.hasOwnProperty("name") ? newCurrentImage.name : ''),
+      fontSize: (newCurrentImage.fontSize ? newCurrentImage.fontSize : 45)
     });
   }
 
@@ -121,6 +125,7 @@ class App extends React.Component {
             image={this.state.currentImage}
             captions={this.state.captions}
             title={this.state.title}
+            fontSize={this.state.fontSize}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
         />
@@ -133,6 +138,7 @@ class App extends React.Component {
             captionPositions_Y={this.state.captionPositions_Y}
             changeListener={this.handleChange}
             title={this.state.title}
+            fontSize={this.state.fontSize}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
