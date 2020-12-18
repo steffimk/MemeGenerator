@@ -33,3 +33,17 @@ services:
     command: "npm start"
     depends_on:
       - mongo
+
+  frontend:
+    image: node:15.4.0
+    restart: always
+    working_dir: /frontend/
+    environment:
+      - NODE_ENV=development
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/:/frontend/
+    command: "npm start"
+    depends_on:
+      - backend
