@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export default class EditorControl extends React.Component {
 
   renderCaption(caption, captionPosition_X, captionPosition_Y, count){
-    const placeholder = 'Enter Caption ' + count;
+    const placeholder = 'Enter Caption ' + (count+1);
     const capName = 'caption' + count;
     captionPosition_X = (captionPosition_X !== undefined ? captionPosition_X : 50);
     captionPosition_Y = (captionPosition_Y !== undefined ? captionPosition_Y : 50);
@@ -62,10 +62,12 @@ export default class EditorControl extends React.Component {
     );
     return (
       <div>
-
-          <input name="title" value={this.props.title} placeholder="Enter title"
-                 onChange={this.props.changeListener}
-          />
+          <p>
+            Title:
+            <input name="title" value={this.props.title} placeholder="Enter title"
+                  onChange={this.props.changeListener}
+            />
+          </p>
           {captionInputs}
       </div>
     )

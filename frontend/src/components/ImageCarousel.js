@@ -5,6 +5,30 @@ import './ImageCarousel.css'
 
 export default class ImageCarousel extends React.Component {
 
+    constructor(){
+        super();
+        this.canvasRef = React.createRef()
+        this.imgRef = React.createRef()
+    }
+
+    componentDidMount(){
+        const canvas = this.canvasRef.current
+        const context = canvas.getContext("2d")
+        const img = this.imgRef.current
+
+        //Fixing canvas blur --> source: https://medium.com/wdstack/fixing-html5-2d-canvas-blur-8ebe27db07da
+        const dpi = window.devicePixelRatio
+        let style_height = +getComputedStyle(canvas).getPropertyValue('height').slice(0, -2);
+        let style_width = +getComputedStyle(canvas).getPropertyValue('width').slice(0, -2);
+        canvas.setAttribute('height', style_height * dpi);
+        canvas.setAttribute('width', style_width * dpi);
+        //end of source
+
+        img.onload = () => {
+            context.drawImage(img, 0,0, canvas.width, canvas.height);
+          }
+    }
+
     renderCaption(captionText, captionPosition_X, captionPosition_Y) {
 
         let style = {};
@@ -36,7 +60,8 @@ export default class ImageCarousel extends React.Component {
             <div className="flex-container">
                 <h1>{this.props.title}</h1>
                 <div className="container">
-                    <img src={this.props.image.url} alt={this.props.image.name}/>
+                    <canvas ref={this.canvasRef} />
+                    <img ref={this.imgRef} src={this.props.image.url} style={{display: "none"}}/>
                     {captions}
                 </div>
             </div>
