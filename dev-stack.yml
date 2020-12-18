@@ -17,3 +17,19 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    depends_on:
+      - mongo
+
+  backend:
+    image: node:15.4.0
+    restart: always
+    working_dir: /backend/
+    environment:
+      - NODE_ENV=development
+    ports:
+      - 3030:3030
+    volumes:
+      - ./backend/:/backend/
+    command: "npm start"
+    depends_on:
+      - mongo
