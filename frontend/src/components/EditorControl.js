@@ -89,9 +89,9 @@ export default class EditorControl extends React.Component {
             style={{ width: '10ch' }}
           />
         </p>
-        <input type="checkbox" id="isItalic" name="isItalic" onChange={this.props.changeListener}/>
+        <input type="checkbox" id="isItalic" name="isItalic" onChange={this.props.changeListener} checked={this.props.isItalic}/>
         <label for="isItalic" style={{fontStyle: 'italic'}}>Italic&nbsp;&nbsp;</label>
-        <input type="checkbox" id="isBold" name="isBold" onChange={this.props.changeListener}/>
+        <input type="checkbox" id="isBold" name="isBold" onChange={this.props.changeListener} checked={this.props.isBold}/>
         <label for="isBold"style={{fontWeight: 'bold'}}>Bold</label>
         {captionInputs}
       </div>
