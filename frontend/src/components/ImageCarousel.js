@@ -35,8 +35,16 @@ export default class ImageCarousel extends React.Component {
         const img = this.imgRef.current
 
         if (index == 0) {
+            // Adjust width and height to maintain aspect ratio of image
+            var imgRatio = img.width / img.height
+            var width = canvas.width
+            var height = width / imgRatio;
+            if (height > canvas.height) {
+                height = canvas.height;
+                width = height * imgRatio;
+            }
             context.clearRect(0, 0, canvas.width, canvas.height)
-            context.drawImage(img, 0, 0, canvas.width, canvas.height)
+            context.drawImage(img, 0, ((canvas.height-height)/2), width, height)
         }
 
         if(captionPosition_X !== undefined && captionPosition_Y !== undefined) {
