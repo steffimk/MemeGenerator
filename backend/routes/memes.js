@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const memeTemplateCollection = 'memeTemplate';
+const memeTemplateCollection = 'memeTemplates';
 const imageCollection = 'images';
 const memeCollection= 'memes';
 
@@ -62,7 +62,7 @@ router.get('/images', function (req, res, next) {
     });
 });
 
-router.get('/memeTemplate', function (req, res, next) {
+router.get('/memeTemplates', function (req, res, next) {
     db = req.db;
     findAllFromDB(db, memeTemplateCollection).then((docs) => {
         console.log(docs);
@@ -84,7 +84,7 @@ router.get('/memes', function (req, res, next) {
     });
 });
 
-router.post('/memeTemplate', function(req, res){
+router.post('/memeTemplates', function(req, res){
     const memeTemplate = req.body
     if(
         memeTemplate.hasOwnProperty("name") &&

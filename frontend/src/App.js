@@ -8,7 +8,7 @@ class App extends React.Component {
   constructor() {
     super();
     this.urlImages = "http://localhost:3030/memes/images";
-    this.urlMemeTemplates = "http://localhost:3030/memes/memeTemplate";
+    this.urlMemeTemplates = "http://localhost:3030/memes/memeTemplates";
     this.urlMemes = "http://localhost:3030/memes/memes";
     this.state = {
       captionTop: '',
@@ -36,11 +36,13 @@ class App extends React.Component {
   get_memes(url) {
     fetch(url)
         .then(response => response.json())
-        .then(json =>
+        .then(json => {
+          console.log(json.data);
           this.setState({
             'images': json.data.images,
             'currentImage': json.data.images[0],
           })
+        }
           );
   }
 
