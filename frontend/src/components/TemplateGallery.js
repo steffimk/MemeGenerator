@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './ImageGallery.css'
+import './TemplateGallery.css'
 
-export default class ImageGallery extends React.Component {
+export default class TemplateGallery extends React.Component {
 
     renderImage(image) {
         return <img 
@@ -23,7 +23,7 @@ export default class ImageGallery extends React.Component {
     }
 }
 
-ImageGallery.propTypes = {
+TemplateGallery.propTypes = {
     currentImage: PropTypes.object.isRequired,
     images: PropTypes.array.isRequired,
     changeCurrentImage: PropTypes.func.isRequired

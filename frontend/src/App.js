@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import ImageCarousel from "./components/ImageCarousel";
-import ImageGallery from "./components/ImageGallery";
+import TemplateGallery from "./components/TemplateGallery";
 import EditorControl from "./components/EditorControl";
 
 class App extends React.Component {
@@ -114,7 +114,7 @@ class App extends React.Component {
     return (
     <div className="App">
       <div className="left">
-        <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
+        <TemplateGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
       </div>
       <div className="middle">
         <ImageCarousel
