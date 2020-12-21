@@ -30,7 +30,7 @@ services:
       - 3030:3030
     volumes:
       - ./backend/:/backend/
-    command: "npm start"
+    command: bash -c "npm install && npm start"
     depends_on:
       - mongo
 
@@ -44,6 +44,6 @@ services:
       - 3000:3000
     volumes:
       - ./frontend/:/frontend/
-    command: "npm start"
+    command: bash -c "npm install && npm start"
     depends_on:
       - backend
