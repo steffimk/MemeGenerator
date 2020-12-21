@@ -1,4 +1,4 @@
-.image-gallery img {
+.template-gallery img {
     object-fit: cover;
     width: 95%;
     border: 1px solid #ccc;
@@ -6,11 +6,11 @@
     padding: 2%;
 }
 
-.image-gallery img:hover{
+.template-gallery img:hover{
     object-fit: contain;
 }
 
-.image-gallery {
+.template-gallery {
     height: 100%;
     overflow: scroll;
 }

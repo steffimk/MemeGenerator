@@ -16,7 +16,7 @@ export default class TemplateGallery extends React.Component {
     render(){
         const images = this.props.images.map((image) => this.renderImage(image))
         return (
-            <div className="image-gallery">
+            <div className="template-gallery">
                 {images}
             </div>
         )
