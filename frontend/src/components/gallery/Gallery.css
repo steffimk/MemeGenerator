@@ -1,27 +1,33 @@
 .image-gallery {
     display: flex;
+    flex-wrap: wrap;
     padding: 0 4px;
 }
 
 
 /* Create four equal columns that sits next to each other */
 .column {
-    flex: 25%;
+    flex: 24%;
     max-width: 25%;
     padding: 0 4px;
 }
 
-.column img {
+.column .image-container {
     margin-top: 8px;
+    width: 100%;
+    position: relative;
+}
+
+.column .image-container img {
     vertical-align: middle;
     width: 100%;
 }
 
 
 /* Responsive layout - makes a two column-layout instead of four columns */
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 806px) {
     .column {
-        flex: 50%;
+        flex: 48%;
         max-width: 50%;
     }
 }
@@ -32,4 +38,18 @@
         flex: 100%;
         max-width: 100%;
     }
+}
+
+.image-title {
+    position: absolute;
+    bottom: 0;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.5); /* Black see-through */
+    width: 100%;
+    transition: .5s ease;
+    opacity:1;
+    color: white;
+    font-size: 20px;
+    padding: 20px 0;
+    text-align: center;
 }

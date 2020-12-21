@@ -53,7 +53,10 @@ export default class Gallery extends React.Component {
 
     renderImage(image) {
         return (
-            <img src={image.url} alt={image.name} />
+            <div className="image-container">
+                <img src={image.url} alt={image.name} />
+                <div className="image-title">{image.name}</div>
+            </div>
         )
     }
 }
