@@ -1,5 +1,6 @@
 import React from 'react';
 import './Gallery.css'
+import {Link} from "react-router-dom";
 
 export default class Gallery extends React.Component {
 
@@ -36,6 +37,10 @@ export default class Gallery extends React.Component {
         return (
             <div className="image-gallery">
                 <div className="column">
+                    <Link to="/editor" className="image-container create-meme">
+                        <h1>+</h1>
+                        <p>Create new Meme</p>
+                    </Link>
                     {slices[0]}
                 </div>
                 <div className="column">

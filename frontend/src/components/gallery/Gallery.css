@@ -53,3 +53,10 @@
     padding: 20px 0;
     text-align: center;
 }
+
+.create-meme {
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+}

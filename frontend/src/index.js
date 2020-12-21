@@ -22,6 +22,10 @@ function Router() {
                     <Gallery />
                 </Route>
 
+                <Route path="/editor">
+                    <App />
+                </Route>
+
                 {/* Note how these two routes are ordered. The more specific
             path="/contact/:id" comes before path="/contact" so that
             route will render when viewing an individual contact
