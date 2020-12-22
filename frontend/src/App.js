@@ -5,10 +5,11 @@ import ImageGallery from "./components/ImageGallery";
 import EditorControl from "./components/EditorControl";
 
 class App extends React.Component {
+
   constructor() {
     super();
     this.state = {
-      images: [],
+      templates: [],
       currentImage: {},
       // Following properties belong to current image
       captions: [],
@@ -23,23 +24,27 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  get_memes(url) {
+  componentDidMount(){
+    // initial get request
+    this.urlTemplates = "http://localhost:3030/memes/templates";
+    this.get_memeTemplates(this.urlTemplates);
+  }
+
+
+  get_memeTemplates(url) {
     fetch(url)
         .then(response => response.json())
         .then(json => {
+          console.log(json.data);
           this.setState({
-            'images': json.data.memes
+            'templates': json.data.templates
           });
-          this.onChangeCurrentImage(json.data.memes[0]);
+          this.onChangeCurrentImage(json.data.templates[0]);
         });
   }
 
-  componentDidMount(){
-    this.url =  "http://localhost:3030/memes"; //"https://api.imgflip.com/get_memes"
-    this.get_memes(this.url);
-  }
-
   handleSaveAsTemplate = () => {
+
     const memeTemplateToSave = {
       ...this.state.currentImage,
       captions: this.state.captions,
@@ -48,11 +53,10 @@ class App extends React.Component {
       fontSize: this.state.fontSize,
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
-      fontColor: this.state.fontColor,
-      id: this.state.currentImage.id + "mt"
+      fontColor: this.state.fontColor
     }
     console.log(memeTemplateToSave)
-    fetch(this.url, {
+    fetch(this.urlTemplates, {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(memeTemplateToSave),
@@ -60,8 +64,7 @@ class App extends React.Component {
     .then(response => response.json())
     .then(json => {
       if (json.success) {
-        this.setState({images: json.data.memes})
-        console.log('Success', json)
+        console.log('Successfully saved template')
       }
     })
     .catch((error) => {console.error('Error:', error);})
@@ -129,7 +132,7 @@ class App extends React.Component {
     return (
     <div className="App">
       <div className="left">
-        <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
+        <ImageGallery currentImage={this.state.currentImage} images={this.state.templates} changeCurrentImage={this.onChangeCurrentImage}/>
       </div>
       <div className="middle">
         <ImageCarousel
