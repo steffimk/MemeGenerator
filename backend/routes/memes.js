@@ -47,10 +47,10 @@ function findOneFromDB(db, collection, id) {
     collection.find(id).then((docs) => console.log(docs));
 }
 
-router.get('/', function (req, res, next) {
+router.get('/templates', function (req, res, next) {
     db = req.db;
-    initializeDB(db, imageCollection);
-    findAllFromDB(db,imageCollection).then((docs) => {
+    initializeDB(db, templateCollection);
+    findAllFromDB(db,templateCollection).then((docs) => {
         console.log(docs);
         res.json({
             "success": true,
@@ -59,9 +59,9 @@ router.get('/', function (req, res, next) {
     });
 });
 
-router.get('/templates', function (req, res, next) {
+router.get('/', function (req, res, next) {
     db = req.db;
-    findAllFromDB(db, memeTemplateCollection).then((docs) => {
+    findAllFromDB(db, memeCollection).then((docs) => {
         console.log(docs);
         res.json({
             "success": true,

@@ -7,8 +7,6 @@ class App extends React.Component {
 
   constructor() {
     super();
-    this.urlTemplates = "http://localhost:3030/memes/templates";
-    this.urlMemes = "http://localhost:3030/memes/memes";
     this.state = {
       captionTop: '',
       captionBottom: '',
@@ -18,6 +16,7 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this);
 
     // initial get request
+    this.urlTemplates = "http://localhost:3030/memes/templates";
     this.get_memes(this.urlTemplates);
   }
 
@@ -40,7 +39,7 @@ class App extends React.Component {
 
   handleSaveAsTemplate = () => {
     const memeTemplateToSave = {...this.state.currentImage, captions: [this.state.captionTop, this.state.captionBottom], id: this.state.currentImage.id + "mt"}
-    fetch(this.urlMemeTemplates, {
+    fetch(this.urlTemplates, {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(memeTemplateToSave),
@@ -63,22 +62,21 @@ class App extends React.Component {
    this.setState({currentImage: newCurrentImage})
 
   render () {
-    if(this.state.images.length === 0 || !this.state.currentImage) {
-      return (<div className="App">
-      <div className="left">
-        <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
-      </div>
-      <div className="middle">
-        <ImageCarousel image={this.state.currentImage} captions={this.state.captions}/>
-      </div>
-      <div className="control right">
-        <input name="captionTop" value={this.state.captionTop} placeholder='Enter Caption 1' onChange={this.handleChange}/>
-        <input name="captionBottom" value={this.state.captionBottom} placeholder='Enter Caption 2' onChange={this.handleChange}/>
-      </div>
-      <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
-      </div>)
+    return (
+      <div className="App">
+        <div className="left">
+          <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
+        </div>
+        <div className="middle">
+          <ImageCarousel image={this.state.currentImage} captionTop={this.state.captionTop} captionBottom={this.state.captionBottom}/>
+        </div>
+        <div className="control right">
+          <input name="captionTop" value={this.state.captionTop} placeholder='Enter Caption 1' onChange={this.handleChange}/>
+          <input name="captionBottom" value={this.state.captionBottom} placeholder='Enter Caption 2' onChange={this.handleChange}/>
+        </div>
+        <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
+        </div>)
     }
-  }
 }
 
 export default App;
