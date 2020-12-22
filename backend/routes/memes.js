@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const memeTemplateCollection = 'memeTemplates';
-const imageCollection = 'images';
+const templateCollection = 'templates';
 const memeCollection= 'memes';
 
 let memes = [
@@ -48,9 +47,7 @@ function findOneFromDB(db, collection, id) {
     collection.find(id).then((docs) => console.log(docs));
 }
 
-
-/* GET users listing. */
-router.get('/images', function (req, res, next) {
+router.get('/', function (req, res, next) {
     db = req.db;
     initializeDB(db, imageCollection);
     findAllFromDB(db,imageCollection).then((docs) => {
@@ -62,7 +59,7 @@ router.get('/images', function (req, res, next) {
     });
 });
 
-router.get('/memeTemplates', function (req, res, next) {
+router.get('/templates', function (req, res, next) {
     db = req.db;
     findAllFromDB(db, memeTemplateCollection).then((docs) => {
         console.log(docs);
@@ -73,18 +70,7 @@ router.get('/memeTemplates', function (req, res, next) {
     });
 });
 
-router.get('/memes', function (req, res, next) {
-    db = req.db;
-    findAllFromDB(db, memeCollection).then((docs) => {
-        console.log(docs);
-        res.json({
-            "success": true,
-            "data": {"images": docs}
-        })
-    });
-});
-
-router.post('/memeTemplates', function(req, res){
+router.post('/templates', function(req, res){
     const memeTemplate = req.body
     if(
         memeTemplate.hasOwnProperty("name") &&
@@ -94,7 +80,7 @@ router.post('/memeTemplates', function(req, res){
         memeTemplate.hasOwnProperty("box_count")
     ){
         let db = req.db;
-        addToDB(db, memeTemplateCollection, memeTemplate);
+        addToDB(db, templateCollection, memeTemplate);
         res.json({
             "success": true
         })
