@@ -6,7 +6,6 @@ const memeCollection= 'memes';
 
 let memes = [
     {
-        "id": "181913649",
         "name": "Drake Hotline Bling",
         "url": "https://i.imgflip.com/30b1gx.jpg",
         "width": 1200,
@@ -14,7 +13,6 @@ let memes = [
         "box_count": 2
     },
     {
-        "id": "112126428",
         "name": "Distracted Boyfriend",
         "url": "https://i.imgflip.com/1ur9b0.jpg",
         "width": 1200,
@@ -24,6 +22,9 @@ let memes = [
 ]
 
 function addToDB(db,collection, data) {
+    console.log("Received data: " + data);
+    // Delete id so that db generates new unique one (prevents duplicate error)
+    delete data._id;
     collection = db.get(collection);
     collection.insert(data).then((docs) => console.log(docs));
 }

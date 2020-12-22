@@ -53,8 +53,7 @@ class App extends React.Component {
       fontSize: this.state.fontSize,
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
-      fontColor: this.state.fontColor,
-      id: this.state.currentImage.id + "mt"
+      fontColor: this.state.fontColor
     }
     console.log(memeTemplateToSave)
     fetch(this.urlTemplates, {
