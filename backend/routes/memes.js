@@ -54,7 +54,7 @@ router.get('/templates', function (req, res, next) {
         console.log(docs);
         res.json({
             "success": true,
-            "data": {"images": docs}
+            "data": {"templates": docs}
         })
     });
 });
@@ -65,7 +65,7 @@ router.get('/', function (req, res, next) {
         console.log(docs);
         res.json({
             "success": true,
-            "data": {"images": docs}
+            "data": {"memes": docs}
         })
     });
 });

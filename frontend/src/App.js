@@ -10,31 +10,32 @@ class App extends React.Component {
     this.state = {
       captionTop: '',
       captionBottom: '',
-      images: [],
+      templates: [],
       currentImage: {},
     };
     this.handleChange = this.handleChange.bind(this);
 
-    // initial get request
-    this.urlTemplates = "http://localhost:3030/memes/templates";
-    this.get_memes(this.urlTemplates);
+    
   }
 
   
-  get_memes(url) {
+  get_memeTemplates(url) {
     fetch(url)
         .then(response => response.json())
         .then(json => {
           console.log(json.data);
           this.setState({
-            'images': json.data.images,
-            'currentImage': json.data.images[0],
+            'templates': json.data.templates,
+            'currentImage': json.data.templates[0],
           })
         }
           );
   }
 
   componentDidMount(){
+    // initial get request
+    this.urlTemplates = "http://localhost:3030/memes/templates";
+    this.get_memeTemplates(this.urlTemplates);
   }
 
   handleSaveAsTemplate = () => {
@@ -47,7 +48,7 @@ class App extends React.Component {
     .then(response => response.json())
     .then(json => {
       if (json.success) {
-        this.setState({images: json.data.images})
+        this.setState({templates: json.data.tesmplates})
         console.log('Success', json)
       }
     })
@@ -65,7 +66,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="left">
-          <ImageGallery currentImage={this.state.currentImage} images={this.state.images} changeCurrentImage={this.onChangeCurrentImage}/>
+          <ImageGallery currentImage={this.state.currentImage} images={this.state.templates} changeCurrentImage={this.onChangeCurrentImage}/>
         </div>
         <div className="middle">
           <ImageCarousel image={this.state.currentImage} captionTop={this.state.captionTop} captionBottom={this.state.captionBottom}/>
