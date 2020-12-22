@@ -3260,11 +3260,6 @@
     "kind-of" "^6.0.2"
     "shallow-clone" "^3.0.0"
 
-"clsx@^1.0.4":
-  "integrity" "sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA=="
-  "resolved" "https://registry.npmjs.org/clsx/-/clsx-1.1.1.tgz"
-  "version" "1.1.1"
-
 "co@^4.6.0":
   "integrity" "sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ="
   "resolved" "https://registry.npmjs.org/co/-/co-4.6.0.tgz"
@@ -7054,16 +7049,6 @@
   "resolved" "https://registry.npmjs.org/lodash._reinterpolate/-/lodash._reinterpolate-3.0.0.tgz"
   "version" "3.0.0"
 
-"lodash.debounce@^4.0.8":
-  "integrity" "sha1-gteb/zCmfEAF/9XiUVMArZyk168="
-  "resolved" "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
-  "version" "4.0.8"
-
-"lodash.isequal@^4.5.0":
-  "integrity" "sha1-QVxEePK8wwEgwizhDtMib30+GOA="
-  "resolved" "https://registry.npmjs.org/lodash.isequal/-/lodash.isequal-4.5.0.tgz"
-  "version" "4.5.0"
-
 "lodash.memoize@^4.1.2":
   "integrity" "sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4="
   "resolved" "https://registry.npmjs.org/lodash.memoize/-/lodash.memoize-4.1.2.tgz"
@@ -7088,11 +7073,6 @@
   "version" "4.2.0"
   dependencies:
     "lodash._reinterpolate" "^3.0.0"
-
-"lodash.throttle@^4.1.1":
-  "integrity" "sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ="
-  "resolved" "https://registry.npmjs.org/lodash.throttle/-/lodash.throttle-4.1.1.tgz"
-  "version" "4.1.1"
 
 "lodash.uniq@^4.5.0":
   "integrity" "sha1-0CJTc662Uq3BvILklFM5qEJ1R3M="
@@ -8963,7 +8943,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@^15.5.8", "prop-types@^15.6.2", "prop-types@^15.7.2":
+"prop-types@^15.7.2":
   "integrity" "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
   "version" "15.7.2"
@@ -9173,19 +9153,6 @@
   "resolved" "https://registry.npmjs.org/react-error-overlay/-/react-error-overlay-6.0.8.tgz"
   "version" "6.0.8"
 
-"react-image-gallery@^1.0.8":
-  "integrity" "sha512-kxS+fUCdq8HerN9JvWnzzg8YdPouwbSgVzXxCzxI7ZcAcvDCr/XKxGjqSQ5Ue8DeUEglsAcNJDOdoLygyNgOwA=="
-  "resolved" "https://registry.npmjs.org/react-image-gallery/-/react-image-gallery-1.0.8.tgz"
-  "version" "1.0.8"
-  dependencies:
-    "clsx" "^1.0.4"
-    "lodash.debounce" "^4.0.8"
-    "lodash.isequal" "^4.5.0"
-    "lodash.throttle" "^4.1.1"
-    "prop-types" "^15.5.8"
-    "react-swipeable" "^5.2.0"
-    "resize-observer-polyfill" "^1.5.0"
-
 "react-is@^16.8.1":
   "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
@@ -9267,13 +9234,6 @@
     "workbox-webpack-plugin" "5.1.4"
   optionalDependencies:
     "fsevents" "^2.1.3"
-
-"react-swipeable@^5.2.0":
-  "integrity" "sha512-EQObuU3Qg3JdX3WxOn5reZvOSCpU4fwpUAs+NlXSN3y+qtsO2r8VGkVnOQzmByt3BSYj9EWYdUOUfi7vaMdZZw=="
-  "resolved" "https://registry.npmjs.org/react-swipeable/-/react-swipeable-5.5.1.tgz"
-  "version" "5.5.1"
-  dependencies:
-    "prop-types" "^15.6.2"
 
 "react@^17.0.1":
   "integrity" "sha512-lG9c9UuMHdcAexXtigOZLX8exLWkW0Ku29qPRU8uhF2R9BN96dLCt0psvzPLlHc5OWkgymP3qwTRgbnw5BKx3w=="
@@ -9642,11 +9602,6 @@
   "integrity" "sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8="
   "resolved" "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz"
   "version" "1.0.0"
-
-"resize-observer-polyfill@^1.5.0":
-  "integrity" "sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg=="
-  "resolved" "https://registry.npmjs.org/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz"
-  "version" "1.5.1"
 
 "resolve-cwd@^2.0.0":
   "integrity" "sha1-AKn3OHVW4nA46uIyyqNypqWbZlo="
