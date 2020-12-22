@@ -8,12 +8,17 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
+      images: [],
+      currentImage: {},
+      // Following properties belong to current image
       captions: [],
       title: '',
       captionPositions_X: [],
       captionPositions_Y: [],
-      images: [],
-      currentImage: {},
+      fontSize: 45,
+      isItalic: false,
+      isBold: false,
+      fontColor: 'black'
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -40,6 +45,10 @@ class App extends React.Component {
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
           .map((x, i) => [x, this.state.captionPositions_Y[i]]),
+      fontSize: this.state.fontSize,
+      isItalic: this.state.isItalic,
+      isBold: this.state.isBold,
+      fontColor: this.state.fontColor,
       id: this.state.currentImage.id + "mt"
     }
     console.log(memeTemplateToSave)
@@ -60,7 +69,9 @@ class App extends React.Component {
 
   handleChange = (event, index) => {
 
-    if (index !== undefined) {
+    if (event.target.type == 'checkbox') {
+      this.setState({[event.target.name]: event.target.checked})
+    } else if (index !== undefined) {
       this.setState((state) =>  {
         // make a shallow copy of the array to avoid writing directly to state
         let list_state = [...state[event.target.name]];
@@ -107,6 +118,10 @@ class App extends React.Component {
       captionPositions_Y: captionPositions.map(y => y[1]),
       captions: getCaptions(newCurrentImage),
       title: (newCurrentImage.hasOwnProperty("name") ? newCurrentImage.name : ''),
+      fontSize: (newCurrentImage.hasOwnProperty("fontSize") ? newCurrentImage.fontSize : 45),
+      isItalic: (newCurrentImage.hasOwnProperty("isItalic") ? newCurrentImage.isItalic : false),
+      isBold: (newCurrentImage.hasOwnProperty("isBold") ? newCurrentImage.isBold : false),
+      fontColor: (newCurrentImage.hasOwnProperty("fontColor") ? newCurrentImage.fontColor : 'black')
     });
   }
 
@@ -121,18 +136,26 @@ class App extends React.Component {
             image={this.state.currentImage}
             captions={this.state.captions}
             title={this.state.title}
+            fontSize={this.state.fontSize}
+            isItalic={this.state.isItalic}
+            isBold={this.state.isBold}
+            fontColor={this.state.fontColor}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
         />
       </div>
       <div className="control right">
-        <h3 style={{fontWeight: 'bold'}}>Add Captions To Your Meme</h3>
+        <h3 style={{fontWeight: 'bold'}}>Create Your Meme</h3>
         <EditorControl
             captions={this.state.captions}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
             changeListener={this.handleChange}
             title={this.state.title}
+            fontSize={this.state.fontSize}
+            isItalic={this.state.isItalic}
+            isBold={this.state.isBold}
+            fontColor={this.state.fontColor}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>

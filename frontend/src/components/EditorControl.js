@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export default class EditorControl extends React.Component {
 
   renderCaption(caption, captionPosition_X, captionPosition_Y, count){
-    const placeholder = 'Enter Caption ' + count;
+    const placeholder = 'Enter Caption ' + (count+1);
     const capName = 'caption' + count;
     captionPosition_X = (captionPosition_X !== undefined ? captionPosition_X : 50);
     captionPosition_Y = (captionPosition_Y !== undefined ? captionPosition_Y : 50);
@@ -20,7 +20,7 @@ export default class EditorControl extends React.Component {
           style={{ display: 'block' }}
         />
         <p>
-          x:
+          x:&nbsp;
           <input
             type="range"
             min="1"
@@ -35,7 +35,7 @@ export default class EditorControl extends React.Component {
           />
         </p>
         <p>
-          y:
+          y:&nbsp;
           <input
             type="range"
             min="1"
@@ -55,20 +55,47 @@ export default class EditorControl extends React.Component {
   render() {
       let captionPositions_X = this.props.captionPositions_X;
       let captionPositions_Y = this.props.captionPositions_Y;
-    let captionInputs = this.props.captions.map(
+      let captionInputs = this.props.captions.map(
         (caption, index) => this.renderCaption(
             caption, captionPositions_X[index], captionPositions_Y[index], index
         )
     );
     return (
       <div>
-
-          <input name="title" value={this.props.title} placeholder="Enter title"
-                 onChange={this.props.changeListener}
+        <p>
+          Title:&nbsp;
+          <input 
+            name="title"
+            value={this.props.title}
+            placeholder="Enter title"
+            onChange={this.props.changeListener}
           />
-          {captionInputs}
+        </p>
+        <p>
+          Font Size:&nbsp;
+          <input
+            name="fontSize"
+            value={this.props.fontSize}
+            onChange={this.props.changeListener}
+            style={{ width: '3ch' }}
+          />
+        </p>
+        <p>
+          Font Color:&nbsp;
+          <input
+            name="fontColor"
+            value={this.props.fontColor}
+            onChange={this.props.changeListener}
+            style={{ width: '10ch' }}
+          />
+        </p>
+        <input type="checkbox" id="isItalic" name="isItalic" onChange={this.props.changeListener} checked={this.props.isItalic}/>
+        <label for="isItalic" style={{fontStyle: 'italic'}}>Italic&nbsp;&nbsp;</label>
+        <input type="checkbox" id="isBold" name="isBold" onChange={this.props.changeListener} checked={this.props.isBold}/>
+        <label for="isBold"style={{fontWeight: 'bold'}}>Bold</label>
+        {captionInputs}
       </div>
-    )
+    );
   }
 }
 
@@ -78,4 +105,8 @@ EditorControl.propTypes = {
   title: PropTypes.string.isRequired,
   captionPositions_X: PropTypes.array.isRequired,
   captionPositions_Y: PropTypes.array.isRequired,
+  fontSize: PropTypes.number.isRequired,
+  isItalic: PropTypes.bool.isRequired,
+  isBold: PropTypes.bool.isRequired,
+  fontColor: PropTypes.string.isRequired
 }

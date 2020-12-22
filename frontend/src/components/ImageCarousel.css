@@ -32,3 +32,8 @@
     font-size: 18px;
 }
 
+canvas {
+    height: 90%;
+    width: 97%;
+    border: 1px solid black;
+}
