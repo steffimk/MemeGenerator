@@ -58,13 +58,16 @@ class Gallery extends React.Component {
             }
         }
 
-        let images = this.state.images.map(this.renderImage)
+        const n_columns = 4.0;
+        let images = this.state.images.map(
+            (e) => this.renderImage(e, this.props.location.pathname)
+        );
         let slices = [
-            images.slice(0, images.length/4.0),
-            images.slice(images.length/4.0, images.length/4.0*2),
-            images.slice(images.length/4.0*2, images.length/4.0*3),
-            images.slice(images.length/4.0*3, images.length),
-        ]
+            images.slice(0, images.length/n_columns),
+            images.slice(images.length/n_columns, images.length/n_columns*2),
+            images.slice(images.length/n_columns*2, images.length/n_columns*3),
+            images.slice(images.length/n_columns*3, images.length),
+        ];
 
         return (
             <div className="gallery-container">
@@ -91,9 +94,16 @@ class Gallery extends React.Component {
         );
     }
 
-    renderImage(image) {
+    renderImage(image, currentRoute) {
+        let imageRoute;
+        if(currentRoute.slice(-1) === '/'){
+            imageRoute = currentRoute+image.id;
+        }else{
+            imageRoute = currentRoute+"/"+image.id;
+        }
+
         return (
-            <Link to={"/gallery/"+image.id}>
+            <Link to={imageRoute} key={image.id}>
                 <div className="image-container" id={image.id}>
                     <img src={image.url} alt={image.name} />
                     <div className="image-title">{image.name}</div>

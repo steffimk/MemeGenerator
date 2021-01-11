@@ -16,7 +16,7 @@ export default class SingleImage extends React.Component {
 
 
                 return (
-                    <Link to="/gallery">
+                    <Link to="."> {/* relative link up one level*/}
                         <div className="modal">
                             <h1 className="modal-title">{image.name}</h1>
                             <Link className="modal-nav modal-left" to={"/gallery/" + prev_image.id}/>
@@ -27,7 +27,7 @@ export default class SingleImage extends React.Component {
                 )
             }else{
                 return (
-                    <Link to="/gallery">
+                    <Link to="."> {/* relative link up one level*/}
                         <div className="modal">
                             <h1 className="modal-title">404: This image could not be found :/</h1>
                         </div>
