@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
-import ImageCarousel from "./components/ImageCarousel";
-import TemplateGallery from "./components/TemplateGallery";
-import EditorControl from "./components/EditorControl";
+import ImageCarousel from "./components/editor/ImageCarousel";
+import TemplateGallery from "./components/editor/TemplateGallery";
+import EditorControl from "./components/editor/EditorControl";
 
 class App extends React.Component {
 
