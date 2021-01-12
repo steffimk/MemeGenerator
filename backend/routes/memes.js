@@ -1,25 +1,11 @@
 var express = require('express');
+const fetch = require('node-fetch');
+
 var router = express.Router();
 
 const templateCollection = 'templates';
 const memeCollection= 'memes';
 
-let memes = [
-    {
-        "name": "Drake Hotline Bling",
-        "url": "https://i.imgflip.com/30b1gx.jpg",
-        "width": 1200,
-        "height": 1200,
-        "box_count": 2
-    },
-    {
-        "name": "Distracted Boyfriend",
-        "url": "https://i.imgflip.com/1ur9b0.jpg",
-        "width": 1200,
-        "height": 800,
-        "box_count": 3
-    },
-]
 
 function addToDB(db,collection, data) {
     console.log("Received data: " + data);
@@ -29,18 +15,15 @@ function addToDB(db,collection, data) {
     collection.insert(data).then((docs) => console.log(docs));
 }
 
-function initializeDB(db, collection) {
-    collection = db.get(collection);
-    collection.find({}).then((res) => {
-        if (res.length === 0) {
-            collection.insert(memes);
-        }
-    });
-}
-
 function findAllFromDB(db,collection) {
     collection = db.get(collection);
     return collection.find({});
+}
+
+function getTemplatesFromImgFlip(){
+    return fetch("https://api.imgflip.com/get_memes")
+        .then(response => response.json())
+        .then(json => json.data.memes)
 }
 
 function findOneFromDB(db, collection, id) {
@@ -50,8 +33,15 @@ function findOneFromDB(db, collection, id) {
 
 router.get('/templates', function (req, res, next) {
     db = req.db;
-    initializeDB(db, templateCollection);
-    findAllFromDB(db,templateCollection).then((docs) => {
+    Promise.all([findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
+    //getTemplatesFromImgFlip()
+        .then(([docs, imgflip]) => {
+            console.log(docs)
+            console.log(imgflip)
+            console.log(docs.concat(imgflip));
+            return (docs.concat(imgflip));
+        } )
+        .then((docs) => {
         console.log(docs);
         res.json({
             "success": true,
