@@ -160,7 +160,8 @@ class App extends React.Component {
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
         />
-        <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
+        <button name="saveTemplateButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
+        <button name="saveButton" onClick={console.log("Click dummy")}>Save image</button>
       </div>
       
       </div>)
