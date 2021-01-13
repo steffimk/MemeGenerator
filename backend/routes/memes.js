@@ -1,5 +1,6 @@
 var express = require('express');
 const fetch = require('node-fetch');
+const URL = require("url").URL;
 
 var router = express.Router();
 
@@ -8,9 +9,8 @@ const memeCollection= 'memes';
 
 
 function addToDB(db,collection, data) {
-    console.log("Received data: " + data);
     // Delete id so that db generates new unique one (prevents duplicate error)
-    delete data._id;
+    //delete data._id;
     collection = db.get(collection);
     collection.insert(data).then((docs) => console.log(docs));
 }
@@ -34,7 +34,6 @@ function findOneFromDB(db, collection, id) {
 router.get('/templates', function (req, res, next) {
     db = req.db;
     Promise.all([findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
-    //getTemplatesFromImgFlip()
         .then(([docs, imgflip]) => {
             console.log(docs)
             console.log(imgflip)
@@ -61,24 +60,49 @@ router.get('/', function (req, res, next) {
     });
 });
 
+
+const isValidUrl = (s) => {
+    try {
+        new URL(s);
+        return true;
+    } catch (err) {
+        console.error("Invalid url: "+s);
+        return false;
+    }
+};
+
+function isPositiveInteger(x){
+    x = parseInt(x)
+    let ret = x !== undefined && typeof x === "number" && x >= 0;
+    if(!ret){
+        console.error("Invalid positive integer: "+x);
+    }
+    return ret;
+}
+
 router.post('/templates', function(req, res){
-    const memeTemplate = req.body
+    const memeTemplate = req.body;
+    const {name, url, width, height, box_count} = memeTemplate;
+
+    // validate input
     if(
-        memeTemplate.hasOwnProperty("name") &&
-        memeTemplate.hasOwnProperty("url") &&
-        memeTemplate.hasOwnProperty("width") &&
-        memeTemplate.hasOwnProperty("height") &&
-        memeTemplate.hasOwnProperty("box_count")
+        typeof name === "string" && name.length > 0 &&
+        isValidUrl(url) &&
+        isPositiveInteger(width) &&
+        isPositiveInteger(height) &&
+        isPositiveInteger(box_count)
     ){
-        let db = req.db;
-        addToDB(db, templateCollection, memeTemplate);
-        res.json({
-            "success": true
-        })
+
+        // ignore any unknown values in the input data
+        const normalizedTemplate = {name, url, width, height, box_count}
+
+        addToDB(req.db, templateCollection, normalizedTemplate);
+
+        res.status(200);
+        res.send();
     } else {
-        res.json({
-            "success": false
-        })
+        res.status(406);
+        res.send();
     }
 });
 

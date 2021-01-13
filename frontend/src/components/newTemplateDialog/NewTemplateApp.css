@@ -1,0 +1,10 @@
+.new-template-form{
+    height: 100%;
+    width: 100%;
+}
+
+.new-template-form .fab{
+    position:absolute;
+    right: 16px;
+    bottom: 16px;
+}
