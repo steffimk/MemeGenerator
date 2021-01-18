@@ -65,7 +65,28 @@ export default class NewTemplateApp extends React.Component{
         }
     }
 
+    onFileChange(event){
+
+        const file = event.target.files[0];
+
+        if(file.type.startsWith('image/')){
+            let img = new Image();
+            let width;
+            let height;
+            const reader = new FileReader();
+            reader.onload = function(e){
+                img.src = e.target.result
+                // FIXME getting Height and Width is not working for data url
+                width = img.naturalWidth
+                height = img.naturalHeight;
+                this.setState({"url": img.src, "width": width, "height": height})
+            }.bind(this)
+            reader.readAsDataURL(file);
+        }
+    }
+
     render(){
+
         return (
             <form className="new-template-form" onSubmit={(e) => this.onSave(e)}>
                 <TextField id="template-name" label="Template Name" required/>
@@ -74,8 +95,14 @@ export default class NewTemplateApp extends React.Component{
                     pattern="https://.*"
                     onChange={(e) => this.onUrlChange(e)}
                 />
+                <TextField id="template-file" label="Upload photo"
+                           type="file"
+                           // This seems to have no effect
+                           pattern="*.png$|*.jpeg$|*.jpg$|*.gif$"
+                           onChange={(e) => this.onFileChange(e)}
+                />
                 <TextField id="template-box-count"
-                   label="Box Count" type="number" value={0}
+                   label="Box Count" type="number"
                    required
                    min={0}
                    max={10}
