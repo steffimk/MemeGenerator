@@ -3,8 +3,11 @@
     width: 100%;
 }
 
-.new-template-form .fab{
-    position:absolute;
-    right: 16px;
-    bottom: 16px;
+.new-template-form img {
+    object-fit: contain;
+    width: 100%;
+}
+
+#template-file{
+    opacity: 0;
 }

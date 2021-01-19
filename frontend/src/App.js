@@ -9,7 +9,6 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      templates: [],
       currentImage: {},
       // Following properties belong to current image
       captions: [],
@@ -22,25 +21,6 @@ class App extends React.Component {
       fontColor: 'black'
     };
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  componentDidMount(){
-    // initial get request
-    this.urlTemplates = "http://localhost:3030/memes/templates";
-    this.get_memeTemplates(this.urlTemplates);
-  }
-
-
-  get_memeTemplates(url) {
-    fetch(url)
-        .then(response => response.json())
-        .then(json => {
-          console.log(json.data);
-          this.setState({
-            'templates': json.data.templates
-          });
-          this.onChangeCurrentImage(json.data.templates[0]);
-        });
   }
 
   handleSaveAsTemplate = () => {
@@ -60,14 +40,19 @@ class App extends React.Component {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(memeTemplateToSave),
-      })
-    .then(response => response.json())
-    .then(json => {
-      if (json.success) {
-        console.log('Successfully saved template')
-      }
-    })
-    .catch((error) => {console.error('Error:', error);})
+    }).then(response => {
+            if(response.ok) {
+                return true;
+            }else{
+                return Promise.reject(
+                    "API Responded with an error: "+response.status+" "+response.statusText
+                )
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            return false;
+        })
   }
 
   handleChange = (event, index) => {
@@ -132,7 +117,7 @@ class App extends React.Component {
     return (
     <div className="App">
       <div className="left">
-        <TemplateGallery currentImage={this.state.currentImage} images={this.state.templates} changeCurrentImage={this.onChangeCurrentImage}/>
+        <TemplateGallery currentImage={this.state.currentImage} changeCurrentImage={this.onChangeCurrentImage}/>
       </div>
       <div className="middle">
         <ImageCarousel
