@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './TemplateGallery.css'
-import Button from "@material-ui/core";
+import {Button} from "@material-ui/core";
 import NewTemplateDialog from "./newTemplateDialog/NewTemplateDialog";
 
 export default class TemplateGallery extends React.Component {
