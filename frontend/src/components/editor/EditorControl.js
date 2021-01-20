@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 export default class EditorControl extends React.Component {
 
   renderCaption(caption, captionPosition_X, captionPosition_Y, count){
@@ -94,6 +93,7 @@ export default class EditorControl extends React.Component {
         <input type="checkbox" id="isBold" name="isBold" onChange={this.props.changeListener} checked={this.props.isBold}/>
         <label for="isBold"style={{fontWeight: 'bold'}}>Bold</label>
         {captionInputs}
+        <button name="addImage" onClick={this.props.switchToAddImageMode}>{(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}</button>
       </div>
     );
   }
@@ -102,6 +102,9 @@ export default class EditorControl extends React.Component {
 EditorControl.propTypes = {
   captions: PropTypes.arrayOf(PropTypes.string).isRequired,
   changeListener: PropTypes.func.isRequired,
+  isInAddImageMode: PropTypes.bool.isRequired,
+  addedImages: PropTypes.array.isRequired,
+  switchToAddImageMode: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   captionPositions_X: PropTypes.array.isRequired,
   captionPositions_Y: PropTypes.array.isRequired,

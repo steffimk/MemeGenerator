@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './ImageCarousel.css'
-
+/**
+ * View of the meme template being edited. Part of the editor.
+ */
 export default class ImageCarousel extends React.Component {
 
     constructor(props){
@@ -14,9 +16,13 @@ export default class ImageCarousel extends React.Component {
         this.canvasRef = React.createRef()
         this.imgRef = React.createRef()
         this.containerRef = React.createRef()
+        this.addedImgRefs = []
+        props.addedImages.forEach( _ =>
+            this.addedImgRefs.push(React.createRef())
+        )
     }
 
-    setImage(imgWidth, imgHeight){
+    setImage(imgWidth, imgHeight, index = -1){
         // Calculate new width and height to maintain aspect ratio of image but fit on page
         const imgRatio = imgWidth / imgHeight
         if (this.containerRef.current == null){
@@ -26,7 +32,7 @@ export default class ImageCarousel extends React.Component {
         console.log("Container width: " + this.containerRef.current.offsetWidth + " window height: " + window.innerHeight)
         var width = this.containerRef.current.offsetWidth * 0.97 // Fit to fill 97% of width of container
         var height = width / imgRatio;
-        if (height > (window.innerHeight * 0.8)) {    // If to high -> fit to fill 80% of height of window 
+        if (height > (window.innerHeight * 0.8)) {    // If too high -> fit to fill 80% of height of window 
             height = window.innerHeight * 0.8
             width = height * imgRatio
         }
@@ -35,7 +41,7 @@ export default class ImageCarousel extends React.Component {
             const context = this.canvasRef.getContext("2d")
             context.clearRect(0, 0, this.state.canvasWidth, this.state.canvasHeight)
         } catch (e) {
-            console.log("Problem finding context")
+            console.log("Problem finding context: " + e)
         }
         this.setState({ canvasWidth: width, canvasHeight: height }); // fresh rendering of component
     }
@@ -45,7 +51,14 @@ export default class ImageCarousel extends React.Component {
         
         img.onload = () => {
             this.setImage(img.width, img.height)
-          }
+        }
+
+        this.addedImgRefs.forEach(
+            (imgRef, index) =>
+                imgRef.current.onload = () => {
+                    this.setImage(img.width, img.height, index)
+                }
+        )
     }
 
     renderCanvas() {
@@ -53,11 +66,10 @@ export default class ImageCarousel extends React.Component {
         if (!canvas) return // Wenn Canvas noch nicht erstellt ist
         const context = canvas.getContext("2d")
 
-        //Fixing canvas blur --> source: https://medium.com/wdstack/fixing-html5-2d-canvas-blur-8ebe27db07da
+        // Fixing canvas blur
         const dpi = window.devicePixelRatio
         canvas.setAttribute('height', this.state.canvasHeight * dpi);
         canvas.setAttribute('width', this.state.canvasWidth * dpi);
-        //end of source
 
         context.clearRect(0, 0, this.state.canvasWidth, this.state.canvasHeight)
         context.drawImage(this.imgRef.current, 0, 0, this.state.canvasWidth*dpi, this.state.canvasHeight*dpi)
@@ -88,6 +100,9 @@ export default class ImageCarousel extends React.Component {
                 captionPositions_X[index],
                 captionPositions_Y[index]
             ));
+        console.log("Added images: " + this.props.addedImages.length)
+        let addedImages = this.props.addedImages
+            .map((image,index) => <img ref={this.addedImgRefs[index]} alt="" src={image.url} style={{display: "none"}}/>)
 
         return (
             <div ref={this.containerRef} className="flex-container">
@@ -96,6 +111,7 @@ export default class ImageCarousel extends React.Component {
                     <canvas ref={this.canvasRef} style={{width:this.state.canvasWidth, height:this.state.canvasHeight}}/>
                     <img ref={this.imgRef} alt="" src={this.props.image.url} style={{display: "none"}}/>
                     {captions}
+                    {addedImages}
                 </div>
             </div>
         )
@@ -107,6 +123,7 @@ ImageCarousel.propTypes = {
     captions: PropTypes.array.isRequired,
     captionPositions_X: PropTypes.array.isRequired,
     captionPositions_Y: PropTypes.array.isRequired,
+    addedImages: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
     fontSize: PropTypes.number.isRequired,
     isItalic: PropTypes.bool.isRequired,

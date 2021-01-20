@@ -11,8 +11,10 @@ class App extends React.Component {
     this.state = {
       templates: [],
       currentImage: {},
+      isInAddImageMode: false,
       // Following properties belong to current image
       captions: [],
+      addedImages: [],
       title: '',
       captionPositions_X: [],
       captionPositions_Y: [],
@@ -86,6 +88,15 @@ class App extends React.Component {
     }
   }
 
+  onClickedOnImageInGallery = (newCurrentImage) => {
+    if (!this.state.isInAddImageMode){
+      this.onChangeCurrentImage(newCurrentImage)
+    } else {
+      const appendedImgArray = [...this.state.addedImages, newCurrentImage] 
+      this.setState({ addedImages: appendedImgArray, isInAddImageMode: false })
+    }
+  }
+
   onChangeCurrentImage = (newCurrentImage) => {
     function getCaptionPositions(newCurrentImage) {
 
@@ -128,16 +139,26 @@ class App extends React.Component {
     });
   }
 
+  onSwitchToAddImageMode = () => {
+    this.setState({ isInAddImageMode: !this.state.isInAddImageMode })
+  }
+
   render () {
     return (
     <div className="App">
       <div className="left">
-        <TemplateGallery currentImage={this.state.currentImage} images={this.state.templates} changeCurrentImage={this.onChangeCurrentImage}/>
+        <TemplateGallery 
+            currentImage={this.state.currentImage}
+            images={this.state.templates}
+            changeCurrentImage={this.onClickedOnImageInGallery}
+            isInAddImageMode={this.state.isInAddImageMode}
+        />
       </div>
       <div className="middle">
         <ImageCarousel
             image={this.state.currentImage}
             captions={this.state.captions}
+            addedImages={this.state.addedImages}
             title={this.state.title}
             fontSize={this.state.fontSize}
             isItalic={this.state.isItalic}
@@ -154,6 +175,9 @@ class App extends React.Component {
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
             changeListener={this.handleChange}
+            isInAddImageMode={this.state.isInAddImageMode}
+            switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
+            addedImages={this.state.addedImages}
             title={this.state.title}
             fontSize={this.state.fontSize}
             isItalic={this.state.isItalic}
