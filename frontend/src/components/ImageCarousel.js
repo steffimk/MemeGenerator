@@ -53,8 +53,8 @@ export default class ImageCarousel extends React.Component {
         const context = canvas.getContext("2d")
 
         if(captionPosition_X !== undefined && captionPosition_Y !== undefined) {
-            const italic = this.props.isItalic == true ? 'italic' : 'normal'
-            const bold = this.props.isBold == true ? 'bold' : 'normal'
+            const italic = this.props.isItalic === true ? 'italic' : 'normal'
+            const bold = this.props.isBold === true ? 'bold' : 'normal'
             context.font = italic + ' ' + bold + ' ' + this.props.fontSize + 'px sans-serif'
             context.fillStyle = this.props.fontColor
             context.fillText(captionText, captionPosition_X * (canvas.width/100), 

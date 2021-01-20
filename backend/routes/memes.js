@@ -35,7 +35,6 @@ router.get('/templates', function (req, res, next) {
     let db = req.db;
     Promise.all([findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
         .then(([docs, imgflip]) => {
-            console.log(imgflip)
             imgflip.forEach((template) => template.source = "imgflip")
             docs.forEach((template) => template.id = template._id)
             return (docs.concat(imgflip));
@@ -49,7 +48,7 @@ router.get('/templates', function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    db = req.db;
+    let db = req.db;
     findAllFromDB(db, memeCollection).then((docs) => {
         res.json({
             "success": true,
@@ -80,8 +79,11 @@ function isPositiveInteger(x){
 
 router.post('/templates', function(req, res){
     const memeTemplate = req.body;
-    const {name, url, width, height, box_count} = memeTemplate;
-
+    const {
+        name, url, width, height, box_count,
+        captionPositions, fontColor, fontSize, isItalic, isBold,
+    } = memeTemplate;
+    console.log(memeTemplate)
     // validate input
     if(
         typeof name === "string" && name.length > 0 &&
@@ -92,7 +94,10 @@ router.post('/templates', function(req, res){
     ){
 
         // ignore any unknown values in the input data
-        const normalizedTemplate = {name, url, width, height, box_count}
+        const normalizedTemplate = {
+            name, url, width, height, box_count,
+            captionPositions, fontColor, fontSize, isItalic, isBold,
+        }
 
         addToDB(req.db, templateCollection, normalizedTemplate);
 

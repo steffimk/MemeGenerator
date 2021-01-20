@@ -29,6 +29,8 @@ class App extends React.Component {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
+      name: this.state.title,
+      box_count: this.state.captions.length,
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
           .map((x, i) => [x, this.state.captionPositions_Y[i]]),
