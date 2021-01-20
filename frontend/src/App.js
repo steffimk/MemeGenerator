@@ -70,6 +70,20 @@ class App extends React.Component {
     .catch((error) => {console.error('Error:', error);})
   }
 
+  handleAddCaption = () => {
+    const newBoxCount = this.state.currentImage.box_count + 1
+    const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
+    const newCaptions = [...this.state.captions,''] // append captions by empty string
+    const newCaptionPositions_X = [...this.state.captionPositions_X,50] // place new caption in center
+    const newCaptionPositions_Y = [...this.state.captionPositions_Y, 10 + (90 * (newBoxCount-1) / newBoxCount)] 
+    this.setState({
+      currentImage: newCurrentImage,
+      captions: newCaptions,
+      captionPositions_X: newCaptionPositions_X,
+      captionPositions_Y: newCaptionPositions_Y
+    })
+  }
+
   handleChange = (event, index) => {
 
     if (event.target.type == 'checkbox') {
@@ -160,6 +174,7 @@ class App extends React.Component {
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
         />
+        <button name="addCaption" onClick={this.handleAddCaption.bind(this)} style={{ display: 'block' }}>Add caption</button>
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
       
