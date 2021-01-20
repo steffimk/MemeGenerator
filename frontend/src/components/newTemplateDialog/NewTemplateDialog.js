@@ -2,10 +2,10 @@ import React from 'react';
 import Fab from '@material-ui/core/Fab';
 import SaveIcon from '@material-ui/icons/Save';
 
-import './NewTemplateApp.css';
+import './NewTemplateDialog.css';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@material-ui/core";
 
-export default class NewTemplateApp extends React.Component{
+export default class NewTemplateDialog extends React.Component{
 
     constructor(props) {
         super(props);

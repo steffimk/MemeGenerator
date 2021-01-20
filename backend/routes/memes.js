@@ -32,16 +32,15 @@ function findOneFromDB(db, collection, id) {
 }
 
 router.get('/templates', function (req, res, next) {
-    db = req.db;
+    let db = req.db;
     Promise.all([findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
         .then(([docs, imgflip]) => {
-            console.log(docs)
             console.log(imgflip)
-            console.log(docs.concat(imgflip));
+            imgflip.forEach((template) => template.source = "imgflip")
+            docs.forEach((template) => template.id = template._id)
             return (docs.concat(imgflip));
         } )
         .then((docs) => {
-        console.log(docs);
         res.json({
             "success": true,
             "data": {"templates": docs}
@@ -52,7 +51,6 @@ router.get('/templates', function (req, res, next) {
 router.get('/', function (req, res, next) {
     db = req.db;
     findAllFromDB(db, memeCollection).then((docs) => {
-        console.log(docs);
         res.json({
             "success": true,
             "data": {"memes": docs}

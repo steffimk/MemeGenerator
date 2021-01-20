@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import Gallery from './components/gallery/Gallery'
-import NewTemplateApp from './components/newTemplateDialog/NewTemplateApp'
+import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog'
 import {
     BrowserRouter,
     Switch,
@@ -29,7 +29,7 @@ function Router() {
             </Route>
 
             <Route path="/newtemplate">
-                <NewTemplateApp />
+                <NewTemplateDialog />
             </Route>
 
             {/* Note how these two routes are ordered. The more specific

@@ -2,10 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './TemplateGallery.css'
-import {Button, Modal} from "@material-ui/core";
-import NewTemplateApp from "./newTemplateDialog/NewTemplateApp";
-
-const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
+import Button from "@material-ui/core";
+import NewTemplateDialog from "./newTemplateDialog/NewTemplateDialog";
 
 export default class TemplateGallery extends React.Component {
 
@@ -23,7 +21,7 @@ export default class TemplateGallery extends React.Component {
     }
 
     get_memeTemplates() {
-        fetch(TEMPLATE_ENDPOINT)
+        fetch(this.props.templateEndpoint)
             .then(response => response.json())
             .then(json => {
                 console.log(json.data);
@@ -45,6 +43,7 @@ export default class TemplateGallery extends React.Component {
             src={image.url}
             onClick={this.props.changeCurrentImage.bind(this, image)}
             key={image.id}
+            alt={image.name}
         />
     }
 
@@ -56,16 +55,10 @@ export default class TemplateGallery extends React.Component {
                 <div className="template-gallery">
                     {images}
                 </div>
-
-                {/*<Modal className="newTemplateModal"
-                       open={this.state.modalOpen}
-                       onClose={() => this.setState({"modalOpen": false})}
-                >*/}
-                    <NewTemplateApp onSave={(e) => this.addTemplate(e)}
-                        open={this.state.modalOpen}
-                        onClose={() => this.setState({"modalOpen": false})}
-                    />
-                {/*</Modal>*/}
+                <NewTemplateDialog onSave={(e) => this.addTemplate(e)}
+                                   open={this.state.modalOpen}
+                                   onClose={() => this.setState({"modalOpen": false})}
+                />
             </div>
         )
     }
@@ -73,5 +66,6 @@ export default class TemplateGallery extends React.Component {
 
 TemplateGallery.propTypes = {
     currentImage: PropTypes.object.isRequired,
-    changeCurrentImage: PropTypes.func.isRequired
+    changeCurrentImage: PropTypes.func.isRequired,
+    templateEndpoint: PropTypes.string.isRequired,
 }

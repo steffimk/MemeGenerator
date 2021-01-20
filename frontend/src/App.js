@@ -4,6 +4,8 @@ import ImageCarousel from "./components/ImageCarousel";
 import TemplateGallery from "./components/TemplateGallery";
 import EditorControl from "./components/EditorControl";
 
+const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
+
 class App extends React.Component {
 
   constructor() {
@@ -36,7 +38,7 @@ class App extends React.Component {
       fontColor: this.state.fontColor
     }
     console.log(memeTemplateToSave)
-    fetch(this.urlTemplates, {
+    fetch(TEMPLATE_ENDPOINT, {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(memeTemplateToSave),
@@ -57,7 +59,7 @@ class App extends React.Component {
 
   handleChange = (event, index) => {
 
-    if (event.target.type == 'checkbox') {
+    if (event.target.type === 'checkbox') {
       this.setState({[event.target.name]: event.target.checked})
     } else if (index !== undefined) {
       this.setState((state) =>  {
@@ -117,7 +119,11 @@ class App extends React.Component {
     return (
     <div className="App">
       <div className="left">
-        <TemplateGallery currentImage={this.state.currentImage} changeCurrentImage={this.onChangeCurrentImage}/>
+        <TemplateGallery
+            currentImage={this.state.currentImage}
+            changeCurrentImage={this.onChangeCurrentImage}
+            templateEndpoint={TEMPLATE_ENDPOINT}
+        />
       </div>
       <div className="middle">
         <ImageCarousel
