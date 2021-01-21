@@ -2,6 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 export default class EditorControl extends React.Component {
 
+  constructor(props){
+    super(props);
+    this.state = {
+        hideCaptions: false,
+        hideAddedImages: false
+    }
+  }
+
+  clickedOnHideButton = (event) => this.setState({ [event.target.name]: !this.state[event.target.name]})
+
   renderCaption(caption, captionPosition_X, captionPosition_Y, count){
     const placeholder = 'Enter Caption ' + (count+1);
     const capName = 'caption' + count;
@@ -155,9 +165,15 @@ export default class EditorControl extends React.Component {
         <label for="isItalic" style={{fontStyle: 'italic'}}>Italic&nbsp;&nbsp;</label>
         <input type="checkbox" id="isBold" name="isBold" onChange={this.props.changeListener} checked={this.props.isBold}/>
         <label for="isBold"style={{fontWeight: 'bold'}}>Bold</label>
-        {captionInputs}
-        <button name="addImage" onClick={this.props.switchToAddImageMode}>{(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}</button>
-        {addedImageEdits}
+        <p/> {/* For vertical spacing */}
+        <button name="hideCaptions" onClick={this.clickedOnHideButton} style={{ display: 'block' }}>
+          {(this.state.hideCaptions === true) ? "Show caption editors" : "Hide caption editors"}</button>
+        {!this.state.hideCaptions && (captionInputs)}
+        <button name="addImage" onClick={this.props.switchToAddImageMode}>
+          {(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}</button>
+        <button name="hideAddedImages" onClick={this.clickedOnHideButton} style={{ display: 'block' }}>
+          {(this.state.hideAddedImages === true) ? "Show image editors" : "Hide image editors"}</button>
+        {!this.state.hideAddedImages && (addedImageEdits)}
       </div>
     );
   }
