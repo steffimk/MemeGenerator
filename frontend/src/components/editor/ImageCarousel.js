@@ -72,23 +72,30 @@ export default class ImageCarousel extends React.Component {
         canvas.setAttribute('width', this.state.canvasWidth * dpi);
 
         context.clearRect(0, 0, this.state.canvasWidth, this.state.canvasHeight)
+
+        // Draw main image
         context.drawImage(this.imgRef.current, 0, 0, this.state.canvasWidth*dpi, this.state.canvasHeight*dpi)
+
+        // Draw added images
         this.addedImgRefs.forEach(
             (imgRef, i) => {
-                console.log("drawing added image")
+                console.log("drawing added image nr. " + i)
                 const img = imgRef.current
                 if (!img) return
+                const imgWidth = img.width*this.props.addedImgSizes[i]/100
+                const imgHeight = img.height*this.props.addedImgSizes[i]/100
+                console.log("addedImg prop size " + this.props.addedImgSizes[i])
                 context.drawImage(
                     img,
-                    this.props.addedImgPositions_X[i] * (this.state.canvasWidth*dpi/100),
-                    this.props.addedImgPositions_Y[i] * (this.state.canvasHeight*dpi/100),
-                    img.width*this.props.addedImgSizes[i]/100,
-                    img.height*this.props.addedImgSizes[i]/100)
+                    this.props.addedImgPositions_X[i] * ((this.state.canvasWidth*dpi - imgWidth)/100),
+                    this.props.addedImgPositions_Y[i] * ((this.state.canvasHeight*dpi - imgHeight)/100),
+                    imgWidth,
+                    imgHeight)
             })
     }
 
     renderCaption(captionText, captionPosition_X, captionPosition_Y) {
-
+        if (!this.canvasRef.current) return
         const context = this.canvasRef.current.getContext("2d")
 
         if(captionPosition_X !== undefined && captionPosition_Y !== undefined) {

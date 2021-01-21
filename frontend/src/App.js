@@ -101,9 +101,9 @@ class App extends React.Component {
     } else {
       this.setState({ 
         addedImages: [...this.state.addedImages, newCurrentImage],
-        addedImgSizes: [this.state.addedImgSizes, 50],
-        addedImgPositions_X: [this.state.addedImgPositions_X, 0],
-        addedImgPositions_Y: [this.state.addedImgPositions_Y, 0],
+        addedImgSizes: [...this.state.addedImgSizes, 50],
+        addedImgPositions_X: [...this.state.addedImgPositions_X, 0],
+        addedImgPositions_Y: [...this.state.addedImgPositions_Y, 0],
         isInAddImageMode: false })
     }
   }
