@@ -74,12 +74,16 @@ export default class ImageCarousel extends React.Component {
         context.clearRect(0, 0, this.state.canvasWidth, this.state.canvasHeight)
         context.drawImage(this.imgRef.current, 0, 0, this.state.canvasWidth*dpi, this.state.canvasHeight*dpi)
         this.addedImgRefs.forEach(
-            (imgRef, index) => {
-                const indention = (index+1)*10
+            (imgRef, i) => {
                 console.log("drawing added image")
                 const img = imgRef.current
                 if (!img) return
-                context.drawImage(img, indention, indention, img.width, img.height)
+                context.drawImage(
+                    img,
+                    this.props.addedImgPositions_X[i] * (this.state.canvasWidth*dpi/100),
+                    this.props.addedImgPositions_Y[i] * (this.state.canvasHeight*dpi/100),
+                    img.width*this.props.addedImgSizes[i]/100,
+                    img.height*this.props.addedImgSizes[i]/100)
             })
     }
 
@@ -102,8 +106,8 @@ export default class ImageCarousel extends React.Component {
         const captionPositions_X = this.props.captionPositions_X;
         const captionPositions_Y = this.props.captionPositions_Y;
         this.renderCanvas()
-        let captions = this.props.captions
-            .map((captionText, index) => this.renderCaption(
+        this.props.captions
+            .forEach((captionText, index) => this.renderCaption(
                 captionText,
                 captionPositions_X[index],
                 captionPositions_Y[index]
@@ -121,7 +125,6 @@ export default class ImageCarousel extends React.Component {
                 <div className="container">
                     <canvas ref={this.canvasRef} style={{width:this.state.canvasWidth, height:this.state.canvasHeight}}/>
                     <img ref={this.imgRef} alt="" src={this.props.image.url} style={{display: "none"}}/>
-                    {captions}
                     {addedImages}
                 </div>
             </div>
@@ -135,6 +138,9 @@ ImageCarousel.propTypes = {
     captionPositions_X: PropTypes.array.isRequired,
     captionPositions_Y: PropTypes.array.isRequired,
     addedImages: PropTypes.array.isRequired,
+    addedImgPositions_X: PropTypes.array.isRequired,
+    addedImgPositions_Y: PropTypes.array.isRequired,
+    addedImgSizes: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
     fontSize: PropTypes.number.isRequired,
     isItalic: PropTypes.bool.isRequired,

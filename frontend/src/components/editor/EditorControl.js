@@ -51,14 +51,77 @@ export default class EditorControl extends React.Component {
     );
   }
 
+  renderAddedImage(title, size, addedImgPosition_X, addedImgPosition_Y, count){
+    const imgName = 'addedImage' + count;
+    size = (size !== undefined ? size : 50);
+    addedImgPosition_X = (addedImgPosition_X !== undefined ? addedImgPosition_X : 0);
+    addedImgPosition_Y = (addedImgPosition_Y !== undefined ? addedImgPosition_Y : 0);
+
+    return (
+      <form>
+        <p>{title}:</p>
+        <p>
+          Size:&nbsp;
+          <input
+            type="range"
+            min="1"
+            max="100"
+            value={size}
+            name="addedImgSizes"
+            key={'addedImgSizes' + count}
+            className="slider"
+            id={imgName + 'Size'}
+            onChange={(e) => this.props.changeListener(e, count)}
+            style={{alignmentBaseline: 'central'}}
+          />
+        </p>
+        <p>
+          x:&nbsp;
+          <input
+            type="range"
+            min="1"
+            max="100"
+            value={addedImgPosition_X}
+            name="addedImgPositions_X"
+            key={'addedImgPositions_X' + count}
+            className="slider"
+            id={imgName + '_X'}
+            onChange={(e) => this.props.changeListener(e, count)}
+            style={{alignmentBaseline: 'central'}}
+          />
+        </p>
+        <p>
+          y:&nbsp;
+          <input
+            type="range"
+            min="1"
+            max="100"
+            value={addedImgPosition_Y}
+            name="addedImgPositions_Y"
+            key={'addedImgPositions_Y' + count}
+            className="slider"
+            id={imgName + '_Y'}
+            onChange={(e) => this.props.changeListener(e, count)}
+          />
+        </p>
+      </form>
+    );
+  }
+
   render() {
-      let captionPositions_X = this.props.captionPositions_X;
-      let captionPositions_Y = this.props.captionPositions_Y;
-      let captionInputs = this.props.captions.map(
+      const captionPositions_X = this.props.captionPositions_X;
+      const captionPositions_Y = this.props.captionPositions_Y;
+      const captionInputs = this.props.captions.map(
         (caption, index) => this.renderCaption(
             caption, captionPositions_X[index], captionPositions_Y[index], index
         )
-    );
+      );
+      const addedImageEdits = this.props.addedImages.map(
+        (image, i) => this.renderAddedImage(
+          image.name, this.props.addedImgSizes[i], this.props.addedImgPositions_X[i], this.props.addedImgPositions_Y[i], i
+        )
+      )
+      
     return (
       <div>
         <p>
@@ -94,6 +157,7 @@ export default class EditorControl extends React.Component {
         <label for="isBold"style={{fontWeight: 'bold'}}>Bold</label>
         {captionInputs}
         <button name="addImage" onClick={this.props.switchToAddImageMode}>{(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}</button>
+        {addedImageEdits}
       </div>
     );
   }
@@ -104,6 +168,9 @@ EditorControl.propTypes = {
   changeListener: PropTypes.func.isRequired,
   isInAddImageMode: PropTypes.bool.isRequired,
   addedImages: PropTypes.array.isRequired,
+  addedImgPositions_X: PropTypes.array.isRequired,
+  addedImgPositions_Y: PropTypes.array.isRequired,
+  addedImgSizes: PropTypes.array.isRequired,
   switchToAddImageMode: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   captionPositions_X: PropTypes.array.isRequired,

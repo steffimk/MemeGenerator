@@ -14,14 +14,17 @@ class App extends React.Component {
       isInAddImageMode: false,
       // Following properties belong to current image
       captions: [],
-      addedImages: [],
       title: '',
       captionPositions_X: [],
       captionPositions_Y: [],
       fontSize: 45,
       isItalic: false,
       isBold: false,
-      fontColor: 'black'
+      fontColor: 'black',
+      addedImages: [],
+      addedImgPositions_X: [],
+      addedImgPositions_Y: [],
+      addedImgSizes: []
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -55,7 +58,11 @@ class App extends React.Component {
       fontSize: this.state.fontSize,
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
-      fontColor: this.state.fontColor
+      fontColor: this.state.fontColor,
+      addedImages: this.state.addedImages,
+      // addedIMGinfo contains an infoArray for each added image [size, posX, posY]
+      addedImgInfo: this.state.addedImgSizes
+         .map((size, i) => [size, this.state.addedImgPositions_X[i], this.state.addedImgPositions_Y[i]])
     }
     console.log(memeTemplateToSave)
     fetch(this.urlTemplates, {
@@ -92,8 +99,12 @@ class App extends React.Component {
     if (!this.state.isInAddImageMode){
       this.onChangeCurrentImage(newCurrentImage)
     } else {
-      const appendedImgArray = [...this.state.addedImages, newCurrentImage] 
-      this.setState({ addedImages: appendedImgArray, isInAddImageMode: false })
+      this.setState({ 
+        addedImages: [...this.state.addedImages, newCurrentImage],
+        addedImgSizes: [this.state.addedImgSizes, 50],
+        addedImgPositions_X: [this.state.addedImgPositions_X, 0],
+        addedImgPositions_Y: [this.state.addedImgPositions_Y, 0],
+        isInAddImageMode: false })
     }
   }
 
@@ -124,7 +135,20 @@ class App extends React.Component {
       }
     }
 
+    function getAddedImages(newCurrentImage) {
+      if (newCurrentImage.hasOwnProperty("addedImages")) {
+        return newCurrentImage.addedImages;
+      } else return [];
+    }
+
+    function getAddedImgInfo(newCurrentImage) {
+      if (newCurrentImage.hasOwnProperty("addedImgInfo")) {
+        return newCurrentImage.addedImgPositions;
+      } else return [];
+    }
+
     let captionPositions = getCaptionPositions(newCurrentImage);
+    let addedImgInfo = getAddedImgInfo(newCurrentImage)
 
     this.setState({
       currentImage: newCurrentImage,
@@ -135,7 +159,11 @@ class App extends React.Component {
       fontSize: (newCurrentImage.hasOwnProperty("fontSize") ? newCurrentImage.fontSize : 45),
       isItalic: (newCurrentImage.hasOwnProperty("isItalic") ? newCurrentImage.isItalic : false),
       isBold: (newCurrentImage.hasOwnProperty("isBold") ? newCurrentImage.isBold : false),
-      fontColor: (newCurrentImage.hasOwnProperty("fontColor") ? newCurrentImage.fontColor : 'black')
+      fontColor: (newCurrentImage.hasOwnProperty("fontColor") ? newCurrentImage.fontColor : 'black'),
+      addedImages: getAddedImages(newCurrentImage),
+      addedImgSizes: addedImgInfo.map(size => size[0]),
+      addedImgPositions_X: addedImgInfo.map(x => x[1]),
+      addedImgPositions_Y: addedImgInfo.map(y => y[2])
     });
   }
 
@@ -158,7 +186,6 @@ class App extends React.Component {
         <ImageCarousel
             image={this.state.currentImage}
             captions={this.state.captions}
-            addedImages={this.state.addedImages}
             title={this.state.title}
             fontSize={this.state.fontSize}
             isItalic={this.state.isItalic}
@@ -166,6 +193,10 @@ class App extends React.Component {
             fontColor={this.state.fontColor}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
+            addedImages={this.state.addedImages}
+            addedImgSizes={this.state.addedImgSizes}
+            addedImgPositions_X={this.state.addedImgPositions_X}
+            addedImgPositions_Y={this.state.addedImgPositions_Y}
         />
       </div>
       <div className="control right">
@@ -175,14 +206,17 @@ class App extends React.Component {
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
             changeListener={this.handleChange}
-            isInAddImageMode={this.state.isInAddImageMode}
-            switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
-            addedImages={this.state.addedImages}
             title={this.state.title}
             fontSize={this.state.fontSize}
             isItalic={this.state.isItalic}
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
+            isInAddImageMode={this.state.isInAddImageMode}
+            switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
+            addedImages={this.state.addedImages}
+            addedImgSizes={this.state.addedImgSizes}
+            addedImgPositions_X={this.state.addedImgPositions_X}
+            addedImgPositions_Y={this.state.addedImgPositions_Y}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
