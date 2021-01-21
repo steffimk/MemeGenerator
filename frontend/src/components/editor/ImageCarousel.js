@@ -56,9 +56,10 @@ export default class ImageCarousel extends React.Component {
 
     componentDidUpdate() {
         console.log("Updating ImageCarousel")
-        this.addedImgRefs.forEach (
-            imgRef => imgRef.current.onload = () => this.setState({})
-        )
+        this.addedImgRefs.forEach (imgRef => {
+            if (!imgRef.current) return
+            imgRef.current.onload = () => this.setState({})
+        })
     }
 
     renderCanvas() {

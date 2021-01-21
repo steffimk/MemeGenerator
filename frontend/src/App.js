@@ -143,7 +143,7 @@ class App extends React.Component {
 
     function getAddedImgInfo(newCurrentImage) {
       if (newCurrentImage.hasOwnProperty("addedImgInfo")) {
-        return newCurrentImage.addedImgPositions;
+        return newCurrentImage.addedImgInfo;
       } else return [];
     }
 
