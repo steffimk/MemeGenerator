@@ -22,7 +22,7 @@ export default class ImageCarousel extends React.Component {
         )
     }
 
-    setImage(imgWidth, imgHeight, index = -1){
+    setImage(imgWidth, imgHeight){
         // Calculate new width and height to maintain aspect ratio of image but fit on page
         const imgRatio = imgWidth / imgHeight
         if (this.containerRef.current == null){
@@ -52,12 +52,12 @@ export default class ImageCarousel extends React.Component {
         img.onload = () => {
             this.setImage(img.width, img.height)
         }
+    }
 
-        this.addedImgRefs.forEach(
-            (imgRef, index) =>
-                imgRef.current.onload = () => {
-                    this.setImage(img.width, img.height, index)
-                }
+    componentDidUpdate() {
+        console.log("Updating ImageCarousel")
+        this.addedImgRefs.forEach (
+            imgRef => imgRef.current.onload = () => this.setState({})
         )
     }
 
@@ -73,6 +73,14 @@ export default class ImageCarousel extends React.Component {
 
         context.clearRect(0, 0, this.state.canvasWidth, this.state.canvasHeight)
         context.drawImage(this.imgRef.current, 0, 0, this.state.canvasWidth*dpi, this.state.canvasHeight*dpi)
+        this.addedImgRefs.forEach(
+            (imgRef, index) => {
+                const indention = (index+1)*10
+                console.log("drawing added image")
+                const img = imgRef.current
+                if (!img) return
+                context.drawImage(img, indention, indention, img.width, img.height)
+            })
     }
 
     renderCaption(captionText, captionPosition_X, captionPosition_Y) {
@@ -100,9 +108,12 @@ export default class ImageCarousel extends React.Component {
                 captionPositions_X[index],
                 captionPositions_Y[index]
             ));
-        console.log("Added images: " + this.props.addedImages.length)
         let addedImages = this.props.addedImages
-            .map((image,index) => <img ref={this.addedImgRefs[index]} alt="" src={image.url} style={{display: "none"}}/>)
+            .map((image,index) => {
+                const imgRef = this.addedImgRefs[index] ? this.addedImgRefs[index] : React.createRef()
+                this.addedImgRefs[index] = imgRef
+                return <img ref={imgRef} alt="" src={image.url} style={{display: "none"}}/>
+            })
 
         return (
             <div ref={this.containerRef} className="flex-container">
