@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Dictaphone from '../Dictaphone';
 
 export default class EditorControl extends React.Component {
 
   renderCaption(caption, captionPosition_X, captionPosition_Y, count){
     const placeholder = 'Enter Caption ' + (count+1);
+    const captionID = 'caption' + (count+1);
     const capName = 'caption' + count;
     captionPosition_X = (captionPosition_X !== undefined ? captionPosition_X : 50);
     captionPosition_Y = (captionPosition_Y !== undefined ? captionPosition_Y : 50);
@@ -12,13 +14,14 @@ export default class EditorControl extends React.Component {
     return (
       <form>
         <p>Caption {count + 1}:</p>
-        <input
+        <input id={captionID}
           name="captions"
           value={caption}
           placeholder={placeholder}
           onChange={(e) => this.props.changeListener(e, count)}
           style={{ display: 'block' }}
         />
+        <Dictaphone field={captionID}></Dictaphone>
         <p>
           x:&nbsp;
           <input

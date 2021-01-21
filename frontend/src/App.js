@@ -20,7 +20,7 @@ class App extends React.Component {
       fontSize: 45,
       isItalic: false,
       isBold: false,
-      fontColor: 'black'
+      fontColor: 'black',
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -117,6 +117,7 @@ class App extends React.Component {
     });
   }
 
+
   render () {
     return (
     <div className="App">
@@ -155,7 +156,6 @@ class App extends React.Component {
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
-      
       </div>)
   }
 }
