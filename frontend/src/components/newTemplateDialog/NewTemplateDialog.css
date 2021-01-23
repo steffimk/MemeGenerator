@@ -1,0 +1,13 @@
+.new-template-form{
+    height: 100%;
+    width: 100%;
+}
+
+.new-template-form img {
+    object-fit: contain;
+    width: 100%;
+}
+
+#template-file{
+    opacity: 0;
+}

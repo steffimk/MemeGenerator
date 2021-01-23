@@ -28,13 +28,12 @@ export default class ImageCarousel extends React.Component {
           }
     }
 
-    renderCaption(captionText, captionPosition_X, captionPosition_Y, index) {
-
+    renderBackground(){
         const canvas = this.canvasRef.current
-        const context = canvas.getContext("2d")
-        const img = this.imgRef.current
+        if(canvas) {
+            const context = canvas.getContext("2d")
+            const img = this.imgRef.current
 
-        if (index == 0) {
             // Adjust width and height to maintain aspect ratio of image
             var imgRatio = img.width / img.height
             var width = canvas.width
@@ -44,12 +43,18 @@ export default class ImageCarousel extends React.Component {
                 width = height * imgRatio;
             }
             context.clearRect(0, 0, canvas.width, canvas.height)
-            context.drawImage(img, 0, ((canvas.height-height)/2), width, height)
+            context.drawImage(img, 0, ((canvas.height - height) / 2), width, height)
         }
+    }
+
+    renderCaption(captionText, captionPosition_X, captionPosition_Y, index) {
+
+        const canvas = this.canvasRef.current
+        const context = canvas.getContext("2d")
 
         if(captionPosition_X !== undefined && captionPosition_Y !== undefined) {
-            const italic = this.props.isItalic == true ? 'italic' : 'normal'
-            const bold = this.props.isBold == true ? 'bold' : 'normal'
+            const italic = this.props.isItalic === true ? 'italic' : 'normal'
+            const bold = this.props.isBold === true ? 'bold' : 'normal'
             context.font = italic + ' ' + bold + ' ' + this.props.fontSize + 'px sans-serif'
             context.fillStyle = this.props.fontColor
             context.fillText(captionText, captionPosition_X * (canvas.width/100), 
@@ -62,6 +67,7 @@ export default class ImageCarousel extends React.Component {
         const captionPositions_X = this.props.captionPositions_X;
         const captionPositions_Y = this.props.captionPositions_Y;
 
+        this.renderBackground();
         let captions = this.props.captions
             .map((captionText, index) => this.renderCaption(
                 captionText,

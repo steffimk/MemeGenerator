@@ -1,15 +1,16 @@
 import React from 'react';
 import './App.css';
 import ImageCarousel from "./components/ImageCarousel";
-import ImageGallery from "./components/ImageGallery";
+import TemplateGallery from "./components/TemplateGallery";
 import EditorControl from "./components/EditorControl";
+
+const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
 
 class App extends React.Component {
 
   constructor() {
     super();
     this.state = {
-      templates: [],
       currentImage: {},
       // Following properties belong to current image
       captions: [],
@@ -25,31 +26,12 @@ class App extends React.Component {
     this.imageCarousel = React.createRef();
   }
 
-  componentDidMount(){
-    // initial get request
-    this.urlTemplates = "http://localhost:3030/memes/templates";
-    this.get_memeTemplates(this.urlTemplates);
-
-    this.urlMemes = "http://localhost:3030/memes/memes";
-  }
-
-
-  get_memeTemplates(url) {
-    fetch(url)
-        .then(response => response.json())
-        .then(json => {
-          console.log(json.data);
-          this.setState({
-            'templates': json.data.templates
-          });
-          this.onChangeCurrentImage(json.data.templates[0]);
-        });
-  }
-
   handleSaveAsTemplate = () => {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
+      name: this.state.title,
+      box_count: this.state.captions.length,
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
           .map((x, i) => [x, this.state.captionPositions_Y[i]]),
@@ -59,18 +41,23 @@ class App extends React.Component {
       fontColor: this.state.fontColor
     }
     console.log(memeTemplateToSave)
-    fetch(this.urlTemplates, {
+    fetch(TEMPLATE_ENDPOINT, {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(memeTemplateToSave),
-      })
-    .then(response => response.json())
-    .then(json => {
-      if (json.success) {
-        console.log('Successfully saved template')
-      }
-    })
-    .catch((error) => {console.error('Error:', error);})
+    }).then(response => {
+            if(response.ok) {
+                return true;
+            }else{
+                return Promise.reject(
+                    "API Responded with an error: "+response.status+" "+response.statusText
+                )
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            return false;
+        })
   }
 
   handleSaveAsMeme = async () => {
@@ -115,7 +102,7 @@ class App extends React.Component {
 
   handleChange = (event, index) => {
 
-    if (event.target.type == 'checkbox') {
+    if (event.target.type === 'checkbox') {
       this.setState({[event.target.name]: event.target.checked})
     } else if (index !== undefined) {
       this.setState((state) =>  {
@@ -175,7 +162,11 @@ class App extends React.Component {
     return (
     <div className="App">
       <div className="left">
-        <ImageGallery currentImage={this.state.currentImage} images={this.state.templates} changeCurrentImage={this.onChangeCurrentImage}/>
+        <TemplateGallery
+            currentImage={this.state.currentImage}
+            changeCurrentImage={this.onChangeCurrentImage}
+            templateEndpoint={TEMPLATE_ENDPOINT}
+        />
       </div>
       <div className="middle">
         <ImageCarousel

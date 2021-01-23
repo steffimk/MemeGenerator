@@ -1,0 +1,29 @@
+.template-gallery img {
+    object-fit: cover;
+    width: 95%;
+    border: 1px solid #ccc;
+    height: 40%;
+    padding: 2%;
+}
+
+.template-gallery img:hover{
+    object-fit: contain;
+}
+
+.template-gallery {
+    height: 100%;
+    overflow: scroll;
+}
+
+.newTemplateButton {
+    margin: 5px;
+}
+
+.newTemplateModal {
+    width: 80%;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    overflow: scroll;
+}

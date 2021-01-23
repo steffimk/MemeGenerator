@@ -1,47 +1,30 @@
 var express = require('express');
+const fetch = require('node-fetch');
+const URL = require("url").URL;
+
 const multer = require('multer');
 var router = express.Router();
 
 const templateCollection = 'templates';
 const memeCollection= 'memes';
 
-let memes = [
-    {
-        "name": "Drake Hotline Bling",
-        "url": "https://i.imgflip.com/30b1gx.jpg",
-        "width": 1200,
-        "height": 1200,
-        "box_count": 2
-    },
-    {
-        "name": "Distracted Boyfriend",
-        "url": "https://i.imgflip.com/1ur9b0.jpg",
-        "width": 1200,
-        "height": 800,
-        "box_count": 3
-    },
-]
 
 function addToDB(db,collection, data) {
-    console.log("Received data: " + data);
     // Delete id so that db generates new unique one (prevents duplicate error)
-    delete data._id;
+    //delete data._id;
     collection = db.get(collection);
     collection.insert(data).then((docs) => console.log(docs));
-}
-
-function initializeDB(db, collection) {
-    collection = db.get(collection);
-    collection.find({}).then((res) => {
-        if (res.length === 0) {
-            collection.insert(memes);
-        }
-    });
 }
 
 function findAllFromDB(db,collection) {
     collection = db.get(collection);
     return collection.find({});
+}
+
+function getTemplatesFromImgFlip(){
+    return fetch("https://api.imgflip.com/get_memes")
+        .then(response => response.json())
+        .then(json => json.data.memes)
 }
 
 function findOneFromDB(db, collection, id) {
@@ -50,10 +33,14 @@ function findOneFromDB(db, collection, id) {
 }
 
 router.get('/templates', function (req, res, next) {
-    db = req.db;
-    initializeDB(db, templateCollection);
-    findAllFromDB(db,templateCollection).then((docs) => {
-        console.log(docs);
+    let db = req.db;
+    Promise.all([findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
+        .then(([docs, imgflip]) => {
+            imgflip.forEach((template) => template.source = "imgflip")
+            docs.forEach((template) => template.id = template._id)
+            return (docs.concat(imgflip));
+        } )
+        .then((docs) => {
         res.json({
             "success": true,
             "data": {"templates": docs}
@@ -62,9 +49,8 @@ router.get('/templates', function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    db = req.db;
+    let db = req.db;
     findAllFromDB(db, memeCollection).then((docs) => {
-        console.log(docs);
         res.json({
             "success": true,
             "data": {"memes": docs}
@@ -72,26 +58,55 @@ router.get('/', function (req, res, next) {
     });
 });
 
+
+const isValidUrl = (s) => {
+    try {
+        new URL(s);
+        return true;
+    } catch (err) {
+        console.error("Invalid url: "+s);
+        return false;
+    }
+};
+
+function isPositiveInteger(x){
+    x = parseInt(x)
+    let ret = x !== undefined && typeof x === "number" && x >= 0;
+    if(!ret){
+        console.error("Invalid positive integer: "+x);
+    }
+    return ret;
+}
+
 router.post('/templates', function(req, res){
-    initializeDB(db, memeCollection
-    )
-    const memeTemplate = req.body
+    const memeTemplate = req.body;
+    const {
+        name, url, width, height, box_count,
+        captionPositions, fontColor, fontSize, isItalic, isBold,
+    } = memeTemplate;
+    console.log(memeTemplate)
+    // validate input
     if(
-        memeTemplate.hasOwnProperty("name") &&
-        memeTemplate.hasOwnProperty("url") &&
-        memeTemplate.hasOwnProperty("width") &&
-        memeTemplate.hasOwnProperty("height") &&
-        memeTemplate.hasOwnProperty("box_count")
+        typeof name === "string" && name.length > 0 &&
+        isValidUrl(url) &&
+        isPositiveInteger(width) &&
+        isPositiveInteger(height) &&
+        isPositiveInteger(box_count)
     ){
-        let db = req.db;
-        addToDB(db, templateCollection, memeTemplate);
-        res.json({
-            "success": true
-        })
+
+        // ignore any unknown values in the input data
+        const normalizedTemplate = {
+            name, url, width, height, box_count,
+            captionPositions, fontColor, fontSize, isItalic, isBold,
+        }
+
+        addToDB(req.db, templateCollection, normalizedTemplate);
+
+        res.status(200);
+        res.send();
     } else {
-        res.json({
-            "success": false
-        })
+        res.status(406);
+        res.send();
     }
 });
 
