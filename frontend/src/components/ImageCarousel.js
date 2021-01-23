@@ -75,7 +75,7 @@ export default class ImageCarousel extends React.Component {
                 <h1>{this.props.title}</h1>
                 <div className="container">
                     <canvas ref={this.canvasRef} />
-                    <img ref={this.imgRef} src={this.props.image.url} style={{display: "none"}}/>
+                    <img ref={this.imgRef} src={this.props.image.url} crossOrigin={"anonymous"} style={{display: "none"}}/>
                     {captions}
                 </div>
             </div>

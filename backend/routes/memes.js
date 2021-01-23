@@ -1,4 +1,5 @@
 var express = require('express');
+const multer = require('multer');
 var router = express.Router();
 
 const templateCollection = 'templates';
@@ -72,6 +73,8 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/templates', function(req, res){
+    initializeDB(db, memeCollection
+    )
     const memeTemplate = req.body
     if(
         memeTemplate.hasOwnProperty("name") &&
@@ -82,6 +85,24 @@ router.post('/templates', function(req, res){
     ){
         let db = req.db;
         addToDB(db, templateCollection, memeTemplate);
+        res.json({
+            "success": true
+        })
+    } else {
+        res.json({
+            "success": false
+        })
+    }
+});
+
+router.post("/memes", function (req, res){
+    const meme = req.body;
+
+    if(
+        true
+    ){
+        let db = req.db;
+        addToDB(db, memeCollection, meme);
         res.json({
             "success": true
         })

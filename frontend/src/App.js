@@ -22,12 +22,15 @@ class App extends React.Component {
       fontColor: 'black'
     };
     this.handleChange = this.handleChange.bind(this);
+    this.imageCarousel = React.createRef();
   }
 
   componentDidMount(){
     // initial get request
     this.urlTemplates = "http://localhost:3030/memes/templates";
     this.get_memeTemplates(this.urlTemplates);
+
+    this.urlMemes = "http://localhost:3030/memes/memes";
   }
 
 
@@ -68,6 +71,46 @@ class App extends React.Component {
       }
     })
     .catch((error) => {console.error('Error:', error);})
+  }
+
+  handleSaveAsMeme = async () => {
+      const carouselCanvas = this.imageCarousel.current.canvasRef.current;
+      const dataURL =carouselCanvas.toDataURL();
+      console.log("d", dataURL);
+      console.log("current image", this.state.currentImage);
+
+      const test_ursl = URL.createObjectURL(dataURL)
+
+      const memeToSave = {
+        _id : this.state.currentImage._id,
+        imgBase64: test_ursl,
+        title: this.state.currentImage.name,
+        captions: this.state.captions
+      }
+
+    console.log("meme to save ", memeToSave)
+
+    fetch(this.urlMemes, {
+      method: 'POST',
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(memeToSave),
+    })
+        .then(response => response.json())
+        .then(json => {
+          if (json.success) {
+            console.log('Successfully saved template')
+          }
+          console.log(json)
+        })
+        .catch((error) => {console.error('Error:', error);})
+
+      //document.getElementById()
+      /*let image = new Image;
+      await new Promise(r => image.onload = r, image.src = this.state.currentImage.url);
+      loadImage(image).then(img => {
+          context.drawImage(img, 0, 0)
+
+      })*/
   }
 
   handleChange = (event, index) => {
@@ -136,6 +179,8 @@ class App extends React.Component {
       </div>
       <div className="middle">
         <ImageCarousel
+            id="text"
+            ref = {this.imageCarousel}
             image={this.state.currentImage}
             captions={this.state.captions}
             title={this.state.title}
@@ -161,7 +206,7 @@ class App extends React.Component {
             fontColor={this.state.fontColor}
         />
         <button name="saveTemplateButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
-        <button name="saveButton" onClick={console.log("Click dummy")}>Save image</button>
+        <button name="saveButton" onClick={this.handleSaveAsMeme.bind(this)}>Save image</button>
       </div>
       
       </div>)
