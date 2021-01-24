@@ -18,14 +18,16 @@ export default class ImageCarousel extends React.Component {
         )
     }
 
+    /**
+     * Calculates the canvas size to take in as much space as possible and to fit to the image ratio.
+     * Only gets called if the image size has not been set yet
+     * @param {number} imgWidth 
+     * @param {number} imgHeight 
+     */
     setCanvasSize(imgWidth, imgHeight){
-        console.log("SET IMAGE")
         // Calculate new width and height to maintain aspect ratio of image but fit on page
         const imgRatio = imgWidth / imgHeight
-        if (this.containerRef.current == null){
-            console.log("Container not found")
-            return
-        }
+        if (this.containerRef.current == null) return
         console.log("Container width: " + this.containerRef.current.offsetWidth + " window height: " + window.innerHeight)
         var width = this.containerRef.current.offsetWidth * 0.97 // Fit to fill 97% of width of container
         var height = width / imgRatio;
@@ -33,14 +35,12 @@ export default class ImageCarousel extends React.Component {
             height = window.innerHeight * 0.8
             width = height * imgRatio
         }
-        console.log("Canvas width: " + width + " canvas height: " + height)
         try {
             const context = this.canvasRef.getContext("2d")
             context.clearRect(0, 0, this.props.canvasSize.width, this.props.canvasSize.height)
         } catch (e) {
             console.log("Problem finding context: " + e)
         }
-        console.log({width: width, height: height})
         this.props.setCanvasSize({width: width, height: height})
     }
 
@@ -53,6 +53,9 @@ export default class ImageCarousel extends React.Component {
         }
     }
 
+    /**
+     * If an image loaded: Trigger new rendering of the component
+     */
     componentDidUpdate() {
         console.log("Updating ImageCarousel")
         this.addedImgRefs.forEach (imgRef => {
@@ -61,9 +64,12 @@ export default class ImageCarousel extends React.Component {
         })
     }
 
+    /**
+     * Clears the canvas, renders the images
+     */
     renderCanvas() {
         const canvas = this.canvasRef.current
-        if (!canvas) return // Wenn Canvas noch nicht erstellt ist
+        if (!canvas) return // if canvas is not existing yet
         const context = canvas.getContext("2d")
         const canvasWidth = this.props.canvasSize.width
         const canvasHeight = this.props.canvasSize.height
@@ -104,6 +110,12 @@ export default class ImageCarousel extends React.Component {
             })
     }
 
+    /**
+     * Draws the captions onto the canvas
+     * @param {string} captionText 
+     * @param {numbe} captionPosition_X 
+     * @param {number} captionPosition_Y 
+     */
     renderCaption(captionText, captionPosition_X, captionPosition_Y) {
         if (!this.canvasRef.current) return
         const context = this.canvasRef.current.getContext("2d")

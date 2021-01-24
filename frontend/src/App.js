@@ -38,6 +38,10 @@ class App extends React.Component {
   }
 
 
+  /**
+   * Fetches meme templates from the database
+   * @param {string} url 
+   */
   get_memeTemplates(url) {
     fetch(url)
         .then(response => response.json())
@@ -50,6 +54,9 @@ class App extends React.Component {
         });
   }
 
+  /**
+   * Saves a template to the database
+   */
   handleSaveAsTemplate = () => {
 
     const memeTemplateToSave = {
@@ -83,6 +90,11 @@ class App extends React.Component {
     .catch((error) => {console.error('Error:', error);})
   }
 
+  /**
+   * Handles the most user inputs
+   * @param {object} event 
+   * @param {number} index 
+   */
   handleChange = (event, index) => {
 
     if(event.target.name.includes("imageInfo")) {
@@ -101,6 +113,12 @@ class App extends React.Component {
     }
   }
 
+  /**
+   * Call when image in template gallery is clicked on
+   * Lets the user edit the selected image in the editor
+   * OR adds the image to the current template if in "AddImage"-mode
+   * @param {object} image clicked on in the gallery on the left
+   */
   onClickedOnImageInGallery = (newCurrentImage) => {
     if (!this.state.isInAddImageMode){
       this.onChangeCurrentImage(newCurrentImage)
@@ -114,6 +132,10 @@ class App extends React.Component {
     }
   }
 
+  /**
+   * Call when a new meme template is being edited
+   * @param {object} image that is now the main template in the editor
+   */
   onChangeCurrentImage = (newCurrentImage) => {
     function getCaptionPositions(newCurrentImage) {
 
@@ -177,12 +199,18 @@ class App extends React.Component {
     });
   }
 
+  /**
+   * Switched in or out of the "AddImage"-mode
+   */
   onSwitchToAddImageMode = () => {
     this.setState({ isInAddImageMode: !this.state.isInAddImageMode })
   }
 
+  /**
+   * Resizes the canvas
+   * @param {object} Object containing the properties width and height
+   */
   setCanvasSize = (newSize) => {
-    console.log(newSize)
     try {
       this.setState({ canvasSize: {width: parseFloat(newSize.width), height: parseFloat(newSize.height)} })
     } catch(e) {
@@ -190,6 +218,10 @@ class App extends React.Component {
     }
   }
 
+  /**
+   * Updates the imageInfo (size, xPos, yPos) of the current image
+   * @param {*} The event leading to the change
+   */
   updateImageInfo = (event) => {
     let newImageInfo = this.state.imageInfo
     switch(event.target.name) {

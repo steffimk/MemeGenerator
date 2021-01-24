@@ -10,8 +10,19 @@ export default class EditorControl extends React.Component {
     }
   }
 
+  /**
+   * Shows or hides the respective part of the editor
+   * @param {object} event 
+   */
   clickedOnHideButton = (event) => this.setState({ [event.target.name]: !this.state[event.target.name]})
 
+  /**
+   * Renders the form to edit a caption with
+   * @param {string} caption 
+   * @param {*} captionPosition_X 
+   * @param {*} captionPosition_Y 
+   * @param {number} count 
+   */
   renderCaption(caption, captionPosition_X, captionPosition_Y, count){
     const placeholder = 'Enter Caption ' + (count+1);
     const capName = 'caption' + count;
@@ -61,6 +72,15 @@ export default class EditorControl extends React.Component {
     );
   }
 
+  /**
+   * Renders the form to edit the main image or an added image with
+   * @param {string} title 
+   * @param {number} size 
+   * @param {number} imgPosX 
+   * @param {number} imgPosY 
+   * @param {number} count 
+   * @param {bool} isAddedImg - set false if rendering the main image
+   */
   renderImage(title, size, imgPosX, imgPosY, count, isAddedImg){
     const sizeName = isAddedImg ? "addedImgSizes" : "imageInfoSize"
     const xPosName = isAddedImg ? "addedImgPositions_X" : "imageInfoX"
@@ -236,6 +256,10 @@ export default class EditorControl extends React.Component {
   }
 }
 
+/**
+ * Returns the styling of the select-element
+ * @param {*} color 
+ */
 const styleFontColor = (color) => { return { backgroundColor: color, color: "#fff"}}
 
 EditorControl.propTypes = {
