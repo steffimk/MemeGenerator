@@ -86,7 +86,7 @@ export default class EditorControl extends React.Component {
     const xPosName = isAddedImg ? "addedImgPositions_X" : "imageInfoX"
     const yPosName = isAddedImg ? "addedImgPositions_Y" : "imageInfoY"
     const imgName = isAddedImg ? ("addedImage" + count) : "mainImage";
-    if (!isAddedImg && size === undefined) return (<form></form>)
+    if (!isAddedImg && size == null) size = 100 
     size = (size !== undefined ? size : 50);
     imgPosX = (imgPosX !== undefined ? imgPosX : 0);
     imgPosY = (imgPosY !== undefined ? imgPosY : 0);
