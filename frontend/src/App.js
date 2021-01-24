@@ -13,6 +13,7 @@ class App extends React.Component {
       currentImage: {},
       isInAddImageMode: false,
       // Following properties belong to current image
+      imageInfo: {size: null, x: 0, y: 0},
       captions: [],
       title: '',
       captionPositions_X: [],
@@ -24,7 +25,8 @@ class App extends React.Component {
       addedImages: [],
       addedImgPositions_X: [],
       addedImgPositions_Y: [],
-      addedImgSizes: []
+      addedImgSizes: [],
+      canvasSize: {width: "97%", height: "90%"}
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -52,6 +54,7 @@ class App extends React.Component {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
+      imageInfo: this.state.imageInfo,
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
           .map((x, i) => [x, this.state.captionPositions_Y[i]]),
@@ -62,7 +65,8 @@ class App extends React.Component {
       addedImages: this.state.addedImages,
       // addedIMGinfo contains an infoArray for each added image [size, posX, posY]
       addedImgInfo: this.state.addedImgSizes
-         .map((size, i) => [size, this.state.addedImgPositions_X[i], this.state.addedImgPositions_Y[i]])
+         .map((size, i) => [size, this.state.addedImgPositions_X[i], this.state.addedImgPositions_Y[i]]),
+      canvasSize: this.state.canvasSize
     }
     console.log(memeTemplateToSave)
     fetch(this.urlTemplates, {
@@ -81,7 +85,9 @@ class App extends React.Component {
 
   handleChange = (event, index) => {
 
-    if (event.target.type == 'checkbox') {
+    if(event.target.name.includes("imageInfo")) {
+      this.updateImageInfo(event)
+    } else if (event.target.type == 'checkbox') {
       this.setState({[event.target.name]: event.target.checked})
     } else if (index !== undefined) {
       this.setState((state) =>  {
@@ -147,11 +153,14 @@ class App extends React.Component {
       } else return [];
     }
 
-    let captionPositions = getCaptionPositions(newCurrentImage);
-    let addedImgInfo = getAddedImgInfo(newCurrentImage)
+    const imageInfo =  (newCurrentImage.hasOwnProperty("imageInfo") ? newCurrentImage.imageInfo : {size: null, x:0, y:0})
+    const captionPositions = getCaptionPositions(newCurrentImage);
+    const addedImgInfo = getAddedImgInfo(newCurrentImage)
+    const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"})
 
     this.setState({
       currentImage: newCurrentImage,
+      imageInfo: imageInfo,
       captionPositions_X: captionPositions.map(x => x[0]),
       captionPositions_Y: captionPositions.map(y => y[1]),
       captions: getCaptions(newCurrentImage),
@@ -163,12 +172,33 @@ class App extends React.Component {
       addedImages: getAddedImages(newCurrentImage),
       addedImgSizes: addedImgInfo.map(size => size[0]),
       addedImgPositions_X: addedImgInfo.map(x => x[1]),
-      addedImgPositions_Y: addedImgInfo.map(y => y[2])
+      addedImgPositions_Y: addedImgInfo.map(y => y[2]),
+      canvasSize: canvasSize
     });
   }
 
   onSwitchToAddImageMode = () => {
     this.setState({ isInAddImageMode: !this.state.isInAddImageMode })
+  }
+
+  setCanvasSize = (newSize) => {
+    console.log(newSize)
+    try {
+      this.setState({ canvasSize: {width: parseFloat(newSize.width), height: parseFloat(newSize.height)} })
+    } catch(e) {
+      console.log("Problem parsing: " + e)
+    }
+  }
+
+  updateImageInfo = (event) => {
+    let newImageInfo = this.state.imageInfo
+    switch(event.target.name) {
+      case "imageInfoSize": newImageInfo.size = event.target.value; break;
+      case "imageInfoX": newImageInfo.x = event.target.value; break;
+      case "imageInfoY": newImageInfo.y = event.target.value; break;
+      default: break;
+    }
+    this.setState({ imageInfo: newImageInfo })
   }
 
   render () {
@@ -185,6 +215,7 @@ class App extends React.Component {
       <div className="middle">
         <ImageCarousel
             image={this.state.currentImage}
+            imageInfo={this.state.imageInfo}
             captions={this.state.captions}
             title={this.state.title}
             fontSize={this.state.fontSize}
@@ -197,6 +228,8 @@ class App extends React.Component {
             addedImgSizes={this.state.addedImgSizes}
             addedImgPositions_X={this.state.addedImgPositions_X}
             addedImgPositions_Y={this.state.addedImgPositions_Y}
+            canvasSize={this.state.canvasSize}
+            setCanvasSize={this.setCanvasSize.bind(this)}
         />
       </div>
       <div className="control right">
@@ -217,6 +250,9 @@ class App extends React.Component {
             addedImgSizes={this.state.addedImgSizes}
             addedImgPositions_X={this.state.addedImgPositions_X}
             addedImgPositions_Y={this.state.addedImgPositions_Y}
+            canvasSize={this.state.canvasSize}
+            setCanvasSize={this.setCanvasSize.bind(this)}
+            imageInfo={this.state.imageInfo}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
