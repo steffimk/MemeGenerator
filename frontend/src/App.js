@@ -4,12 +4,13 @@ import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
 
+const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
+
 class App extends React.Component {
 
   constructor() {
     super();
     this.state = {
-      templates: [],
       currentImage: {},
       isInAddImageMode: false,
       // Following properties belong to current image
@@ -28,30 +29,6 @@ class App extends React.Component {
       addedImgSizes: [],
       canvasSize: {width: "97%", height: "90%"}
     };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  componentDidMount(){
-    // initial get request
-    this.urlTemplates = "http://localhost:3030/memes/templates";
-    this.get_memeTemplates(this.urlTemplates);
-  }
-
-
-  /**
-   * Fetches meme templates from the database
-   * @param {string} url 
-   */
-  get_memeTemplates(url) {
-    fetch(url)
-        .then(response => response.json())
-        .then(json => {
-          console.log(json.data);
-          this.setState({
-            'templates': json.data.templates
-          });
-          this.onChangeCurrentImage(json.data.templates[0]);
-        });
   }
 
   /**
@@ -62,6 +39,8 @@ class App extends React.Component {
     const memeTemplateToSave = {
       ...this.state.currentImage,
       imageInfo: this.state.imageInfo,
+      name: this.state.title,
+      box_count: this.state.captions.length,
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
           .map((x, i) => [x, this.state.captionPositions_Y[i]]),
@@ -76,18 +55,37 @@ class App extends React.Component {
       canvasSize: this.state.canvasSize
     }
     console.log(memeTemplateToSave)
-    fetch(this.urlTemplates, {
+    fetch(TEMPLATE_ENDPOINT, {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(memeTemplateToSave),
-      })
-    .then(response => response.json())
-    .then(json => {
-      if (json.success) {
-        console.log('Successfully saved template')
-      }
+    }).then(response => {
+            if(response.ok) {
+                return true;
+            }else{
+                return Promise.reject(
+                    "API Responded with an error: "+response.status+" "+response.statusText
+                )
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            return false;
+        })
+  }
+
+  handleAddCaption = () => {
+    const newBoxCount = this.state.currentImage.box_count + 1
+    const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
+    const newCaptions = [...this.state.captions,''] // append captions by empty string
+    const newCaptionPositions_X = [...this.state.captionPositions_X,50] // place new caption in center
+    const newCaptionPositions_Y = [...this.state.captionPositions_Y, 10 + (90 * (newBoxCount-1) / newBoxCount)] 
+    this.setState({
+      currentImage: newCurrentImage,
+      captions: newCaptions,
+      captionPositions_X: newCaptionPositions_X,
+      captionPositions_Y: newCaptionPositions_Y
     })
-    .catch((error) => {console.error('Error:', error);})
   }
 
   /**
@@ -99,7 +97,7 @@ class App extends React.Component {
 
     if(event.target.name.includes("imageInfo")) {
       this.updateImageInfo(event)
-    } else if (event.target.type == 'checkbox') {
+    } else if (event.target.type === 'checkbox') {
       this.setState({[event.target.name]: event.target.checked})
     } else if (index !== undefined) {
       this.setState((state) =>  {
@@ -237,10 +235,10 @@ class App extends React.Component {
     return (
     <div className="App">
       <div className="left">
-        <TemplateGallery 
+        <TemplateGallery
             currentImage={this.state.currentImage}
-            images={this.state.templates}
-            changeCurrentImage={this.onClickedOnImageInGallery}
+            changeCurrentImage={this.onChangeCurrentImage}
+            templateEndpoint={TEMPLATE_ENDPOINT}
             isInAddImageMode={this.state.isInAddImageMode}
         />
       </div>
@@ -286,7 +284,8 @@ class App extends React.Component {
             setCanvasSize={this.setCanvasSize.bind(this)}
             imageInfo={this.state.imageInfo}
         />
-        <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
+        <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
+        <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
       </div>
       
       </div>)
