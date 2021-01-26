@@ -237,7 +237,7 @@ class App extends React.Component {
       <div className="left">
         <TemplateGallery
             currentImage={this.state.currentImage}
-            changeCurrentImage={this.onChangeCurrentImage}
+            changeCurrentImage={this.onClickedOnImageInGallery}
             templateEndpoint={TEMPLATE_ENDPOINT}
             isInAddImageMode={this.state.isInAddImageMode}
         />
