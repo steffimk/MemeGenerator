@@ -21,7 +21,6 @@ class App extends React.Component {
       isBold: false,
       fontColor: 'black'
     };
-    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount(){
@@ -174,8 +173,8 @@ class App extends React.Component {
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
         />
-        <button name="addCaption" onClick={this.handleAddCaption.bind(this)} style={{ display: 'block' }}>Add caption</button>
-        <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
+        <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
+        <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
       </div>
       
       </div>)
