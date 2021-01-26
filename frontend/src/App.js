@@ -5,6 +5,7 @@ import TemplateGallery from "./components/TemplateGallery";
 import EditorControl from "./components/EditorControl";
 
 const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
+const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
 
 class App extends React.Component {
 
@@ -61,43 +62,43 @@ class App extends React.Component {
   }
 
   handleSaveAsMeme = async () => {
-      const carouselCanvas = this.imageCarousel.current.canvasRef.current;
-      const dataURL =carouselCanvas.toDataURL();
-      console.log("d", dataURL);
-      console.log("current image", this.state.currentImage);
+    const carouselCanvas = this.imageCarousel.current.canvasRef.current;
+    const dataURL =carouselCanvas.toDataURL();
 
-      const test_ursl = URL.createObjectURL(dataURL)
-
-      const memeToSave = {
-        _id : this.state.currentImage._id,
-        imgBase64: test_ursl,
-        title: this.state.currentImage.name,
-        captions: this.state.captions
-      }
+    const memeToSave = {
+      template_id : this.state.currentImage._id,
+      img: dataURL,
+      template_url: this.state.currentImage.url,
+      name: this.state.title,
+      box_count: this.state.captions.length,
+      captions: this.state.captions,
+      captionPositions: this.state.captionPositions_X
+          .map((x, i) => [x, this.state.captionPositions_Y[i]]),
+      fontSize: this.state.fontSize,
+      isItalic: this.state.isItalic,
+      isBold: this.state.isBold,
+      fontColor: this.state.fontColor
+    }
 
     console.log("meme to save ", memeToSave)
 
-    fetch(this.urlMemes, {
+    fetch(MEMES_ENDPOINT, {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(memeToSave),
+    }).then(response => {
+      if(response.ok) {
+        return true;
+      }else{
+        return Promise.reject(
+            "API Responded with an error: "+response.status+" "+response.statusText
+        )
+      }
     })
-        .then(response => response.json())
-        .then(json => {
-          if (json.success) {
-            console.log('Successfully saved template')
-          }
-          console.log(json)
+        .catch((error) => {
+          console.error('Error:', error);
+          return false;
         })
-        .catch((error) => {console.error('Error:', error);})
-
-      //document.getElementById()
-      /*let image = new Image;
-      await new Promise(r => image.onload = r, image.src = this.state.currentImage.url);
-      loadImage(image).then(img => {
-          context.drawImage(img, 0, 0)
-
-      })*/
   }
 
   handleChange = (event, index) => {
