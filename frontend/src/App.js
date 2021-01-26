@@ -23,7 +23,6 @@ class App extends React.Component {
       isBold: false,
       fontColor: 'black'
     };
-    this.handleChange = this.handleChange.bind(this);
     this.imageCarousel = React.createRef();
   }
 
@@ -101,6 +100,20 @@ class App extends React.Component {
         })
   }
 
+  handleAddCaption = () => {
+    const newBoxCount = this.state.currentImage.box_count + 1
+    const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
+    const newCaptions = [...this.state.captions,''] // append captions by empty string
+    const newCaptionPositions_X = [...this.state.captionPositions_X,50] // place new caption in center
+    const newCaptionPositions_Y = [...this.state.captionPositions_Y, 10 + (90 * (newBoxCount-1) / newBoxCount)]
+    this.setState({
+      currentImage: newCurrentImage,
+      captions: newCaptions,
+      captionPositions_X: newCaptionPositions_X,
+      captionPositions_Y: newCaptionPositions_Y
+    })
+  }
+
   handleChange = (event, index) => {
 
     if (event.target.type === 'checkbox') {
@@ -171,8 +184,6 @@ class App extends React.Component {
       </div>
       <div className="middle">
         <ImageCarousel
-            id="text"
-            ref = {this.imageCarousel}
             image={this.state.currentImage}
             captions={this.state.captions}
             title={this.state.title}
@@ -197,8 +208,9 @@ class App extends React.Component {
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
         />
-        <button name="saveTemplateButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
-        <button name="saveButton" onClick={this.handleSaveAsMeme.bind(this)}>Save image</button>
+        <button name="saveTemplateButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
+        <button name="saveButton" onClick={this.handleSaveAsMeme}>Save image</button>
+        <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
       </div>
       
       </div>)
