@@ -213,7 +213,6 @@ export default class EditorControl extends React.Component {
         <p>
           Canvas Height:&nbsp;
           <input
-            type="color"
             name="canvasHeight"
             value={this.props.canvasSize.height}
             onChange={(e) => this.props.setCanvasSize({height: e.target.value, width: this.props.canvasSize.width})}
