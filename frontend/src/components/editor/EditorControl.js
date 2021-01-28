@@ -179,45 +179,13 @@ export default class EditorControl extends React.Component {
         </p>
         <p>
           Font Color:&nbsp;
-          <select name="fontColor" onChange={this.props.changeListener} value={this.props.fontColor} style={styleFontColor(this.props.fontColor)}>
-              <option value="Black" style={{backgroundColor: "Black",color: "#fff"}}>Black</option>
-              <option value="DarkGray" style={{backgroundColor: "DarkGray",color: "#fff"}}>DarkGray</option>
-              <option value="White" style={{backgroundColor: "White",color: "#000"}}>White</option>
-              <option value="IndianRed" style={{backgroundColor: "IndianRed",color: "#fff"}}>IndianRed</option>
-              <option value="LightCoral" style={{backgroundColor: "LightCoral",color: "#fff"}}>LightCoral</option>
-              <option value="Crimson" style={{backgroundColor: "Crimson",color: "#fff"}}>Crimson</option>
-              <option value="Red" style={{backgroundColor: "Red",color: "#fff"}}>Red</option>
-              <option value="DarkRed" style={{backgroundColor: "DarkRed",color: "#fff"}}>DarkRed</option>
-              <option value="Pink" style={{backgroundColor: "Pink",color: "#000"}}>Pink</option>
-              <option value="HotPink" style={{backgroundColor: "HotPink",color: "#fff"}}>HotPink</option>
-              <option value="MediumVioletRed" style={{backgroundColor: "MediumVioletRed",color: "#fff"}}>MediumVioletRed</option>
-              <option value="Violet" style={{backgroundColor: "Violet",color: "#fff"}}>Violet</option>
-              <option value="Fuchsia" style={{backgroundColor: "Fuchsia",color: "#fff"}}>Fuchsia</option>
-              <option value="DarkMagenta" style={{backgroundColor: "DarkMagenta",color: "#fff"}}>DarkMagenta</option>
-              <option value="Indigo" style={{backgroundColor: "Indigo",color: "#fff"}}>Indigo</option>
-              <option value="OrangeRed" style={{backgroundColor: "OrangeRed",color: "#fff"}}>OrangeRed</option>
-              <option value="DarkOrange" style={{backgroundColor: "DarkOrange",color: "#fff"}}>DarkOrange</option>
-              <option value="Orange" style={{backgroundColor: "Orange",color: "#fff"}}>Orange</option>
-              <option value="Gold" style={{backgroundColor: "Gold",color: "#000"}}>Gold</option>
-              <option value="Yellow" style={{backgroundColor: "Yellow",color: "#000"}}>Yellow</option>
-              <option value="LawnGreen" style={{backgroundColor: "LawnGreen",color: "#000"}}>LawnGreen</option>
-              <option value="LimeGreen" style={{backgroundColor: "LimeGreen",color: "#fff"}}>LimeGreen</option>
-              <option value="Green" style={{backgroundColor: "Green",color: "#fff"}}>Green</option>
-              <option value="Olive" style={{backgroundColor: "Olive",color: "#fff"}}>Olive</option>
-              <option value="DarkCyan" style={{backgroundColor: "DarkCyan",color: "#fff"}}>DarkCyan</option>
-              <option value="Cyan" style={{backgroundColor: "Cyan",color: "#000"}}>Cyan</option>
-              <option value="Aquamarine" style={{backgroundColor: "Aquamarine",color: "#000"}}>Aquamarine</option>
-              <option value="DarkTurquoise" style={{backgroundColor: "DarkTurquoise",color: "#fff"}}>DarkTurquoise</option>
-              <option value="SteelBlue" style={{backgroundColor: "SteelBlue",color: "#fff"}}>SteelBlue</option>
-              <option value="SkyBlue" style={{backgroundColor: "SkyBlue",color: "#fff"}}>SkyBlue</option>
-              <option value="DeepSkyBlue" style={{backgroundColor: "DeepSkyBlue",color: "#fff"}}>DeepSkyBlue</option>
-              <option value="CornflowerBlue" style={{backgroundColor: "CornflowerBlue",color: "#fff"}}>CornflowerBlue</option>
-              <option value="Blue" style={{backgroundColor: "Blue",color: "#fff"}}>Blue</option>
-              <option value="DarkBlue" style={{backgroundColor: "DarkBlue",color: "#fff"}}>DarkBlue</option>
-              <option value="Peru" style={{backgroundColor: "Peru",color: "#fff"}}>Peru</option>
-              <option value="Sienna" style={{backgroundColor: "Sienna",color: "#fff"}}>Sienna</option>
-              <option value="Maroon" style={{backgroundColor: "Maroon",color: "#fff"}}>Maroon</option>
-          </select>
+          <input
+            type="color"
+            name="fontColor"
+            value={this.props.fontColor}
+            onChange={this.props.changeListener}
+            style={{ width: '35%' }}
+          />
         </p>
         <input type="checkbox" id="isItalic" name="isItalic" onChange={this.props.changeListener} checked={this.props.isItalic}/>
         <label for="isItalic" style={{fontStyle: 'italic'}}>Italic&nbsp;&nbsp;</label>
@@ -245,6 +213,7 @@ export default class EditorControl extends React.Component {
         <p>
           Canvas Height:&nbsp;
           <input
+            type="color"
             name="canvasHeight"
             value={this.props.canvasSize.height}
             onChange={(e) => this.props.setCanvasSize({height: e.target.value, width: this.props.canvasSize.width})}
@@ -255,12 +224,6 @@ export default class EditorControl extends React.Component {
     );
   }
 }
-
-/**
- * Returns the styling of the select-element
- * @param {*} color 
- */
-const styleFontColor = (color) => { return { backgroundColor: color, color: "#fff"}}
 
 EditorControl.propTypes = {
   captions: PropTypes.arrayOf(PropTypes.string).isRequired,
