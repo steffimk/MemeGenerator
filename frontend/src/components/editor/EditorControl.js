@@ -205,18 +205,20 @@ export default class EditorControl extends React.Component {
           Canvas Width:&nbsp;
           <input
             name="canvasWidth"
+            type="number"
             value={this.props.canvasSize.width}
             onChange={(e) => this.props.setCanvasSize({width: e.target.value, height: this.props.canvasSize.height})}
-            style={{ width: '3ch' }}
+            style={{ width: '5ch' }}
           />
         </p>
         <p>
           Canvas Height:&nbsp;
           <input
             name="canvasHeight"
+            type="number"
             value={this.props.canvasSize.height}
             onChange={(e) => this.props.setCanvasSize({height: e.target.value, width: this.props.canvasSize.width})}
-            style={{ width: '3ch' }}
+            style={{ width: '5ch' }}
           />
         </p>
       </div>

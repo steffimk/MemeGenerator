@@ -16,6 +16,11 @@ export default class ImageCarousel extends React.Component {
         props.addedImages.forEach( _ =>
             this.addedImgRefs.push(React.createRef())
         )
+        this.isDrawing = false
+        this.isNewStroke = false
+        this.state = {
+            coordinates: []
+        }
     }
 
     /**
@@ -111,6 +116,56 @@ export default class ImageCarousel extends React.Component {
     }
 
     /**
+     * Handles the events mousedown, mouseleave and mouseup to set the isDrawing attribute
+     * @param {React.MouseEvent} event 
+     */
+    setIsDrawing = (event) => {
+        switch(event.type) {
+            case "mousedown":  this.isNewStroke = true; this.isDrawing = true; break;
+            case "mouseleave": this.isDrawing = false; break;
+            case "mouseup":    this.isDrawing = false; break;
+            default: break;
+        }
+    }
+
+    /**
+     * Handles the event mousemove. Checks whether user is drawign and saves position relative to canvas
+     * @param {React.MouseEvent} event 
+     */
+    drawWithMouse = (event) => {
+        if (!this.isDrawing) return // event not interesting if not drawing
+        const canvas = this.canvasRef.current
+        if (!canvas) return // if canvas not existing
+        const posX = event.pageX - canvas.offsetLeft
+        const posY = event.pageY - canvas.offsetTop
+        this.setState({ coordinates: [...this.state.coordinates, {x: posX, y: posY, isNewStroke: this.isNewStroke}] })
+        this.isNewStroke = false
+    }
+
+    /**
+     * Render all mouse-drawn elements
+     */
+    renderMouseDrawing() {
+        if (this.state.coordinates.length === 0) return
+        if (!this.canvasRef.current) return
+        const context = this.canvasRef.current.getContext("2d")
+        const dpi = window.devicePixelRatio
+        this.state.coordinates.forEach(
+            (coordinate, index) => {
+                const {x,y, isNewStroke} = coordinate
+                if (isNewStroke) {
+                    if (index > 0) context.stroke()
+                    context.beginPath()
+                    context.moveTo(x*dpi, y*dpi)
+                } else {
+                    context.lineTo(x*dpi, y*dpi)
+                } 
+            }
+        )
+        context.stroke()
+    }
+
+    /**
      * Draws the captions onto the canvas
      * @param {string} captionText 
      * @param {numbe} captionPosition_X 
@@ -147,16 +202,17 @@ export default class ImageCarousel extends React.Component {
                 this.addedImgRefs[index] = imgRef
                 return <img ref={imgRef} alt="" src={image.url} style={{display: "none"}}/>
             })
+        this.renderMouseDrawing()
 
         return (
             <div ref={this.containerRef} className="flex-container">
                 <h1>{this.props.title}</h1>
-                <div className="container">
-                    <canvas ref={this.canvasRef} 
+                {/* <div className="container"> */}
+                    <canvas ref={this.canvasRef} onMouseDown={this.setIsDrawing} onMouseUp={this.setIsDrawing} onMouseLeave={this.setIsDrawing} onMouseMove={this.drawWithMouse}
                         style={{width:this.props.canvasSize.width, height:this.props.canvasSize.height, resize:"true"}}/>
                     <img ref={this.imgRef} alt="" src={this.props.image.url} style={{display: "none"}}/>
                     {addedImages}
-                </div>
+                {/* </div> */}
             </div>
         )
     }
