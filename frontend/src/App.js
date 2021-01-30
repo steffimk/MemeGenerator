@@ -103,15 +103,31 @@ class App extends React.Component {
    * @param {React.MouseEvent} event 
    */
   readOut = (event) => {
-    console.log(event)
-    const text = event.target.innerText // TODO
-    this.speech.speak({
-      text: text,
-  }).then(() => {
-      console.log("Speech was successful!")
-  }).catch(e => {
-      console.error("A speech error occurred: ", e)
-  })
+    console.log(event);
+    const text = event.target.innerText; // TODO
+    this.speech
+      .speak({text: text,})
+      .then(() => {
+        console.log('Speech was successful!');
+      })
+      .catch((e) => {
+        console.error('A speech error occurred: ', e);
+      });
+  }
+
+  readScreen = () => {
+    var text = `The meme editor is opened. You are currently editing a template with the title ${this.state.currentImage.name}. `
+    this.state.captions.forEach((caption,index) => {
+        if(caption.length > 0 && caption !== '') text += `Caption ${index+1} says ${caption}. `
+      })
+    this.speech
+      .speak({text: text})
+      .then(() => {
+        console.log('Speech was successful!');
+      })
+      .catch((e) => {
+        console.error('A speech error occurred: ', e);
+      });
   }
 
   onChangeCurrentImage = (newCurrentImage) => {
@@ -180,7 +196,7 @@ class App extends React.Component {
         />
       </div>
       <div className="control right">
-        <h3 style={{fontWeight: 'bold'}} onClick={this.readOut}>Create Your Meme</h3>
+        <h3 style={{fontWeight: 'bold'}} onClick={this.readOut}>Editor&nbsp;<i class="fas fa-audio-description" onClick={this.readScreen}/></h3>
         <EditorControl
             captions={this.state.captions}
             captionPositions_X={this.state.captionPositions_X}
