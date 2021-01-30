@@ -3,6 +3,7 @@ import './App.css';
 import ImageCarousel from "./components/ImageCarousel";
 import TemplateGallery from "./components/TemplateGallery";
 import EditorControl from "./components/EditorControl";
+import Speech from 'speak-tts'
 
 const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
 
@@ -22,6 +23,15 @@ class App extends React.Component {
       isBold: false,
       fontColor: 'black'
     };
+    this.speech = new Speech()
+    this.speech
+      .init({'lang': 'en-GB', 'voice':'Google UK English Male'})
+      .then((data) => {
+        console.log('Speech is ready, voices are available', data);
+      })
+      .catch((e) => {
+        console.error('An error occured while initializing : ', e);
+      });
   }
 
   handleSaveAsTemplate = () => {
@@ -86,6 +96,22 @@ class App extends React.Component {
     } else {
       this.setState({[event.target.name]: event.target.value});
     }
+  }
+
+  /**
+   * Reads the value of the event target
+   * @param {React.MouseEvent} event 
+   */
+  readOut = (event) => {
+    console.log(event)
+    const text = event.target.innerText // TODO
+    this.speech.speak({
+      text: text,
+  }).then(() => {
+      console.log("Speech was successful!")
+  }).catch(e => {
+      console.error("A speech error occurred: ", e)
+  })
   }
 
   onChangeCurrentImage = (newCurrentImage) => {
@@ -154,7 +180,7 @@ class App extends React.Component {
         />
       </div>
       <div className="control right">
-        <h3 style={{fontWeight: 'bold'}}>Create Your Meme</h3>
+        <h3 style={{fontWeight: 'bold'}} onClick={this.readOut}>Create Your Meme</h3>
         <EditorControl
             captions={this.state.captions}
             captionPositions_X={this.state.captionPositions_X}
