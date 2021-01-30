@@ -18,9 +18,6 @@ export default class ImageCarousel extends React.Component {
         )
         this.isDrawing = false
         this.isNewStroke = false
-        this.state = {
-            coordinates: []
-        }
     }
 
     /**
@@ -138,7 +135,7 @@ export default class ImageCarousel extends React.Component {
         if (!canvas) return // if canvas not existing
         const posX = event.pageX - canvas.offsetLeft
         const posY = event.pageY - canvas.offsetTop
-        this.setState({ coordinates: [...this.state.coordinates, {x: posX, y: posY, isNewStroke: this.isNewStroke}] })
+        this.props.addCoordinate({x: posX, y: posY, isNewStroke: this.isNewStroke})
         this.isNewStroke = false
     }
 
@@ -146,11 +143,11 @@ export default class ImageCarousel extends React.Component {
      * Render all mouse-drawn elements
      */
     renderMouseDrawing() {
-        if (this.state.coordinates.length === 0) return
+        if (this.props.coordinates.length === 0) return
         if (!this.canvasRef.current) return
         const context = this.canvasRef.current.getContext("2d")
         const dpi = window.devicePixelRatio
-        this.state.coordinates.forEach(
+        this.props.coordinates.forEach(
             (coordinate, index) => {
                 const {x,y, isNewStroke} = coordinate
                 if (isNewStroke) {
@@ -234,5 +231,7 @@ ImageCarousel.propTypes = {
     isBold: PropTypes.bool.isRequired,
     fontColor: PropTypes.string.isRequired,
     canvasSize: PropTypes.object.isRequired,
-    setCanvasSize: PropTypes.func.isRequired
+    setCanvasSize: PropTypes.func.isRequired,
+    coordinates: PropTypes.array.isRequired,
+    addCoordinate: PropTypes.func.isRequired
 }
