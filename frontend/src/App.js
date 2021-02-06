@@ -62,7 +62,7 @@ class App extends React.Component {
 
   handleSaveAsMeme = async () => {
     const carouselCanvas = this.imageCarousel.current.canvasRef.current;
-    const dataURL =carouselCanvas.toDataURL();
+    const dataURL = carouselCanvas.toDataURL();
 
     const memeToSave = {
       template_id : this.state.currentImage._id,
@@ -184,6 +184,7 @@ class App extends React.Component {
       </div>
       <div className="middle">
         <ImageCarousel
+            ref = {this.imageCarousel}
             image={this.state.currentImage}
             captions={this.state.captions}
             title={this.state.title}
