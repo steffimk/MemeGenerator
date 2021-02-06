@@ -207,7 +207,7 @@ export default class ImageCarousel extends React.Component {
                 {/* <div className="container"> */}
                     <canvas ref={this.canvasRef} onMouseDown={this.setIsDrawing} onMouseUp={this.setIsDrawing} onMouseLeave={this.setIsDrawing} onMouseMove={this.drawWithMouse}
                         style={{width:this.props.canvasSize.width, height:this.props.canvasSize.height, resize:"true"}}/>
-                    <img ref={this.imgRef} alt="" src={this.props.image.url} style={{display: "none"}}/>
+                    <img ref={this.imgRef} alt="" src={this.props.image.url}  crossOrigin={"anonymous"}  tyle={{display: "none"}}/>
                     {addedImages}
                 {/* </div> */}
             </div>
