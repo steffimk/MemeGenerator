@@ -27,7 +27,8 @@ class App extends React.Component {
       addedImgPositions_X: [],
       addedImgPositions_Y: [],
       addedImgSizes: [],
-      canvasSize: {width: "97%", height: "90%"}
+      canvasSize: {width: "97%", height: "90%"},
+      drawingCoordinates: []
     };
   }
 
@@ -52,7 +53,8 @@ class App extends React.Component {
       // addedIMGinfo contains an infoArray for each added image [size, posX, posY]
       addedImgInfo: this.state.addedImgSizes
          .map((size, i) => [size, this.state.addedImgPositions_X[i], this.state.addedImgPositions_Y[i]]),
-      canvasSize: this.state.canvasSize
+      canvasSize: this.state.canvasSize,
+      drawingCoordinates: this.state.drawingCoordinates
     }
     console.log(memeTemplateToSave)
     fetch(TEMPLATE_ENDPOINT, {
@@ -177,6 +179,7 @@ class App extends React.Component {
     const captionPositions = getCaptionPositions(newCurrentImage);
     const addedImgInfo = getAddedImgInfo(newCurrentImage)
     const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"})
+    const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : []
 
     this.setState({
       currentImage: newCurrentImage,
@@ -193,7 +196,8 @@ class App extends React.Component {
       addedImgSizes: addedImgInfo.map(size => size[0]),
       addedImgPositions_X: addedImgInfo.map(x => x[1]),
       addedImgPositions_Y: addedImgInfo.map(y => y[2]),
-      canvasSize: canvasSize
+      canvasSize: canvasSize,
+      drawingCoordinates: drawingCoordinates
     });
   }
 
@@ -231,6 +235,10 @@ class App extends React.Component {
     this.setState({ imageInfo: newImageInfo })
   }
 
+  addDrawingCoordinate = (newCoordinate) => {
+    this.setState({ drawingCoordinates: [...this.state.drawingCoordinates, newCoordinate] })
+  }
+
   render () {
     return (
     <div className="App">
@@ -260,6 +268,8 @@ class App extends React.Component {
             addedImgPositions_Y={this.state.addedImgPositions_Y}
             canvasSize={this.state.canvasSize}
             setCanvasSize={this.setCanvasSize.bind(this)}
+            coordinates={this.state.drawingCoordinates}
+            addCoordinate={this.addDrawingCoordinate}
         />
       </div>
       <div className="control right">

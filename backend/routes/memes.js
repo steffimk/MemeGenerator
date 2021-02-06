@@ -82,7 +82,7 @@ router.post('/templates', function(req, res){
     const {
         name, url, width, height, box_count, captions,
         captionPositions, fontColor, fontSize, isItalic, isBold,
-        imageInfo, addedImages, addedImgInfo, canvasSize
+        imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates
     } = memeTemplate;
     console.log(memeTemplate)
     // validate input
@@ -98,7 +98,7 @@ router.post('/templates', function(req, res){
         const normalizedTemplate = {
             name, url, width, height, box_count, captions,
             captionPositions, fontColor, fontSize, isItalic, isBold,
-            imageInfo, addedImages, addedImgInfo, canvasSize
+            imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates
         }
 
         addToDB(req.db, templateCollection, normalizedTemplate);
