@@ -137,12 +137,13 @@ class App extends React.Component {
    * @param {object} image that is now the main template in the editor
    */
   onChangeCurrentImage = (newCurrentImage) => {
-    function getCaptionPositions(newCurrentImage) {
+    let getCaptionPositions = (newCurrentImage) => {
 
       if (newCurrentImage.hasOwnProperty("captionPositions")) {
         return newCurrentImage.captionPositions;
       } else {
-        let captionPositions = [];
+        let captionPositions = this.state.captionPositions_X
+            .map((val, i) => [val, this.state.captionPositions_Y[i]]);
         for (let i = 0; i < newCurrentImage.box_count; i++) {
           captionPositions.push([50, 10 + (90 * i / newCurrentImage.box_count)]);
         }
@@ -150,13 +151,13 @@ class App extends React.Component {
       }
     }
 
-    function getCaptions(newCurrentImage) {
+    let getCaptions= (newCurrentImage) => {
 
       if (newCurrentImage.hasOwnProperty("captions")) {
         return newCurrentImage.captions;
       } else {
-        let captions = [];
-        for (let i = 0; i < newCurrentImage.box_count; i++) {
+        let captions = this.state.captions;
+        for (let i = captions.length; i < newCurrentImage.box_count; i++) {
           captions.push('');
         }
         return captions;
@@ -179,7 +180,7 @@ class App extends React.Component {
     const captionPositions = getCaptionPositions(newCurrentImage);
     const addedImgInfo = getAddedImgInfo(newCurrentImage)
     const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"})
-    const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : []
+    const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : this.state.drawingCoordinates
 
     this.setState({
       currentImage: newCurrentImage,
@@ -187,11 +188,11 @@ class App extends React.Component {
       captionPositions_X: captionPositions.map(x => x[0]),
       captionPositions_Y: captionPositions.map(y => y[1]),
       captions: getCaptions(newCurrentImage),
-      title: (newCurrentImage.hasOwnProperty("name") ? newCurrentImage.name : ''),
-      fontSize: (newCurrentImage.hasOwnProperty("fontSize") ? newCurrentImage.fontSize : 45),
-      isItalic: (newCurrentImage.hasOwnProperty("isItalic") ? newCurrentImage.isItalic : false),
-      isBold: (newCurrentImage.hasOwnProperty("isBold") ? newCurrentImage.isBold : false),
-      fontColor: (newCurrentImage.hasOwnProperty("fontColor") ? newCurrentImage.fontColor : 'black'),
+      title: (newCurrentImage.hasOwnProperty("name") ? newCurrentImage.name : this.state.name),
+      fontSize: (newCurrentImage.hasOwnProperty("fontSize") ? newCurrentImage.fontSize : this.state.fontSize),
+      isItalic: (newCurrentImage.hasOwnProperty("isItalic") ? newCurrentImage.isItalic : this.state.isItalic),
+      isBold: (newCurrentImage.hasOwnProperty("isBold") ? newCurrentImage.isBold : this.state.isBold),
+      fontColor: (newCurrentImage.hasOwnProperty("fontColor") ? newCurrentImage.fontColor : this.state.fontColor),
       addedImages: getAddedImages(newCurrentImage),
       addedImgSizes: addedImgInfo.map(size => size[0]),
       addedImgPositions_X: addedImgInfo.map(x => x[1]),
