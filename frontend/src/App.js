@@ -125,22 +125,8 @@ class App extends React.Component {
   }
 
   /**
-   * Reads the value of the event target
-   * @param {React.MouseEvent} event 
+   * Audio description of the editor. Reads out the title and captions of the current template.
    */
-  readOut = (event) => {
-    console.log(event);
-    const text = event.target.innerText; // TODO
-    this.speech
-      .speak({text: text,})
-      .then(() => {
-        console.log('Speech was successful!');
-      })
-      .catch((e) => {
-        console.error('A speech error occurred: ', e);
-      });
-  }
-
   readScreen = () => {
     var text = `The meme editor is opened. You are currently editing a template with the title ${this.state.currentImage.name}. `
     this.state.captions.forEach((caption,index) => {
