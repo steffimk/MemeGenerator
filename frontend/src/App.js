@@ -176,11 +176,11 @@ class App extends React.Component {
       } else return [];
     }
 
-    const imageInfo =  (newCurrentImage.hasOwnProperty("imageInfo") ? newCurrentImage.imageInfo : {size: null, x:0, y:0})
+    const imageInfo =  (newCurrentImage.hasOwnProperty("imageInfo") ? newCurrentImage.imageInfo : {size: null, x:0, y:0});
     const captionPositions = getCaptionPositions(newCurrentImage);
-    const addedImgInfo = getAddedImgInfo(newCurrentImage)
-    const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"})
-    const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : this.state.drawingCoordinates
+    const addedImgInfo = getAddedImgInfo(newCurrentImage);
+    const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"});
+    const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : [];
 
     this.setState({
       currentImage: newCurrentImage,
