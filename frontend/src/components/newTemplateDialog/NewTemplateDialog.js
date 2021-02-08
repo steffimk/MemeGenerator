@@ -22,11 +22,16 @@ export default class NewTemplateDialog extends React.Component{
 
     onSave(e){
         // TODO verify if some template was added
-
+        let snapshot = this.getSnapshotFromStream();
         this.closeUserMediaStream();
 
+        let url = this.state.url;
+        if(snapshot){
+            url = snapshot;
+        }
+
         const memeTemplateToSave = {
-            url: this.state.url,
+            url: url,
             //name: document.getElementById("template-name").value,
             width: this.state.width,
             height: this.state.height,
@@ -89,6 +94,26 @@ export default class NewTemplateDialog extends React.Component{
     closeUserMediaStream(){
         if(this.state.videoRef.current.srcObject) {
             this.state.videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+        }
+    }
+
+    getSnapshotFromStream(){
+        if(this.state.videoRef.current.srcObject) {
+
+            let video = this.state.videoRef.current;
+
+            let width = video.offsetWidth, height = video.offsetHeight;
+
+            let canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            let context = canvas.getContext('2d')
+            context.drawImage(video, 0, 0, width, height);
+
+	    let snapshot = canvas.toDataURL('image/png');
+            this.setState({"url": snapshot});
+
+	    return snapshot;
         }
     }
 
