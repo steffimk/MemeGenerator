@@ -1,9 +1,8 @@
 import React from 'react';
-import Fab from '@material-ui/core/Fab';
-import SaveIcon from '@material-ui/icons/Save';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 
 import './NewTemplateDialog.css';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@material-ui/core";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField} from "@material-ui/core";
 
 export default class NewTemplateDialog extends React.Component{
 
@@ -15,11 +14,17 @@ export default class NewTemplateDialog extends React.Component{
             "url": "",
             "width": 0,
             "height": 0,
+            "videoStream": false,
+            "videoRef": React.createRef(),
         };
     }
 
 
     onSave(e){
+        // TODO verify if some template was added
+
+        this.closeUserMediaStream();
+
         const memeTemplateToSave = {
             url: this.state.url,
             //name: document.getElementById("template-name").value,
@@ -28,6 +33,11 @@ export default class NewTemplateDialog extends React.Component{
             //box_count: document.getElementById("template-box-count").value,
         }
         this.props.onSave(memeTemplateToSave);
+    }
+
+    onClose(){
+        this.closeUserMediaStream();
+        this.props.onClose();
     }
 
     onUrlChange(event){
@@ -64,10 +74,39 @@ export default class NewTemplateDialog extends React.Component{
         }
     }
 
+    isMediaDevicesCapable() {
+        return navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
+    }
+
+    onOpenCamera() {
+        navigator.mediaDevices.getUserMedia({ audio:false, video:true })
+            .then((stream) => {
+                this.state.videoRef.current.srcObject = stream;
+                this.state.videoRef.current.className="";
+            });
+    }
+
+    closeUserMediaStream(){
+        if(this.state.videoRef.current.srcObject) {
+            this.state.videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+        }
+    }
+
     render(){
 
+        let webcamButton;
+        let video;
+        if(this.isMediaDevicesCapable()){
+            webcamButton = (
+                <IconButton onClick={() => this.onOpenCamera()}>
+                    <PhotoCameraIcon />
+                </IconButton>
+            );
+            video = (<video className="hidden" ref={this.state.videoRef} autoPlay={true} /> );
+        }
+
         return (
-            <Dialog open={this.props.open} onClose={this.props.onClose} aria-labelledby="form-dialog-title">
+            <Dialog open={this.props.open} onClose={() => (this.onClose())} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Add new Template Background</DialogTitle>
                 <DialogContent>
                     <form className="new-template-form" >
@@ -83,6 +122,7 @@ export default class NewTemplateDialog extends React.Component{
                                    accept="image/*"
                                    onChange={(e) => this.onFileChange(e)}
                         />
+                        {webcamButton}
                         {/*<TextField id="template-box-count"
                                    label="Box Count" type="number"
                                    required
@@ -90,10 +130,11 @@ export default class NewTemplateDialog extends React.Component{
                                    max={10}
                         />*/}
                         <img src={this.state.url}  alt=""/>
+                        {video}
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.props.onClose} color="primary">
+                    <Button onClick={() => (this.onClose())} color="primary">
                         Cancel
                     </Button>
                     <Button onClick={(e) => this.onSave(e)} color="primary">
