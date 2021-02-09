@@ -59,7 +59,13 @@ class App extends React.Component {
         })
   }
 
+   handleChangeText =  (result) => {
+     console.log("app", result);
+
+   }
+
   handleChange = (event, index) => {
+    console.log("event",event);
 
     if (event.target.type === 'checkbox') {
       this.setState({[event.target.name]: event.target.checked})
@@ -153,6 +159,7 @@ class App extends React.Component {
             isItalic={this.state.isItalic}
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
+            text={this.handleChangeText}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
