@@ -30,7 +30,8 @@ class App extends React.Component {
       addedImgPositions_Y: [],
       addedImgSizes: [],
       canvasSize: {width: "97%", height: "90%"},
-      drawingCoordinates: []
+      drawingCoordinates: [],
+      imageDescription: ""
     };
     this.speech = new Speech()
     this.speech
@@ -65,7 +66,8 @@ class App extends React.Component {
       addedImgInfo: this.state.addedImgSizes
          .map((size, i) => [size, this.state.addedImgPositions_X[i], this.state.addedImgPositions_Y[i]]),
       canvasSize: this.state.canvasSize,
-      drawingCoordinates: this.state.drawingCoordinates
+      drawingCoordinates: this.state.drawingCoordinates,
+      imageDescription: this.state.imageDescription
     }
     console.log(memeTemplateToSave)
     fetch(TEMPLATE_ENDPOINT, {
@@ -129,6 +131,11 @@ class App extends React.Component {
    */
   readScreen = () => {
     var text = `The meme editor is opened. You are currently editing a template with the title ${this.state.currentImage.name}. `
+    if (this.state.imageDescription) {
+      text += `The image content can be described as follows. ${this.state.imageDescription} `
+    } else {
+      text += "The creator did not add a description of the image content. "
+    }
     this.state.captions.forEach((caption,index) => {
         if(caption.length > 0 && caption !== '') text += `Caption ${index+1} says ${caption}. `
       })
@@ -209,6 +216,7 @@ class App extends React.Component {
     const addedImgInfo = getAddedImgInfo(newCurrentImage)
     const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"})
     const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : []
+    const imageDescription = newCurrentImage.hasOwnProperty("imageDescription") ? newCurrentImage.imageDescription : "" 
 
     this.setState({
       currentImage: newCurrentImage,
@@ -226,7 +234,8 @@ class App extends React.Component {
       addedImgPositions_X: addedImgInfo.map(x => x[1]),
       addedImgPositions_Y: addedImgInfo.map(y => y[2]),
       canvasSize: canvasSize,
-      drawingCoordinates: drawingCoordinates
+      drawingCoordinates: drawingCoordinates,
+      imageDescription: imageDescription
     });
   }
 
@@ -322,6 +331,7 @@ class App extends React.Component {
             canvasSize={this.state.canvasSize}
             setCanvasSize={this.setCanvasSize.bind(this)}
             imageInfo={this.state.imageInfo}
+            imageDescription={this.state.imageDescription}
         />
         <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
         <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>

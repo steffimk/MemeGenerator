@@ -6,7 +6,8 @@ export default class EditorControl extends React.Component {
     super(props);
     this.state = {
         hideCaptions: false,
-        hideAddedImages: false
+        hideAddedImages: false,
+        hideDescription: true
     }
   }
 
@@ -86,14 +87,15 @@ export default class EditorControl extends React.Component {
     const xPosName = isAddedImg ? "addedImgPositions_X" : "imageInfoX"
     const yPosName = isAddedImg ? "addedImgPositions_Y" : "imageInfoY"
     const imgName = isAddedImg ? ("addedImage" + count) : "mainImage";
-    if (!isAddedImg && size == null) size = 100 
+    const imgTitle = isAddedImg ? title : "Main Template"
+    if (!isAddedImg && size == null) size = 100
     size = (size !== undefined ? size : 50);
     imgPosX = (imgPosX !== undefined ? imgPosX : 0);
     imgPosY = (imgPosY !== undefined ? imgPosY : 0);
 
     return (
       <form>
-        <p>{title}:</p>
+        <p>{imgTitle}:</p>
         <p>
           Size:&nbsp;
           <input
@@ -221,6 +223,19 @@ export default class EditorControl extends React.Component {
             style={{ width: '5ch' }}
           />
         </p>
+        <button name="hideDescription" onClick={this.clickedOnHideButton}>
+          {(this.state.hideDescription === true) ? "Describe image content" : "Hide description editor"}</button>
+        {!this.state.hideDescription && 
+          (<p>
+            <small>Describe the image content<br/>to make your meme accessible<br/>to the visually impaired:</small>
+            <textarea
+              name="imageDescription"
+              placeholder="Describe the image content"
+              value={this.props.imageDescription}
+              onChange={this.props.changeListener}
+              rows="5"
+            />
+          </p>)}
       </div>
     );
   }
@@ -244,5 +259,6 @@ EditorControl.propTypes = {
   fontColor: PropTypes.string.isRequired,
   canvasSize: PropTypes.object.isRequired,
   setCanvasSize: PropTypes.func.isRequired,
-  imageInfo: PropTypes.object.isRequired
+  imageInfo: PropTypes.object.isRequired,
+  imageDescription: PropTypes.string.isRequired
 }
