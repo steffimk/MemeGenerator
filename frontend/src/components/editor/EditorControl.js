@@ -147,17 +147,22 @@ export default class EditorControl extends React.Component {
   render() {
       const captionPositions_X = this.props.captionPositions_X;
       const captionPositions_Y = this.props.captionPositions_Y;
-      const captionInputs = this.props.captions.map(
+      var captionInputs = this.props.captions.map(
         (caption, index) => this.renderCaption(
             caption, captionPositions_X[index], captionPositions_Y[index], index
         )
       );
+      captionInputs.push(<button name="addCaption" onClick={this.props.handleAddCaption} 
+          style={{ display: 'block' }}>Add an extra caption</button>)
+
       const addedImageEdits = this.props.addedImages.map(
         (image, i) => this.renderImage(
           image.name, this.props.addedImgSizes[i], this.props.addedImgPositions_X[i], this.props.addedImgPositions_Y[i], i, true
         )
       )
       addedImageEdits.unshift(this.renderImage(this.props.title, this.props.imageInfo.size, this.props.imageInfo.x, this.props.imageInfo.y, -1, false))
+      addedImageEdits.push(<button name="addImage" onClick={this.props.switchToAddImageMode}>
+          {(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}</button>)
       
     return (
       <div>
@@ -197,11 +202,8 @@ export default class EditorControl extends React.Component {
         <button name="hideCaptions" onClick={this.clickedOnHideButton} style={{ display: 'block' }}>
           {(this.state.hideCaptions === true) ? "Show caption editors" : "Hide caption editors"}</button>
         {!this.state.hideCaptions && (captionInputs)}
-        <button name="addImage" onClick={this.props.switchToAddImageMode}>
-          {(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}</button>
-        {(this.props.addedImages.length > 0) &&
-          (<button name="hideAddedImages" onClick={this.clickedOnHideButton} style={{ display: 'block' }}>
-            {(this.state.hideAddedImages === true) ? "Show image editors" : "Hide image editors"}</button>)}
+        <button name="hideAddedImages" onClick={this.clickedOnHideButton} style={{ display: 'block' }}>
+            {(this.state.hideAddedImages === true) ? "Show image editors" : "Hide image editors"}</button>
         {!this.state.hideAddedImages && (addedImageEdits)}
         <p>
           Canvas Width:&nbsp;
@@ -260,5 +262,6 @@ EditorControl.propTypes = {
   canvasSize: PropTypes.object.isRequired,
   setCanvasSize: PropTypes.func.isRequired,
   imageInfo: PropTypes.object.isRequired,
-  imageDescription: PropTypes.string.isRequired
+  imageDescription: PropTypes.string.isRequired,
+  handleAddCaption: PropTypes.func.isRequired
 }

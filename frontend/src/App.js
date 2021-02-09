@@ -89,6 +89,9 @@ class App extends React.Component {
         })
   }
 
+  /**
+   * Adds an empty caption
+   */
   handleAddCaption = () => {
     const newBoxCount = this.state.currentImage.box_count + 1
     const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
@@ -332,8 +335,8 @@ class App extends React.Component {
             setCanvasSize={this.setCanvasSize.bind(this)}
             imageInfo={this.state.imageInfo}
             imageDescription={this.state.imageDescription}
+            handleAddCaption={this.handleAddCaption}
         />
-        <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
         <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
       </div>
       
