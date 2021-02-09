@@ -1,4 +1,6 @@
 import React from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 import './App.css';
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
@@ -241,7 +243,13 @@ class App extends React.Component {
 
   render () {
     return (
-    <div className="App">
+    <div>
+      <AppBar className="Header" position="static">
+        <Toolbar>
+          MemeGen
+        </Toolbar>
+      </AppBar>
+      <div className="App">
       <div className="left">
         <TemplateGallery
             currentImage={this.state.currentImage}
@@ -297,7 +305,7 @@ class App extends React.Component {
         <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
         <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
       </div>
-      
+      </div>
       </div>)
   }
 }

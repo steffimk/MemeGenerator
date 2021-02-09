@@ -1,4 +1,6 @@
 import React from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 import './Gallery.css'
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
@@ -70,6 +72,12 @@ class Gallery extends React.Component {
         ];
 
         return (
+            <div>
+            <AppBar className="Header" position="static">
+              <Toolbar>
+                MemeGen
+              </Toolbar>
+            </AppBar>
             <div className="gallery-container">
                 <div className="image-gallery" style={gallery_style}>
                     <div className="column">
@@ -90,6 +98,7 @@ class Gallery extends React.Component {
                     </div>
                 </div>
                 <SingleImage images={this.state.images} id={id} />
+            </div>
             </div>
         );
     }

@@ -6,6 +6,7 @@ body {
     height: 100%;
 }
 
+
 .App {
     height: 100%;
     width: 100%;
@@ -62,3 +63,6 @@ body {
     }
 }
 
+.Header {
+    font-size: 25px;
+}
