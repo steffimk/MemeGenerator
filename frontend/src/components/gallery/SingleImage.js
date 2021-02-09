@@ -56,12 +56,14 @@ export default class SingleImage extends React.Component {
 
                 return (
                     // <Link to="."> {/* relative link up one level*/}
-                        <div className="modal">
-                            <h1 className="modal-title">{image.name}&nbsp;<i class="fas fa-audio-description" onClick={this.startAudioDescription}/></h1>
+                    <div className="modal">
+                        <h1 className="modal-title">{image.name}&nbsp;<i class="fas fa-audio-description" onClick={this.startAudioDescription}/></h1>
+                        <Link to="."> {/* relative link up one level*/}
                             <Link className="modal-nav modal-left" to={"/gallery/" + prev_image.id}/>
                             <img src={image.url} alt={image.name}/>
                             <Link className="modal-nav modal-right" to={"/gallery/" + next_image.id}/>
-                        </div>
+                        </Link>
+                    </div>
                     // </Link>
                 )
             }else{
