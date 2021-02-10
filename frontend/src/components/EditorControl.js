@@ -11,8 +11,8 @@ export default class EditorControl extends React.Component {
     };
   }
 
-  handleChangeText = (result) => {
-     console.log("IIIIMMM EEDITTT",result);
+  handleChangeText = (result, count) => {
+     console.log("IIIIMMM EEDITTT " + result + " count: " + count);
      this.setState({text: result});
      console.log("Input"+this.state.text);
      this.props.text(result);
@@ -37,7 +37,7 @@ export default class EditorControl extends React.Component {
           onChange={(e) => this.props.changeListener(e, count)}
           style={{ display: 'block' }}
         />
-        <Dictaphone field={captionID} result={this.handleChangeText} ></Dictaphone>
+        <Dictaphone field={captionID} result={(result) => this.props.newDictatedCaption(result, count)}/>
         {/* <Dictaphone field={captionID} result={this.handleChangeText} onChange={(e) => this.props.changeListener(e)}></Dictaphone> */}
         <p>
           x:&nbsp;
@@ -128,5 +128,6 @@ EditorControl.propTypes = {
   fontSize: PropTypes.number.isRequired,
   isItalic: PropTypes.bool.isRequired,
   isBold: PropTypes.bool.isRequired,
-  fontColor: PropTypes.string.isRequired
+  fontColor: PropTypes.string.isRequired,
+  newDictatedCaption: PropTypes.func.isRequired
 }

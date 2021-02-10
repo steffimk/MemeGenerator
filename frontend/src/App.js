@@ -59,9 +59,11 @@ class App extends React.Component {
         })
   }
 
-   handleChangeText =  (result) => {
-     console.log("app", result);
-
+  newDictatedCaption = (result, count) => {
+     console.log("new dictated caption " + count + ": " + result);
+     var newCaptions = this.state.captions
+     newCaptions[count] = result
+     this.setState({ captions: newCaptions })
    }
 
   handleChange = (event, index) => {
@@ -159,7 +161,7 @@ class App extends React.Component {
             isItalic={this.state.isItalic}
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
-            text={this.handleChangeText}
+            newDictatedCaption={this.newDictatedCaption}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate.bind(this)}>Save as template</button>
       </div>
