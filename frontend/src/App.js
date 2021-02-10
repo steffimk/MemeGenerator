@@ -61,9 +61,9 @@ class App extends React.Component {
 
   newDictatedCaption = (result, count) => {
      console.log("new dictated caption " + count + ": " + result);
-     var newCaptions = this.state.captions
-     newCaptions[count] = result
-     this.setState({ captions: newCaptions })
+     var newCaptions = this.state.captions;
+     newCaptions[count] = result;
+     this.setState({ captions: newCaptions });
    }
 
   handleChange = (event, index) => {
