@@ -1,7 +1,6 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import './App.css';
+import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
@@ -244,11 +243,7 @@ class App extends React.Component {
   render () {
     return (
     <div>
-      <AppBar className="Header" position="static">
-        <Toolbar>
-          MemeGen
-        </Toolbar>
-      </AppBar>
+      <CustomAppBar></CustomAppBar>
       <div className="App">
       <div className="left">
         <TemplateGallery
