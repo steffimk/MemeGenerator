@@ -26,10 +26,9 @@ const Dictaphone = (props) => {
   const [text, setText] = React.useState();
  
   React.useEffect(() => {
-    if(transcript !== '' ) {
-      console.log("Dica Hieeeeeer", transcript);
+    if(transcript !== '' && voiceOn ) {
+      console.log("Dica " + props.field + " Hieeeeeer : " + transcript);
       props.result(transcript);
-      
     }
   },[interimTranscript, finalTranscript]);
 
