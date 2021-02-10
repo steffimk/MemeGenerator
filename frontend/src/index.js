@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import Gallery from './components/gallery/Gallery'
-import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog'
+import Gallery from './components/gallery/Gallery';
+import Editor from './components/editor/Editor';
+import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog';
 import {
     BrowserRouter,
     Switch,
@@ -25,7 +26,7 @@ function Router() {
             </Route>
 
             <Route path="/editor">
-                <App />
+                <Editor />
             </Route>
 
             <Route path="/newtemplate">
