@@ -4,28 +4,13 @@ import Dictaphone from '../Dictaphone';
 
 export default class EditorControl extends React.Component {
 
-  constructor(){
-    super();
-    this.state = {
-      text: ''
-    };
-  }
-
-  handleChangeText = (result, count) => {
-     console.log("IIIIMMM EEDITTT " + result + " count: " + count);
-     this.setState({text: result});
-     console.log("Input"+this.state.text);
-     this.props.text(result);
-
-  }
-
   renderCaption(caption, captionPosition_X, captionPosition_Y, count){
     const placeholder = 'Enter Caption ' + (count+1);
     const captionID = 'caption' + (count+1);
     const capName = 'caption' + count;
     captionPosition_X = (captionPosition_X !== undefined ? captionPosition_X : 50);
     captionPosition_Y = (captionPosition_Y !== undefined ? captionPosition_Y : 50);
-    caption = this.state.text;
+ 
 
     return (
       <form>
@@ -38,7 +23,6 @@ export default class EditorControl extends React.Component {
           style={{ display: 'block' }}
         />
         <Dictaphone field={captionID} result={(result) => this.props.newDictatedCaption(result, count)}/>
-        {/* <Dictaphone field={captionID} result={this.handleChangeText} onChange={(e) => this.props.changeListener(e)}></Dictaphone> */}
         <p>
           x:&nbsp;
           <input
