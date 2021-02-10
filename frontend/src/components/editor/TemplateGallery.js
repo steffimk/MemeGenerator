@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './TemplateGallery.css'
+import './TemplateGallery.css';
 import {Button} from "@material-ui/core";
-import NewTemplateDialog from "./newTemplateDialog/NewTemplateDialog";
-
+import NewTemplateDialog from "../newTemplateDialog/NewTemplateDialog"
 export default class TemplateGallery extends React.Component {
 
-    constructor(props) {
-        super(props);
+    constructor(props){
+        super(props)
         this.state = {
             "templates": [],
             "modalOpen": false,
+            imageKeyMouseHovering: undefined // id of image the mouse is hovering over
         }
     }
 
@@ -38,21 +38,45 @@ export default class TemplateGallery extends React.Component {
         this.setState({"templates": [template, ...this.state.templates], "modalOpen": false})
     }
 
-    renderImage(image) {
-        return <img
-            src={image.url}
-            onClick={this.props.changeCurrentImage.bind(this, image)}
-            key={image.id}
-            alt={image.name}
-        />
+    setIsHovering = (e) => {
+        if (e.type === "mouseenter") {
+            this.setState({imageKeyMouseHovering: e._targetInst.key})
+        } else if (e.type === "mouseleave") {
+            if (this.state.imageKeyMouseHovering === e._targetInst.key) {
+                this.setState({imageKeyMouseHovering: null})
+            }
+        }
     }
 
-    render() {
+    getTitle(image) {
+        if (image.id !== this.state.imageKeyMouseHovering) {
+            return ""
+        } else {
+            return this.props.isInAddImageMode ? `Add ${image.name} to your meme` : `Use ${image.name} as template`
+        }
+    }
+
+    renderImage(image) {
+        return <img 
+                src={image.url}
+                onMouseEnter={this.setIsHovering}
+                onMouseLeave={this.setIsHovering}
+                onClick={this.props.changeCurrentImage.bind(this,image)}
+                key={image.id}
+                alt={image.name}
+                title={this.getTitle(image)}
+                />
+    }
+
+    render(){
         const images = this.state.templates.map((image) => this.renderImage(image))
         return (
             <div>
                 <Button className="newTemplateButton" variant="contained" onClick={() => this.setState({"modalOpen": true})}>New Template Image</Button>
                 <div className="template-gallery">
+                    {this.props.isInAddImageMode && (
+                        <h4>Select the image you want to add:</h4>
+                    )}
                     {images}
                 </div>
                 <NewTemplateDialog onSave={(e) => this.addTemplate(e)}
@@ -66,6 +90,7 @@ export default class TemplateGallery extends React.Component {
 
 TemplateGallery.propTypes = {
     currentImage: PropTypes.object.isRequired,
+    images: PropTypes.array.isRequired,
     changeCurrentImage: PropTypes.func.isRequired,
-    templateEndpoint: PropTypes.string.isRequired,
+    isInAddImageMode: PropTypes.bool.isRequired
 }
