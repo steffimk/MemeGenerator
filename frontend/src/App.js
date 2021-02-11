@@ -77,6 +77,13 @@ class App extends React.Component {
         })
   }
 
+  newDictatedCaption = (result, count) => {
+     console.log("new dictated caption " + count + ": " + result);
+     var newCaptions = this.state.captions;
+     newCaptions[count] = result;
+     this.setState({ captions: newCaptions });
+   }
+
   handleAddCaption = () => {
     const newBoxCount = this.state.currentImage.box_count + 1
     const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
@@ -97,6 +104,7 @@ class App extends React.Component {
    * @param {number} index 
    */
   handleChange = (event, index) => {
+    console.log("event",event);
 
     if(event.target.name.includes("imageInfo")) {
       this.updateImageInfo(event)
@@ -245,16 +253,16 @@ class App extends React.Component {
     <div>
       <CustomAppBar></CustomAppBar>
       <div className="App">
-      <div className="left">
-        <TemplateGallery
+        <div className="left">
+          <TemplateGallery
             currentImage={this.state.currentImage}
             changeCurrentImage={this.onClickedOnImageInGallery}
             templateEndpoint={TEMPLATE_ENDPOINT}
             isInAddImageMode={this.state.isInAddImageMode}
-        />
-      </div>
-      <div className="middle">
-        <ImageCarousel
+          />
+        </div>
+        <div className="middle">
+          <ImageCarousel
             image={this.state.currentImage}
             imageInfo={this.state.imageInfo}
             captions={this.state.captions}
@@ -273,11 +281,11 @@ class App extends React.Component {
             setCanvasSize={this.setCanvasSize.bind(this)}
             coordinates={this.state.drawingCoordinates}
             addCoordinate={this.addDrawingCoordinate}
-        />
-      </div>
-      <div className="control right">
-        <h3 style={{fontWeight: 'bold'}}>Create Your Meme</h3>
-        <EditorControl
+          />
+        </div>
+        <div className="control right">
+          <h3 style={{fontWeight: 'bold'}}>Create Your Meme</h3>
+          <EditorControl
             captions={this.state.captions}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
@@ -287,6 +295,7 @@ class App extends React.Component {
             isItalic={this.state.isItalic}
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
+            newDictatedCaption={this.newDictatedCaption}
             isInAddImageMode={this.state.isInAddImageMode}
             switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
             addedImages={this.state.addedImages}
@@ -296,12 +305,13 @@ class App extends React.Component {
             canvasSize={this.state.canvasSize}
             setCanvasSize={this.setCanvasSize.bind(this)}
             imageInfo={this.state.imageInfo}
-        />
-        <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
-        <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
+          />
+          <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
+          <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
+        </div>
       </div>
-      </div>
-      </div>)
+
+    </div>)
   }
 }
 
