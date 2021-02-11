@@ -76,6 +76,13 @@ class App extends React.Component {
         })
   }
 
+  newDictatedCaption = (result, count) => {
+     console.log("new dictated caption " + count + ": " + result);
+     var newCaptions = this.state.captions;
+     newCaptions[count] = result;
+     this.setState({ captions: newCaptions });
+   }
+
   handleAddCaption = () => {
     const newBoxCount = this.state.currentImage.box_count + 1
     const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
@@ -96,6 +103,7 @@ class App extends React.Component {
    * @param {number} index 
    */
   handleChange = (event, index) => {
+    console.log("event",event);
 
     if(event.target.name.includes("imageInfo")) {
       this.updateImageInfo(event)
@@ -284,6 +292,7 @@ class App extends React.Component {
             isItalic={this.state.isItalic}
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
+            newDictatedCaption={this.newDictatedCaption}
             isInAddImageMode={this.state.isInAddImageMode}
             switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
             addedImages={this.state.addedImages}
@@ -297,7 +306,6 @@ class App extends React.Component {
         <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
         <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
       </div>
-      
       </div>)
   }
 }
