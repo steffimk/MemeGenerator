@@ -5,7 +5,7 @@ import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
-import Speech from 'speak-tts'
+import AudioDescription from "./components/textToSpeech/AudioDescription"
 
 const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
 
@@ -33,16 +33,7 @@ class App extends React.Component {
       canvasSize: {width: "97%", height: "90%"},
       drawingCoordinates: [],
       imageDescription: ""
-    };
-    this.speech = new Speech()
-    this.speech
-      .init({'lang': 'en-GB', 'voice':'Google UK English Male'})
-      .then((data) => {
-        console.log('Speech is ready, voices are available', data);
-      })
-      .catch((e) => {
-        console.error('An error occured while initializing : ', e);
-      });
+    }
   }
 
   /**
@@ -138,28 +129,6 @@ class App extends React.Component {
     }
   }
 
-  /**
-   * Audio description of the editor. Reads out the title and captions of the current template.
-   */
-  readScreen = () => {
-    var text = `The meme editor is opened. You are currently editing a template with the title ${this.state.currentImage.name}. `
-    if (this.state.imageDescription) {
-      text += `The image content can be described as follows. ${this.state.imageDescription} `
-    } else {
-      text += "The creator did not add a description of the image content. "
-    }
-    this.state.captions.forEach((caption,index) => {
-        if(caption.length > 0 && caption !== '') text += `Caption ${index+1} says ${caption}. `
-      })
-    this.speech
-      .speak({text: text})
-      .then(() => {
-        console.log('Speech was successful!');
-      })
-      .catch((e) => {
-        console.error('A speech error occurred: ', e);
-      });
-  }
 
   /*
    * Call when image in template gallery is clicked on
@@ -325,29 +294,36 @@ class App extends React.Component {
         />
       </div>
       <div className="control right">
-        <h3 style={{fontWeight: 'bold'}}>Editor&nbsp;<i class="fas fa-audio-description" onClick={this.readScreen}/></h3>
-          <EditorControl
+        <h3 style={{fontWeight: 'bold'}}>Editor&nbsp;
+          <AudioDescription 
+            isEditor={true}
             captions={this.state.captions}
-            captionPositions_X={this.state.captionPositions_X}
-            captionPositions_Y={this.state.captionPositions_Y}
-            changeListener={this.handleChange}
-            title={this.state.title}
-            fontSize={this.state.fontSize}
-            isItalic={this.state.isItalic}
-            isBold={this.state.isBold}
-            fontColor={this.state.fontColor}
-            newDictatedCaption={this.newDictatedCaption}
-            isInAddImageMode={this.state.isInAddImageMode}
-            switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
-            addedImages={this.state.addedImages}
-            addedImgSizes={this.state.addedImgSizes}
-            addedImgPositions_X={this.state.addedImgPositions_X}
-            addedImgPositions_Y={this.state.addedImgPositions_Y}
-            canvasSize={this.state.canvasSize}
-            setCanvasSize={this.setCanvasSize.bind(this)}
-            imageInfo={this.state.imageInfo}
             imageDescription={this.state.imageDescription}
-            handleAddCaption={this.handleAddCaption}
+            imageName={this.state.currentImage.name}
+          />
+        </h3>
+        <EditorControl
+          captions={this.state.captions}
+          captionPositions_X={this.state.captionPositions_X}
+          captionPositions_Y={this.state.captionPositions_Y}
+          changeListener={this.handleChange}
+          title={this.state.title}
+          fontSize={this.state.fontSize}
+          isItalic={this.state.isItalic}
+          isBold={this.state.isBold}
+          fontColor={this.state.fontColor}
+          newDictatedCaption={this.newDictatedCaption}
+          isInAddImageMode={this.state.isInAddImageMode}
+          switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
+          addedImages={this.state.addedImages}
+          addedImgSizes={this.state.addedImgSizes}
+          addedImgPositions_X={this.state.addedImgPositions_X}
+          addedImgPositions_Y={this.state.addedImgPositions_Y}
+          canvasSize={this.state.canvasSize}
+          setCanvasSize={this.setCanvasSize.bind(this)}
+          imageInfo={this.state.imageInfo}
+          imageDescription={this.state.imageDescription}
+          handleAddCaption={this.handleAddCaption}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
         </div>
