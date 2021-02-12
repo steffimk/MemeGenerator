@@ -10,16 +10,17 @@ const dbOp = require('../databaseOperations')
 router.post('/', function(req, res, next) {
   const db = req.db
   const { username, password } = req.body
-  if (password.length < 7) {
-    res.json({
-      "success": false,
-      "data": {"message": "Password has to contain at least seven characters"}
-    })
-    return
-  }
   dbOp.findUserWithName(db, username).then((user) => {
     console.log(user)
     if(user === null) {
+      if (username.length < 1 || /\s/.test(username) || password.length < 7) {
+        console.log('Invalid inputs')
+        res.json({
+          "success": false,
+          "data": {"message": "Invalid inputs: Name is empty, contains a whitespace or the password is too short."}
+        })
+        return
+      }
       dbOp.createNewUser(db, username, password) // TODO: Check whether successful or not
       // New user created.
       console.log("New user created.")
@@ -46,6 +47,10 @@ function sendJWT(res, username) {
     "success": true,
     "data": {"token": jwtTokenString}
   })
+}
+
+function areNameAndPWValid(username, password) {
+  return username.isEmpty || password.length < 7
 }
 
 module.exports = router;

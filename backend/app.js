@@ -37,7 +37,7 @@ app.use('/login', loginRouter);
 
 // Authentication middleware: Verify jwt token
 app.use((req,res,next) => {
-  const sentToken = req.headers.jwt
+  const sentToken = req.headers.authorization
   jwt.verify(sentToken, constants.SIGNING_KEY, (err, verifiedJwt) => {
     if(err) {
       console.log("Authentication failed!")

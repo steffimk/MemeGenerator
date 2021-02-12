@@ -21,8 +21,11 @@ export default class TemplateGallery extends React.Component {
     }
 
     get_memeTemplates() {
-        fetch(this.props.templateEndpoint)
-            .then(response => response.json())
+        const jwt = localStorage.getItem('memeGen_jwt')
+        fetch(this.props.templateEndpoint, {
+            method: 'GET',
+            headers: {"Authorization": jwt }
+          }).then(response => response.json())
             .then(json => {
                 console.log(json.data);
                 this.setState({

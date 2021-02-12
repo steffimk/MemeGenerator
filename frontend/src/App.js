@@ -57,10 +57,14 @@ class App extends React.Component {
       canvasSize: this.state.canvasSize,
       drawingCoordinates: this.state.drawingCoordinates
     }
+    const jwt = localStorage.getItem('memeGen_jwt')
     console.log(memeTemplateToSave)
     fetch(TEMPLATE_ENDPOINT, {
       method: 'POST',
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Authorization": jwt,
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(memeTemplateToSave),
     }).then(response => {
             if(response.ok) {
@@ -100,7 +104,7 @@ class App extends React.Component {
 
   /**
    * Handles the most user inputs
-   * @param {object} event 
+   * @param {React.ChangeEvent} event 
    * @param {number} index 
    */
   handleChange = (event, index) => {
