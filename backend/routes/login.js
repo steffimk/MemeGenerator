@@ -9,31 +9,28 @@ const dbOp = require('../databaseOperations')
 /* POST login listing. */
 router.post('/', function(req, res, next) {
   const db = req.db
-  const { username, password } = req.body
+  const { username, password, login } = req.body
   dbOp.findUserWithName(db, username).then((user) => {
     console.log(user)
     if(user === null) {
-      if (username.length < 1 || /\s/.test(username) || password.length < 7) {
-        console.log('Invalid inputs')
-        res.json({
-          "success": false,
-          "data": {"message": "Invalid inputs: Name is empty, contains a whitespace or the password is too short."}
-        })
+      if (login) {
+        negativeResponse(res, "User not found. Check the spelling of the username.")
+        return
+      } else if (username.length < 1 || /\s/.test(username) || password.length < 7) {
+        negativeResponse(res, "Invalid inputs: Name contains whitespaces or the password is too short.")
         return
       }
       dbOp.createNewUser(db, username, password) // TODO: Check whether successful or not
       // New user created.
       console.log("New user created.")
       sendJWT(res, username)
-    } else if (user.hasOwnProperty('password') && user.password === password) {
+    } else if (user.hasOwnProperty('password') && user.password === password && login) {
       // User succesfully logged in
       console.log("Existing user logged in.")
       sendJWT(res, username)
     } else {
-      res.json({
-        "success": false,
-        "data": {"message": "Could not login. Username exists already or wrong password"}
-      })
+      if (login) negativeResponse(res, "Wrong password.")
+      else negativeResponse(res, "This username exists already.")
     } 
   })
 });
@@ -49,8 +46,11 @@ function sendJWT(res, username) {
   })
 }
 
-function areNameAndPWValid(username, password) {
-  return username.isEmpty || password.length < 7
+function negativeResponse(res, message) {
+  res.json({
+    "success": false,
+    "data": {"message": message}
+  })
 }
 
 module.exports = router;
