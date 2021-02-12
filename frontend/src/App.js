@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 
+import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
@@ -89,6 +90,13 @@ class App extends React.Component {
         })
   }
 
+  newDictatedCaption = (result, count) => {
+     console.log("new dictated caption " + count + ": " + result);
+     var newCaptions = this.state.captions;
+     newCaptions[count] = result;
+     this.setState({ captions: newCaptions });
+   }
+
   /**
    * Adds an empty caption
    */
@@ -112,6 +120,7 @@ class App extends React.Component {
    * @param {number} index 
    */
   handleChange = (event, index) => {
+    console.log("event",event);
 
     if(event.target.name.includes("imageInfo")) {
       this.updateImageInfo(event)
@@ -282,17 +291,19 @@ class App extends React.Component {
 
   render () {
     return (
-    <div className="App">
-      <div className="left">
-        <TemplateGallery
+    <div>
+      <CustomAppBar></CustomAppBar>
+      <div className="App">
+        <div className="left">
+          <TemplateGallery
             currentImage={this.state.currentImage}
             changeCurrentImage={this.onClickedOnImageInGallery}
             templateEndpoint={TEMPLATE_ENDPOINT}
             isInAddImageMode={this.state.isInAddImageMode}
-        />
-      </div>
-      <div className="middle">
-        <ImageCarousel
+          />
+        </div>
+        <div className="middle">
+          <ImageCarousel
             image={this.state.currentImage}
             imageInfo={this.state.imageInfo}
             captions={this.state.captions}
@@ -314,8 +325,8 @@ class App extends React.Component {
         />
       </div>
       <div className="control right">
-        <h3 style={{fontWeight: 'bold'}} onClick={this.readOut}>Editor&nbsp;<i class="fas fa-audio-description" onClick={this.readScreen}/></h3>
-        <EditorControl
+        <h3 style={{fontWeight: 'bold'}}>Editor&nbsp;<i class="fas fa-audio-description" onClick={this.readScreen}/></h3>
+          <EditorControl
             captions={this.state.captions}
             captionPositions_X={this.state.captionPositions_X}
             captionPositions_Y={this.state.captionPositions_Y}
@@ -325,6 +336,7 @@ class App extends React.Component {
             isItalic={this.state.isItalic}
             isBold={this.state.isBold}
             fontColor={this.state.fontColor}
+            newDictatedCaption={this.newDictatedCaption}
             isInAddImageMode={this.state.isInAddImageMode}
             switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
             addedImages={this.state.addedImages}
@@ -338,9 +350,10 @@ class App extends React.Component {
             handleAddCaption={this.handleAddCaption}
         />
         <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
+        </div>
       </div>
-      
-      </div>)
+
+    </div>)
   }
 }
 
