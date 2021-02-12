@@ -51,7 +51,7 @@ export default class Login extends Component {
     return (
       <div>
         <CustomAppBar/>
-        <div style={{ paddingTop:'20px', paddingLeft:'20px' }}>
+        <div style={{ paddingTop:'30px', paddingLeft:'30px' }}>
           <TextField name='username' type='text' placeholder='Username' style={{ paddingRight:'20px' }} 
             onChange={this.handleChange}/>
           <TextField name='password' type='password' placeholder='Password' style={{ paddingRight:'20px' }}
