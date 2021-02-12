@@ -5,10 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var db = require('monk')('mongo:27017/ommOfficialDB');
+const jwt = require('njwt');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var memesRouter = require('./routes/memes');
+var loginRouter = require('./routes/login');
 
 var app = express();
 db.then(() => {
@@ -28,6 +30,25 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Use Login route before authentication
+app.use('/login', loginRouter);
+
+// Authentication middleware: Verify jwt token
+app.use((req,res,next) => {
+  const sentToken = req.headers.jwt
+  jwt.verify(sentToken, 'key', (err, verifiedJwt) => {
+    if(err) {
+      console.log("Authentication failed!")
+      res.status(401).send(err.message)
+      return
+    } else {
+      console.log("Authentication successful! JWT: " + verifiedJwt)
+      next()
+    } 
+  })
+})
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
