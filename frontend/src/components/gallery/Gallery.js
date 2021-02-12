@@ -1,5 +1,6 @@
 import React from 'react';
 import './Gallery.css';
+import { Redirect } from 'react-router-dom'
 import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
@@ -9,6 +10,7 @@ class Gallery extends React.Component {
     constructor() {
         super();
         this.state = {
+            isAuthorized: true,
             images: [],
         };
     }
@@ -36,15 +38,22 @@ class Gallery extends React.Component {
 
     get_memes() {
         fetch("https://api.imgflip.com/get_memes")
-            .then(response => response.json())
-            .then(json =>
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 401) this.setState({ isAutherized: false })
+                    return Promise.reject("Server responded with " + response.status + " " + response.statusText)
+                }
+                return response.json()
+            }).then(json =>
                 this.setState({
                     'images': json.data.memes
                 })
-            );
+            ).catch(e => console.log(e))
     }
 
     render() {
+        // If not logged in: Redirect to login page
+        if (!this.state.isAuthorized) return <Redirect to='/login'/>
 
         // try to get image id from url
         const { id } = this.props.match.params;

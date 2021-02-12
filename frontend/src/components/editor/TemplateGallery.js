@@ -25,14 +25,19 @@ export default class TemplateGallery extends React.Component {
         fetch(this.props.templateEndpoint, {
             method: 'GET',
             headers: {"Authorization": jwt }
-          }).then(response => response.json())
-            .then(json => {
+          }).then(response => {
+              if (!response.ok) {
+                if(response.status === 401) this.props.setIsAutherized(false)
+                return Promise.reject("Server responded with " + response.status + " " + response.statusText)
+              }
+              return response.json()
+            }).then(json => {
                 console.log(json.data);
                 this.setState({
                     'templates': json.data.templates
                 });
                 this.props.changeCurrentImage(json.data.templates[0]);
-            });
+            }).catch(e => console.log(e))
     }
 
     addTemplate(template) {
@@ -95,5 +100,6 @@ TemplateGallery.propTypes = {
     currentImage: PropTypes.object.isRequired,
     images: PropTypes.array.isRequired,
     changeCurrentImage: PropTypes.func.isRequired,
-    isInAddImageMode: PropTypes.bool.isRequired
+    isInAddImageMode: PropTypes.bool.isRequired,
+    setIsAutherized: PropTypes.func.isRequired
 }

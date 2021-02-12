@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import { Redirect } from 'react-router-dom'
 import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
@@ -12,6 +13,8 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
+      isAuthorized: true,
+
       currentImage: {},
       isInAddImageMode: false,
       // Following properties belong to current image
@@ -69,7 +72,8 @@ class App extends React.Component {
     }).then(response => {
             if(response.ok) {
                 return true;
-            }else{
+            } else {
+                if(response.status === 401) this.setState({ isAutherized: false })
                 return Promise.reject(
                     "API Responded with an error: "+response.status+" "+response.statusText
                 )
@@ -252,70 +256,80 @@ class App extends React.Component {
     this.setState({ drawingCoordinates: [...this.state.drawingCoordinates, newCoordinate] })
   }
 
+  setIsAutherized = (isAuthorized) => this.setState({ isAuthorized: isAuthorized })
+
   render () {
+    // If not logged in: Redirect to login page
+    if (!this.state.isAuthorized) return <Redirect to='/login'/>
+    
     return (
-    <div>
-      <CustomAppBar></CustomAppBar>
-      <div className="App">
-        <div className="left">
-          <TemplateGallery
-            currentImage={this.state.currentImage}
-            changeCurrentImage={this.onClickedOnImageInGallery}
-            templateEndpoint={TEMPLATE_ENDPOINT}
-            isInAddImageMode={this.state.isInAddImageMode}
-          />
-        </div>
-        <div className="middle">
-          <ImageCarousel
-            image={this.state.currentImage}
-            imageInfo={this.state.imageInfo}
-            captions={this.state.captions}
-            title={this.state.title}
-            fontSize={this.state.fontSize}
-            isItalic={this.state.isItalic}
-            isBold={this.state.isBold}
-            fontColor={this.state.fontColor}
-            captionPositions_X={this.state.captionPositions_X}
-            captionPositions_Y={this.state.captionPositions_Y}
-            addedImages={this.state.addedImages}
-            addedImgSizes={this.state.addedImgSizes}
-            addedImgPositions_X={this.state.addedImgPositions_X}
-            addedImgPositions_Y={this.state.addedImgPositions_Y}
-            canvasSize={this.state.canvasSize}
-            setCanvasSize={this.setCanvasSize.bind(this)}
-            coordinates={this.state.drawingCoordinates}
-            addCoordinate={this.addDrawingCoordinate}
-          />
-        </div>
-        <div className="control right">
-          <h3 style={{fontWeight: 'bold'}}>Create Your Meme</h3>
-          <EditorControl
-            captions={this.state.captions}
-            captionPositions_X={this.state.captionPositions_X}
-            captionPositions_Y={this.state.captionPositions_Y}
-            changeListener={this.handleChange}
-            title={this.state.title}
-            fontSize={this.state.fontSize}
-            isItalic={this.state.isItalic}
-            isBold={this.state.isBold}
-            fontColor={this.state.fontColor}
-            newDictatedCaption={this.newDictatedCaption}
-            isInAddImageMode={this.state.isInAddImageMode}
-            switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
-            addedImages={this.state.addedImages}
-            addedImgSizes={this.state.addedImgSizes}
-            addedImgPositions_X={this.state.addedImgPositions_X}
-            addedImgPositions_Y={this.state.addedImgPositions_Y}
-            canvasSize={this.state.canvasSize}
-            setCanvasSize={this.setCanvasSize.bind(this)}
-            imageInfo={this.state.imageInfo}
-          />
-          <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
-          <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
+      <div>
+        <CustomAppBar></CustomAppBar>
+        <div className="App">
+          <div className="left">
+            <TemplateGallery
+              currentImage={this.state.currentImage}
+              changeCurrentImage={this.onClickedOnImageInGallery}
+              templateEndpoint={TEMPLATE_ENDPOINT}
+              isInAddImageMode={this.state.isInAddImageMode}
+              setIsAutherized={this.setIsAutherized}
+            />
+          </div>
+          <div className="middle">
+            <ImageCarousel
+              image={this.state.currentImage}
+              imageInfo={this.state.imageInfo}
+              captions={this.state.captions}
+              title={this.state.title}
+              fontSize={this.state.fontSize}
+              isItalic={this.state.isItalic}
+              isBold={this.state.isBold}
+              fontColor={this.state.fontColor}
+              captionPositions_X={this.state.captionPositions_X}
+              captionPositions_Y={this.state.captionPositions_Y}
+              addedImages={this.state.addedImages}
+              addedImgSizes={this.state.addedImgSizes}
+              addedImgPositions_X={this.state.addedImgPositions_X}
+              addedImgPositions_Y={this.state.addedImgPositions_Y}
+              canvasSize={this.state.canvasSize}
+              setCanvasSize={this.setCanvasSize.bind(this)}
+              coordinates={this.state.drawingCoordinates}
+              addCoordinate={this.addDrawingCoordinate}
+            />
+          </div>
+          <div className="control right">
+            <h3 style={{ fontWeight: 'bold' }}>Create Your Meme</h3>
+            <EditorControl
+              captions={this.state.captions}
+              captionPositions_X={this.state.captionPositions_X}
+              captionPositions_Y={this.state.captionPositions_Y}
+              changeListener={this.handleChange}
+              title={this.state.title}
+              fontSize={this.state.fontSize}
+              isItalic={this.state.isItalic}
+              isBold={this.state.isBold}
+              fontColor={this.state.fontColor}
+              newDictatedCaption={this.newDictatedCaption}
+              isInAddImageMode={this.state.isInAddImageMode}
+              switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
+              addedImages={this.state.addedImages}
+              addedImgSizes={this.state.addedImgSizes}
+              addedImgPositions_X={this.state.addedImgPositions_X}
+              addedImgPositions_Y={this.state.addedImgPositions_Y}
+              canvasSize={this.state.canvasSize}
+              setCanvasSize={this.setCanvasSize.bind(this)}
+              imageInfo={this.state.imageInfo}
+            />
+            <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>
+              Add caption
+            </button>
+            <button name="saveButton" onClick={this.handleSaveAsTemplate}>
+              Save as template
+            </button>
+          </div>
         </div>
       </div>
-
-    </div>)
+    );
   }
 }
 
