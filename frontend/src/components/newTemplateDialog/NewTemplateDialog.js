@@ -123,10 +123,10 @@ export default class NewTemplateDialog extends React.Component{
         let video;
         if(this.isMediaDevicesCapable()){
             webcamButton = (
-                <IconButton onClick={() => this.onOpenCamera()}>
+                <IconButton onClick={() => this.onOpenCamera()} title='Hint: Click "Add Template" to take a photo!'>
                     <PhotoCameraIcon />
                 </IconButton>
-            );
+            ); 
             video = (<video className="hidden" ref={this.state.videoRef} autoPlay={true} /> );
         }
 
