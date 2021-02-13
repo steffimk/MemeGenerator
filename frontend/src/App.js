@@ -6,6 +6,7 @@ import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
 import AudioDescription from "./components/textToSpeech/AudioDescription"
+import { Button } from '@material-ui/core';
 
 const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
 
@@ -325,7 +326,15 @@ class App extends React.Component {
           imageDescription={this.state.imageDescription}
           handleAddCaption={this.handleAddCaption}
         />
-        <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
+        <Button 
+          name="saveButton"
+          variant="contained"
+          size="small"
+          color="secondary"
+          onClick={this.handleSaveAsTemplate}
+          style= {{ marginTop: '10px' }}>
+          Save as template
+        </Button>
         </div>
       </div>
 
