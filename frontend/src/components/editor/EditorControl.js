@@ -8,7 +8,6 @@ export default class EditorControl extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-        hideAddedImages: false,
         hideDescription: true
     }
   }
@@ -42,7 +41,7 @@ export default class EditorControl extends React.Component {
           <p>Caption {count + 1}</p>
         </AccordionSummary>
         <AccordionDetails>
-          <table>
+          <table style={{ borderSpacing: '10px' }}>
             <tr>
               <TextField
                 label={placeholder}
@@ -51,7 +50,6 @@ export default class EditorControl extends React.Component {
                 value={caption}
                 size="small"
                 placeholder={placeholder}
-                style={{ marginBottom: '10px' }}
                 onChange={(e) => this.props.changeListener(e, count)}
               />
             </tr>
@@ -114,53 +112,59 @@ export default class EditorControl extends React.Component {
     imgPosY = (imgPosY !== undefined ? imgPosY : 0);
 
     return (
-      <form>
-        <p>{imgTitle}:</p>
-        <p>
-          Size:&nbsp;
-          <input
-            type="range"
-            min="1"
-            max="100"
-            value={size}
-            name={sizeName}
-            key={sizeName + count}
-            className="slider"
-            id={imgName + 'Size'}
-            onChange={(e) => this.props.changeListener(e, count)}
-            style={{ alignmentBaseline: 'central'}}
-          />
-        </p>
-        <p>
-          x:&nbsp;
-          <input
-            type="range"
-            min="1"
-            max="100"
-            value={imgPosX}
-            name={xPosName}
-            key={xPosName + count}
-            className="slider"
-            id={imgName + '_X'}
-            onChange={(e) => this.props.changeListener(e, count)}
-            style={{ alignmentBaseline: 'central'}}
-          />
-        </p>
-        <p>
-          y:&nbsp;
-          <input
-            type="range"
-            min="1"
-            max="100"
-            value={imgPosY}
-            name={yPosName}
-            key={yPosName + count}
-            className="slider"
-            id={imgName + '_Y'}
-            onChange={(e) => this.props.changeListener(e, count)}
-          />
-        </p>
-      </form>
+      <Accordion style={{ width: '85%' }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{ height: '40px' }}>
+          <p>{imgTitle}:</p>
+        </AccordionSummary>
+        <AccordionDetails>
+          <table style={{ borderSpacing: '10px' }}>
+            <tr>
+              Size:&nbsp;
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={size}
+                name={sizeName}
+                key={sizeName + count}
+                className="slider"
+                id={imgName + 'Size'}
+                onChange={(e) => this.props.changeListener(e, count)}
+                style={{ alignmentBaseline: 'central' }}
+              />
+            </tr>
+            <tr>
+              x:&nbsp;
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={imgPosX}
+                name={xPosName}
+                key={xPosName + count}
+                className="slider"
+                id={imgName + '_X'}
+                onChange={(e) => this.props.changeListener(e, count)}
+                style={{ alignmentBaseline: 'central' }}
+              />
+            </tr>
+            <tr>
+              y:&nbsp;
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={imgPosY}
+                name={yPosName}
+                key={yPosName + count}
+                className="slider"
+                id={imgName + '_Y'}
+                onChange={(e) => this.props.changeListener(e, count)}
+              />
+            </tr>
+          </table>
+        </AccordionDetails>
+      </Accordion>
     );
   }
 
@@ -179,7 +183,7 @@ export default class EditorControl extends React.Component {
             color="primary"
             size="small"
             onClick={this.props.handleAddCaption} 
-            style={{ display: 'block', marginTop: '10px' }}>
+            style={{ display: 'block', marginTop: '10px', marginBottom: '10px' }}>
             Add an extra caption
         </Button>)
 
@@ -196,7 +200,7 @@ export default class EditorControl extends React.Component {
             color="primary"
             size="small"
             onClick={this.props.switchToAddImageMode}
-            style={{ display: "block", marginTop: "10px"}}>
+            style={{ display: 'block', marginTop: '10px', marginBottom: '10px'}}>
           {(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}
         </Button>)
       
@@ -252,14 +256,7 @@ export default class EditorControl extends React.Component {
           />} label="Bold"
         />
         {captionInputs}
-        <Button
-            name="hideAddedImages"
-            variant="contained"
-            size="small"
-            onClick={this.clickedOnHideButton}
-            style={{ display: 'block', marginTop: '10px' }}>
-            {(this.state.hideAddedImages === true) ? "Show image editors" : "Hide image editors"}</Button>
-        {!this.state.hideAddedImages && (addedImageEdits)}
+        {addedImageEdits}
         <TextField
           label="Canvas Width"
           variant="outlined"
@@ -289,13 +286,14 @@ export default class EditorControl extends React.Component {
           {(this.state.hideDescription === true) ? "Describe image content" : "Hide description editor"}</Button>
         {!this.state.hideDescription && 
           (<p>
-            <small>Describe the image content<br/>to make your meme accessible<br/>to the visually impaired:</small>
+            <small>Describe the image content to make your<br/>meme accessible to the visually impaired:</small>
             <textarea
               name="imageDescription"
               placeholder="Describe the image content"
               value={this.props.imageDescription}
               onChange={this.props.changeListener}
               rows="5"
+              style={{ width: '85%' }}
             />
           </p>)}
       </div>
