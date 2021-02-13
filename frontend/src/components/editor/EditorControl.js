@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dictaphone from '../../Dictaphone'
-import { Checkbox, FormControlLabel, Button, TextField } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 export default class EditorControl extends React.Component {
 
   constructor(props){
     super(props);
     this.state = {
-        hideCaptions: false,
         hideAddedImages: false,
         hideDescription: true
     }
@@ -37,49 +37,59 @@ export default class EditorControl extends React.Component {
     captionPosition_Y = (captionPosition_Y !== undefined ? captionPosition_Y : 50);
 
     return (
-      <form>
-        <p>Caption {count + 1}:</p>
-        <TextField
-          label={placeholder}
-          variant="outlined"
-          name="captions"
-          value={caption}
-          size="small"
-          placeholder={placeholder}
-          onChange={(e) => this.props.changeListener(e, count)}
-          style={{ display: 'block' }}
-        />
-        <Dictaphone field={captionID} result={(result) => this.props.newDictatedCaption(result, count)}/>
-        <p>
-          x:&nbsp;
-          <input
-            type="range"
-            min="1"
-            max="100"
-            value={captionPosition_X}
-            name="captionPositions_X"
-            key={'captionPositions_X' + count}
-            className="slider"
-            id={capName + '_X'}
-            onChange={(e) => this.props.changeListener(e, count)}
-            style={{alignmentBaseline: 'central'}}
-          />
-        </p>
-        <p>
-          y:&nbsp;
-          <input
-            type="range"
-            min="1"
-            max="100"
-            value={captionPosition_Y}
-            name="captionPositions_Y"
-            key={'captionPositions_Y' + count}
-            className="slider"
-            id={capName + '_Y'}
-            onChange={(e) => this.props.changeListener(e, count)}
-          />
-        </p>
-      </form>
+      <Accordion style={{ width: '85%' }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{ height: '40px' }}>
+          <p>Caption {count + 1}</p>
+        </AccordionSummary>
+        <AccordionDetails>
+          <table>
+            <tr>
+              <TextField
+                label={placeholder}
+                variant="outlined"
+                name="captions"
+                value={caption}
+                size="small"
+                placeholder={placeholder}
+                style={{ marginBottom: '10px' }}
+                onChange={(e) => this.props.changeListener(e, count)}
+              />
+            </tr>
+            <tr>
+              <Dictaphone field={captionID} result={(result) => this.props.newDictatedCaption(result, count)} />
+            </tr>
+            <tr>
+              x:&nbsp;
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={captionPosition_X}
+                name="captionPositions_X"
+                key={'captionPositions_X' + count}
+                className="slider"
+                id={capName + '_X'}
+                onChange={(e) => this.props.changeListener(e, count)}
+                style={{ alignmentBaseline: 'central' }}
+              />
+            </tr>
+            <tr>
+              y:&nbsp;
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={captionPosition_Y}
+                name="captionPositions_Y"
+                key={'captionPositions_Y' + count}
+                className="slider"
+                id={capName + '_Y'}
+                onChange={(e) => this.props.changeListener(e, count)}
+              />
+            </tr>
+          </table>
+        </AccordionDetails>
+      </Accordion>
     );
   }
 
@@ -241,15 +251,7 @@ export default class EditorControl extends React.Component {
             color="primary"
           />} label="Bold"
         />
-        <Button 
-            name="hideCaptions"
-            variant="contained"
-            size="small"
-            onClick={this.clickedOnHideButton}
-            style={{ display: 'block', marginTop: '10px' }}>
-            {(this.state.hideCaptions === true) ? "Show caption editors" : "Hide caption editors"}
-        </Button>
-        {!this.state.hideCaptions && (captionInputs)}
+        {captionInputs}
         <Button
             name="hideAddedImages"
             variant="contained"
