@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dictaphone from '../../Dictaphone'
+import { Checkbox, FormControlLabel, Button, TextField } from '@material-ui/core';
 export default class EditorControl extends React.Component {
 
   constructor(props){
@@ -16,7 +17,10 @@ export default class EditorControl extends React.Component {
    * Shows or hides the respective part of the editor
    * @param {object} event 
    */
-  clickedOnHideButton = (event) => this.setState({ [event.target.name]: !this.state[event.target.name]})
+  clickedOnHideButton = (event) => {
+    console.log(event)
+    this.setState({ [event.target.parentElement.name]: !this.state[event.target.parentElement.name]})
+  }
 
   /**
    * Renders the form to edit a caption with
@@ -35,9 +39,12 @@ export default class EditorControl extends React.Component {
     return (
       <form>
         <p>Caption {count + 1}:</p>
-        <input
+        <TextField
+          label={placeholder}
+          variant="outlined"
           name="captions"
           value={caption}
+          size="small"
           placeholder={placeholder}
           onChange={(e) => this.props.changeListener(e, count)}
           style={{ display: 'block' }}
@@ -111,7 +118,7 @@ export default class EditorControl extends React.Component {
             className="slider"
             id={imgName + 'Size'}
             onChange={(e) => this.props.changeListener(e, count)}
-            style={{alignmentBaseline: 'central'}}
+            style={{ alignmentBaseline: 'central'}}
           />
         </p>
         <p>
@@ -126,7 +133,7 @@ export default class EditorControl extends React.Component {
             className="slider"
             id={imgName + '_X'}
             onChange={(e) => this.props.changeListener(e, count)}
-            style={{alignmentBaseline: 'central'}}
+            style={{ alignmentBaseline: 'central'}}
           />
         </p>
         <p>
@@ -155,8 +162,16 @@ export default class EditorControl extends React.Component {
             caption, captionPositions_X[index], captionPositions_Y[index], index
         )
       );
-      captionInputs.push(<button name="addCaption" onClick={this.props.handleAddCaption} 
-          style={{ display: 'block' }}>Add an extra caption</button>)
+      captionInputs.push(
+        <Button
+            name="addCaption"
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={this.props.handleAddCaption} 
+            style={{ display: 'block', marginTop: '10px' }}>
+            Add an extra caption
+        </Button>)
 
       const addedImageEdits = this.props.addedImages.map(
         (image, i) => this.renderImage(
@@ -164,32 +179,43 @@ export default class EditorControl extends React.Component {
         )
       )
       addedImageEdits.unshift(this.renderImage(this.props.title, this.props.imageInfo.size, this.props.imageInfo.x, this.props.imageInfo.y, -1, false))
-      addedImageEdits.push(<button name="addImage" onClick={this.props.switchToAddImageMode}>
-          {(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}</button>)
+      addedImageEdits.push(
+        <Button
+            name="addImage"
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={this.props.switchToAddImageMode}
+            style={{ display: "block", marginTop: "10px"}}>
+          {(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}
+        </Button>)
       
     return (
       <div>
-        <p>
-          Title:&nbsp;
-          <input 
-            name="title"
-            value={this.props.title}
-            placeholder="Enter title"
-            onChange={this.props.changeListener}
-          />
-        </p>
-        <p>
-          Font Size:&nbsp;
+        <TextField 
+          variant="outlined"
+          label="Enter title"
+          name="title"
+          value={this.props.title}
+          size="small"
+          placeholder="Enter title"
+          onChange={this.props.changeListener}
+          style={{ marginTop: '5px', display: 'block' }}
+        />
+        <TextField
+          label="Font Size"
+          variant="outlined"
+          name="fontSize"
+          type="number"
+          size="small"
+          value={this.props.fontSize}
+          onChange={this.props.changeListener}
+          style={{ marginTop: '10px', display: 'block' }}
+        />
+        <p>Font Color:&nbsp;
           <input
-            name="fontSize"
-            value={this.props.fontSize}
-            onChange={this.props.changeListener}
-            style={{ width: '3ch' }}
-          />
-        </p>
-        <p>
-          Font Color:&nbsp;
-          <input
+            label="Font Color"
+            variant="outlined"
             type="color"
             name="fontColor"
             value={this.props.fontColor}
@@ -197,39 +223,68 @@ export default class EditorControl extends React.Component {
             style={{ width: '35%' }}
           />
         </p>
-        <input type="checkbox" id="isItalic" name="isItalic" onChange={this.props.changeListener} checked={this.props.isItalic}/>
-        <label for="isItalic" style={{fontStyle: 'italic'}}>Italic&nbsp;&nbsp;</label>
-        <input type="checkbox" id="isBold" name="isBold" onChange={this.props.changeListener} checked={this.props.isBold}/>
-        <label for="isBold"style={{fontWeight: 'bold'}}>Bold</label>
-        <p/> {/* For vertical spacing */}
-        <button name="hideCaptions" onClick={this.clickedOnHideButton} style={{ display: 'block' }}>
-          {(this.state.hideCaptions === true) ? "Show caption editors" : "Hide caption editors"}</button>
+        <FormControlLabel control={
+          <Checkbox
+            checked={this.props.isItalic}
+            onChange={this.props.changeListener}
+            name="isItalic"
+            id="isItalic"
+            color="primary"
+          />} label="Italic" style={{ marginRight: '50px' }}
+        />
+        <FormControlLabel control={
+          <Checkbox
+            checked={this.props.isBold}
+            onChange={this.props.changeListener}
+            name="isBold"
+            id="isBold"
+            color="primary"
+          />} label="Bold"
+        />
+        <Button 
+            name="hideCaptions"
+            variant="contained"
+            size="small"
+            onClick={this.clickedOnHideButton}
+            style={{ display: 'block', marginTop: '10px' }}>
+            {(this.state.hideCaptions === true) ? "Show caption editors" : "Hide caption editors"}
+        </Button>
         {!this.state.hideCaptions && (captionInputs)}
-        <button name="hideAddedImages" onClick={this.clickedOnHideButton} style={{ display: 'block' }}>
-            {(this.state.hideAddedImages === true) ? "Show image editors" : "Hide image editors"}</button>
+        <Button
+            name="hideAddedImages"
+            variant="contained"
+            size="small"
+            onClick={this.clickedOnHideButton}
+            style={{ display: 'block', marginTop: '10px' }}>
+            {(this.state.hideAddedImages === true) ? "Show image editors" : "Hide image editors"}</Button>
         {!this.state.hideAddedImages && (addedImageEdits)}
-        <p>
-          Canvas Width:&nbsp;
-          <input
-            name="canvasWidth"
-            type="number"
-            value={this.props.canvasSize.width}
-            onChange={(e) => this.props.setCanvasSize({width: e.target.value, height: this.props.canvasSize.height})}
-            style={{ width: '5ch' }}
-          />
-        </p>
-        <p>
-          Canvas Height:&nbsp;
-          <input
-            name="canvasHeight"
-            type="number"
-            value={this.props.canvasSize.height}
-            onChange={(e) => this.props.setCanvasSize({height: e.target.value, width: this.props.canvasSize.width})}
-            style={{ width: '5ch' }}
-          />
-        </p>
-        <button name="hideDescription" onClick={this.clickedOnHideButton}>
-          {(this.state.hideDescription === true) ? "Describe image content" : "Hide description editor"}</button>
+        <TextField
+          label="Canvas Width"
+          variant="outlined"
+          name="canvasWidth"
+          type="number"
+          size="small"
+          value={this.props.canvasSize.width}
+          onChange={(e) => this.props.setCanvasSize({width: e.target.value, height: this.props.canvasSize.height})}
+          style={{ marginTop: '10px', display: 'block' }}
+        />
+        <TextField
+          label="Canvas Height"
+          variant="outlined"
+          name="canvasHeight"
+          type="number"
+          size="small"
+          value={this.props.canvasSize.height}
+          onChange={(e) => this.props.setCanvasSize({height: e.target.value, width: this.props.canvasSize.width})}
+          style={{ marginTop: '10px', display: 'block' }}
+        />
+        <Button
+          name="hideDescription"
+          variant="contained"
+          size="small"
+          onClick={this.clickedOnHideButton}
+          style={{ marginTop: '10px', display: 'block' }}>
+          {(this.state.hideDescription === true) ? "Describe image content" : "Hide description editor"}</Button>
         {!this.state.hideDescription && 
           (<p>
             <small>Describe the image content<br/>to make your meme accessible<br/>to the visually impaired:</small>
