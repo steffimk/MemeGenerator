@@ -11,6 +11,7 @@ import {
     Route
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+import AccountHistory from './components/accountHistory/AccountHistory';
 
 
 
@@ -35,6 +36,10 @@ function Router() {
 
             <Route path="/login">
                 <Login />
+            </Route>
+
+            <Route path="/history">
+                <AccountHistory />
             </Route>
 
             {/* Note how these two routes are ordered. The more specific

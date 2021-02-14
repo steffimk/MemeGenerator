@@ -4,8 +4,7 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CustomAppBar from '../CustomAppBar/CustomAppBar'
 
-const LOGIN_ENDPOINT = 'http://localhost:3030/login';
-const SIGNUP_ENDPOINT= 'http://localhost:3030/signup';
+import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from '../../communication/requests'
 
 export default class Login extends Component {
 
@@ -30,6 +29,7 @@ export default class Login extends Component {
       .then( json => {
         if(json.success) {
           const jwt = json.data.token
+          localStorage.setItem('memeGen_username', userData.username)
           localStorage.setItem('memeGen_jwt', jwt)
           this.setState({ isLoggedIn: true })
         } else {

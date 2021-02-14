@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button'
+import { Link } from "react-router-dom";
 
 export default class CustomAppBar extends React.Component { 
 
@@ -18,8 +19,20 @@ export default class CustomAppBar extends React.Component {
       <div className="CustomAppBar">
         <AppBar position="static">
           <Toolbar>
-            {this.props.name}
-            <Button color='inherit' style={{ marginLeft: screenWidth-250}} onClick={this.logout}>
+            <Link to='/gallery' style={{ color: 'white', textDecoration: 'none' }}>
+              {this.props.name}
+            </Link>
+            <Button style={{ marginLeft: screenWidth/5 }}>
+              <Link to='/editor' style={{ color: 'white', textDecoration: 'none' }}>
+                Editor
+              </Link>
+            </Button>
+            <Button style={{ marginLeft: screenWidth/5 }}>
+              <Link to='/history' style={{ color: 'white', textDecoration: 'none' }}>
+                My Memes
+              </Link>
+            </Button>
+            <Button color='inherit' style={{ marginLeft: screenWidth/5 }} onClick={this.logout}>
               Logout
             </Button>
           </Toolbar>

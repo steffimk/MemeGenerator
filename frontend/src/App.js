@@ -5,10 +5,7 @@ import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
-import { authorizedFetch } from './communication/requests';
-
-const API_ENDPOINT = "http://localhost:3030/"
-const TEMPLATE_ENDPOINT = API_ENDPOINT+"memes/templates";
+import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT } from './communication/requests';
 
 class App extends React.Component {
 
