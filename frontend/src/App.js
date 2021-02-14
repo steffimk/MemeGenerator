@@ -5,7 +5,8 @@ import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
 
-const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
+const API_ENDPOINT = "http://localhost:3030/"
+const TEMPLATE_ENDPOINT = API_ENDPOINT+"memes/templates";
 
 class App extends React.Component {
 
@@ -258,6 +259,7 @@ class App extends React.Component {
             currentImage={this.state.currentImage}
             changeCurrentImage={this.onClickedOnImageInGallery}
             templateEndpoint={TEMPLATE_ENDPOINT}
+            apiEndpoint={API_ENDPOINT}
             isInAddImageMode={this.state.isInAddImageMode}
           />
         </div>
