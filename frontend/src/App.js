@@ -42,6 +42,7 @@ class App extends React.Component {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
+      username: localStorage.getItem('memeGen_username'),
       imageInfo: this.state.imageInfo,
       name: this.state.title,
       box_count: this.state.captions.length,

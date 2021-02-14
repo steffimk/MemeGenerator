@@ -1,4 +1,4 @@
-import { GridList } from '@material-ui/core'
+import { GridList, GridListTile, GridListTileBar } from '@material-ui/core'
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { authorizedFetch, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
@@ -25,7 +25,7 @@ export default class AccountHistory extends Component {
     const endpointWithQuery = `${MEMES_ENDPOINT}?username=${username}`
     authorizedFetch(endpointWithQuery, 'GET')
     .then(res => { 
-      if(res.ok) return res.json
+      if(res.ok) return res.json()
       else if(res.status === 401) this.setState({ isAuthenticated: false })
       return Promise.reject("API Responded with an error: "+res.status+" "+res.statusText)})
       .then( json =>
@@ -38,15 +38,16 @@ export default class AccountHistory extends Component {
     const endpointWithQuery = `${TEMPLATE_ENDPOINT}?username=${username}`
     authorizedFetch(endpointWithQuery, 'GET')
     .then( res => { 
-      if(res.ok) return res.json
+      if(res.ok) return res.json()
       else if(res.status === 401) this.setState({ isAuthenticated: false })
       return Promise.reject(`API Responded with an error: ${res.status} ${res.statusText}`)})
-    .then( json =>
+    .then( json => 
       this.setState({ ownTemplates: json.data.templates })
     ).catch(e => console.log(e))
   }
 
   render() {
+    console.log(this.state.ownTemplates)
     // If not logged in: Redirect to login page
     if (!this.state.isAuthenticated) return <Redirect to='/login'/>
 
@@ -54,14 +55,32 @@ export default class AccountHistory extends Component {
       <div>
         <CustomAppBar />
         <h3>Your memes: </h3>
-        {/* <GridList>
-          {renderedMemes}
-        </GridList> */}
+        <div>
+          <GridList cols={2.5}>
+            {this.state.ownMemes.map((meme) => (
+              <GridListTile key={meme.id}>
+                <img src={meme.url} alt={meme.id} />
+                <GridListTileBar
+                  title={meme.name}
+                />
+              </GridListTile>
+            ))}
+          </GridList>
+        </div>
         <h3>Your drafts: </h3>
-        {/* <GridList>
-          {renderedTemplates}
-        </GridList> */}
+        <div>
+          <GridList cols={2.5}>
+            {this.state.ownTemplates.map((template) => (
+              <GridListTile key={template.id}>
+                <img src={template.url} alt={template.id} />
+                <GridListTileBar
+                  title={template.name}
+                />
+              </GridListTile>
+            ))}
+          </GridList>
+        </div>
       </div>
-    )
+    );
   }
 }
