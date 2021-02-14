@@ -22,7 +22,6 @@ export default class TemplateGallery extends React.Component {
     }
 
     get_memeTemplates() {
-        const jwt = localStorage.getItem('memeGen_jwt')
         authorizedFetch( this.props.templateEndpoint, 'GET')
         .then(response => {
               if (!response.ok) {
@@ -89,6 +88,7 @@ export default class TemplateGallery extends React.Component {
                 <NewTemplateDialog onSave={(e) => this.addTemplate(e)}
                                    open={this.state.modalOpen}
                                    onClose={() => this.setState({"modalOpen": false})}
+                                   apiEndpoint={this.props.apiEndpoint}
                 />
             </div>
         )
@@ -100,5 +100,6 @@ TemplateGallery.propTypes = {
     images: PropTypes.array.isRequired,
     changeCurrentImage: PropTypes.func.isRequired,
     isInAddImageMode: PropTypes.bool.isRequired,
-    setIsAuthenticated: PropTypes.func.isRequired
+    setIsAuthenticated: PropTypes.func.isRequired,
+    apiEndpoint: PropTypes.string.isRequired
 }
