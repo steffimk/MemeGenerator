@@ -1,5 +1,6 @@
 const express = require('express');
 var router = express.Router();
+var crypto = require('crypto');
 
 const responseTemplates = require('../responseTemplates')
 /* Database Operations */
@@ -14,12 +15,18 @@ router.post('/', function(req, res, next) {
     if(user === null) {
         responseTemplates.negativeResponse(res, "User not found. Check the spelling of the username.")
         return
-    } else if (user.hasOwnProperty('password') && user.password === password) {
+    } else if (user.hasOwnProperty('salt') && user.hasOwnProperty('hash') && 
+        passwordIsValid(password, user.salt, user.hash)) {
       // User succesfully logged in
       console.log("Existing user logged in.")
       responseTemplates.sendJWT(res, username)
     } else responseTemplates.negativeResponse(res, "Wrong password.")
   })
 });
+
+function passwordIsValid(password, dbSalt, dbHash){
+  const hash = crypto.pbkdf2Sync(password, dbSalt, 1000, 64, 'sha512').toString('hex')
+  return hash == dbHash
+}
 
 module.exports = router;

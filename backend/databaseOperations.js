@@ -24,8 +24,8 @@ module.exports = {
     return collection.findOne({ name: name });
   },
 
-  createNewUser(db, name, password) {
-    const userData = { name: name, password: password }
+  createNewUser(db, name, salt, hash) {
+    const userData = { name: name, salt: salt, hash: hash }
     this.addToDB(db, userCollection, userData)
   }
 
