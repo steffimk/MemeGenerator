@@ -8,8 +8,6 @@ export default class NewTemplateDialog extends React.Component{
 
     constructor(props) {
         super(props);
-        // FIXME (also in App.js)
-        this.urlTemplates = "http://localhost:3030/memes/templates";
         this.state = {
             "url": "",
             "width": 0,
@@ -45,8 +43,11 @@ export default class NewTemplateDialog extends React.Component{
         this.props.onClose();
     }
 
-    onUrlChange(event){
+    async onUrlChange(event){
         if(event.target.validity.valid){
+            let url = event.target.value;
+
+
             let img = new Image();
             let width;
             let height;
@@ -55,7 +56,19 @@ export default class NewTemplateDialog extends React.Component{
                 height = img.naturalHeight;
                 this.setState({"url": img.src, "width": width, "height": height})
             }.bind(this));
-            img.src = event.target.value;
+
+            let cnt = 0;
+            img.addEventListener("error", function(){
+                if(cnt === 0) {
+                    // avoid infinite loop
+                    cnt++;
+                    img.src = this.props.apiEndpoint + "screenshot?url=" + url;
+                }
+            }.bind(this))
+
+
+            img.src = url;
+
         }
     }
 
@@ -135,8 +148,7 @@ export default class NewTemplateDialog extends React.Component{
                 <DialogTitle id="form-dialog-title">Add new Template Background</DialogTitle>
                 <DialogContent>
                     <form className="new-template-form" >
-                        {/*<TextField id="template-name" label="Template Name" required/>*/}
-                        <TextField id="template-url" label="Template URL"
+                        <TextField id="template-url" label="Image or Website URL"
                                    type="url"
                                    pattern="https://.*"
                                    onChange={(e) => this.onUrlChange(e)}
@@ -148,12 +160,6 @@ export default class NewTemplateDialog extends React.Component{
                                    onChange={(e) => this.onFileChange(e)}
                         />
                         {webcamButton}
-                        {/*<TextField id="template-box-count"
-                                   label="Box Count" type="number"
-                                   required
-                                   min={0}
-                                   max={10}
-                        />*/}
                         <img src={this.state.url}  alt=""/>
                         {video}
                     </form>

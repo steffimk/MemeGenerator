@@ -82,6 +82,7 @@ export default class TemplateGallery extends React.Component {
                 <NewTemplateDialog onSave={(e) => this.addTemplate(e)}
                                    open={this.state.modalOpen}
                                    onClose={() => this.setState({"modalOpen": false})}
+                                   apiEndpoint={this.props.apiEndpoint}
                 />
             </div>
         )
@@ -92,5 +93,6 @@ TemplateGallery.propTypes = {
     currentImage: PropTypes.object.isRequired,
     images: PropTypes.array.isRequired,
     changeCurrentImage: PropTypes.func.isRequired,
-    isInAddImageMode: PropTypes.bool.isRequired
+    isInAddImageMode: PropTypes.bool.isRequired,
+    apiEndpoint: PropTypes.string.isRequired,
 }
