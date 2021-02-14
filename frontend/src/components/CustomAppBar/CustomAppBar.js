@@ -7,7 +7,10 @@ import Button from '@material-ui/core/Button'
 
 export default class CustomAppBar extends React.Component { 
 
-  logout = () => localStorage.removeItem('memeGen_jwt')
+  logout = () => {
+    localStorage.removeItem('memeGen_jwt')
+    window.location.reload() // Reload page to check whether still authenticated to see this page
+  }
   
   render () {
     const screenWidth = window.innerWidth

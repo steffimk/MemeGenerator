@@ -12,6 +12,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var memesRouter = require('./routes/memes');
 var loginRouter = require('./routes/login');
+var signupRouter =require('./routes/signup')
 
 var app = express();
 db.then(() => {
@@ -32,8 +33,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Use Login route before authentication
+// Routes that can be reached unauthenticated
 app.use('/login', loginRouter);
+app.use('/signup', signupRouter);
 
 // Authentication middleware: Verify jwt token
 app.use((req,res,next) => {

@@ -12,13 +12,15 @@ router.post('/', function(req, res, next) {
   dbOp.findUserWithName(db, username).then((user) => {
     console.log(user)
     if(user === null) {
-        responseTemplates.negativeResponse(res, "User not found. Check the spelling of the username.")
+      if (username.length < 1 || /\s/.test(username) || password.length < 7) {
+        responseTemplates.negativeResponse(res, "Invalid inputs: Name contains whitespaces or the password is too short.")
         return
-    } else if (user.hasOwnProperty('password') && user.password === password) {
-      // User succesfully logged in
-      console.log("Existing user logged in.")
+      }
+      dbOp.createNewUser(db, username, password) // TODO: Check whether successful or not
+      // New user created.
+      console.log("New user created.")
       responseTemplates.sendJWT(res, username)
-    } else responseTemplates.negativeResponse(res, "Wrong password.")
+    } else responseTemplates.negativeResponse(res, "This username exists already.")
   })
 });
 

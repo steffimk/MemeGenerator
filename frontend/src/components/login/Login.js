@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button'
 import CustomAppBar from '../CustomAppBar/CustomAppBar'
 
 const LOGIN_ENDPOINT = 'http://localhost:3030/login';
+const SIGNUP_ENDPOINT= 'http://localhost:3030/signup';
 
 export default class Login extends Component {
 
@@ -19,8 +20,9 @@ export default class Login extends Component {
   }
 
   logIn = (isLogIn) => {
-    const userData = {username: this.state.username, password: this.state.password, login: isLogIn}
-    fetch (LOGIN_ENDPOINT, {
+    const endpoint = isLogIn ? LOGIN_ENDPOINT : SIGNUP_ENDPOINT
+    const userData = {username: this.state.username, password: this.state.password }
+    fetch (endpoint, {
       method: 'POST',
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(userData),

@@ -13,7 +13,7 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      isAuthorized: true,
+      isAuthenticated: true,
 
       currentImage: {},
       isInAddImageMode: false,
@@ -73,7 +73,7 @@ class App extends React.Component {
             if(response.ok) {
                 return true;
             } else {
-                if(response.status === 401) this.setState({ isAutherized: false })
+                if(response.status === 401) this.setState({ isAuthenticated: false })
                 return Promise.reject(
                     "API Responded with an error: "+response.status+" "+response.statusText
                 )
@@ -256,11 +256,11 @@ class App extends React.Component {
     this.setState({ drawingCoordinates: [...this.state.drawingCoordinates, newCoordinate] })
   }
 
-  setIsAutherized = (isAuthorized) => this.setState({ isAuthorized: isAuthorized })
+  setIsAuthenticated = (isAuthenticated) => this.setState({ isAuthenticated: isAuthenticated })
 
   render () {
     // If not logged in: Redirect to login page
-    if (!this.state.isAuthorized) return <Redirect to='/login'/>
+    if (!this.state.isAuthenticated) return <Redirect to='/login'/>
     
     return (
       <div>
@@ -272,7 +272,7 @@ class App extends React.Component {
               changeCurrentImage={this.onClickedOnImageInGallery}
               templateEndpoint={TEMPLATE_ENDPOINT}
               isInAddImageMode={this.state.isInAddImageMode}
-              setIsAutherized={this.setIsAutherized}
+              setIsAuthenticated={this.setIsAuthenticated}
             />
           </div>
           <div className="middle">

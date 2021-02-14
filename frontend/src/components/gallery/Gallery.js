@@ -10,7 +10,7 @@ class Gallery extends React.Component {
     constructor() {
         super();
         this.state = {
-            isAuthorized: true,
+            isAuthenticated: true,
             images: [],
         };
     }
@@ -40,7 +40,7 @@ class Gallery extends React.Component {
         fetch("https://api.imgflip.com/get_memes")
             .then(response => {
                 if (!response.ok) {
-                    if (response.status === 401) this.setState({ isAutherized: false })
+                    if (response.status === 401) this.setState({ isAuthenticated: false })
                     return Promise.reject("Server responded with " + response.status + " " + response.statusText)
                 }
                 return response.json()
@@ -53,7 +53,7 @@ class Gallery extends React.Component {
 
     render() {
         // If not logged in: Redirect to login page
-        if (!this.state.isAuthorized) return <Redirect to='/login'/>
+        if (!this.state.isAuthenticated) return <Redirect to='/login'/>
 
         // try to get image id from url
         const { id } = this.props.match.params;

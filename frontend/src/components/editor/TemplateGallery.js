@@ -27,7 +27,7 @@ export default class TemplateGallery extends React.Component {
             headers: {"Authorization": jwt }
           }).then(response => {
               if (!response.ok) {
-                if(response.status === 401) this.props.setIsAutherized(false)
+                if(response.status === 401) this.props.setIsAuthenticated(false)
                 return Promise.reject("Server responded with " + response.status + " " + response.statusText)
               }
               return response.json()
@@ -101,5 +101,5 @@ TemplateGallery.propTypes = {
     images: PropTypes.array.isRequired,
     changeCurrentImage: PropTypes.func.isRequired,
     isInAddImageMode: PropTypes.bool.isRequired,
-    setIsAutherized: PropTypes.func.isRequired
+    setIsAuthenticated: PropTypes.func.isRequired
 }
