@@ -15,6 +15,11 @@ export default class AccountHistory extends Component {
     }
   }
 
+  componentDidMount(){
+    this.getOwnMemes()
+    this.getOwnTemplates()
+}
+
   getOwnMemes = () => {
     const username = localStorage.getItem('memeGen_username')
     const endpointWithQuery = `${MEMES_ENDPOINT}?username=${username}`

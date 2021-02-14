@@ -3,10 +3,10 @@ const fetch = require('node-fetch');
 const URL = require('url').URL;
 const dbOp = require('../databaseOperations')
 var router = express.Router();
+const responseTemplates = require('../responseTemplates')
 
 const templateCollection = 'templates';
 const memeCollection = 'memes';
-
 
 function getTemplatesFromImgFlip(){
     return fetch("https://api.imgflip.com/get_memes")
@@ -16,28 +16,38 @@ function getTemplatesFromImgFlip(){
 
 router.get('/templates', function (req, res, next) {
     let db = req.db;
-    Promise.all([dbOp.findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
-        .then(([docs, imgflip]) => {
-            imgflip.forEach((template) => template.source = "imgflip")
-            docs.forEach((template) => template.id = template._id)
-            return (docs.concat(imgflip));
-        } )
-        .then((docs) => {
-        res.json({
-            "success": true,
-            "data": {"templates": docs}
+    const username = req.query.username
+    // if username is defined: only get templates of user
+    if (username) {
+        dbOp.findAllOfUser(db, templateCollection, username).then((docs) => {
+            responseTemplates.successBoundResponse(res, true, {"templates": docs})
         })
-    });
+    } else { // get all templates
+        Promise.all([dbOp.findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
+            .then(([docs, imgflip]) => {
+                imgflip.forEach((template) => template.source = "imgflip")
+                docs.forEach((template) => template.id = template._id)
+                return (docs.concat(imgflip));
+            } )
+            .then((docs) => {
+                responseTemplates.successBoundResponse(res, true, {"templates": docs})
+        });
+    }
 });
 
 router.get('/', function (req, res, next) {
     let db = req.db;
-    dbOp.findAllFromDB(db, memeCollection).then((docs) => {
-        res.json({
-            "success": true,
-            "data": {"memes": docs}
+    const username = req.query.username
+    // if username is defined: only get memes of user
+    if (username) {
+        dbOp.findAllOfUser(db, memeCollection, username).then((docs) => {
+            responseTemplates.successBoundResponse(res, true, {"memes": docs})
         })
-    });
+    } else { // get all memes
+        dbOp.findAllFromDB(db, memeCollection).then((docs) => {
+        responseTemplates.successBoundResponse(res, true, {"memes": docs})
+        });
+    }
 });
 
 

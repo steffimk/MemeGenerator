@@ -27,8 +27,11 @@ module.exports = {
   createNewUser(db, name, salt, hash) {
     const userData = { name: name, salt: salt, hash: hash }
     this.addToDB(db, userCollection, userData)
+  },
+
+  findAllOfUser(db, collection, username) {
+    collection = db.get(collection);
+    return collection.find({ username: username });
   }
-
-
 
 }
