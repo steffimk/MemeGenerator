@@ -37,7 +37,7 @@ class Gallery extends React.Component {
     }
 
     get_memes() {
-        fetch("https://api.imgflip.com/get_memes")
+        fetch("https://api.imgflip.com/get_memes") // TODO: turn into authorized fetch once memes are pulled from our server
             .then(response => {
                 if (!response.ok) {
                     if (response.status === 401) this.setState({ isAuthenticated: false })

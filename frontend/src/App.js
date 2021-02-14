@@ -5,6 +5,7 @@ import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
+import { authorizedFetch } from './communication/requests';
 
 const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
 
@@ -60,19 +61,12 @@ class App extends React.Component {
       canvasSize: this.state.canvasSize,
       drawingCoordinates: this.state.drawingCoordinates
     }
-    const jwt = localStorage.getItem('memeGen_jwt')
     console.log(memeTemplateToSave)
-    fetch(TEMPLATE_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        "Authorization": jwt,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(memeTemplateToSave),
-    }).then(response => {
-            if(response.ok) {
-                return true;
-            } else {
+    authorizedFetch(
+      TEMPLATE_ENDPOINT, 'POST', JSON.stringify(memeTemplateToSave)
+    ).then(response => {
+            if(response.ok) return true;
+            else {
                 if(response.status === 401) this.setState({ isAuthenticated: false })
                 return Promise.reject(
                     "API Responded with an error: "+response.status+" "+response.statusText

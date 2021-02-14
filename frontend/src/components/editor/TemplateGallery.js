@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import './TemplateGallery.css';
 import {Button} from "@material-ui/core";
 import NewTemplateDialog from "../newTemplateDialog/NewTemplateDialog"
+import { authorizedFetch } from '../../communication/requests';
 export default class TemplateGallery extends React.Component {
 
     constructor(props){
@@ -22,10 +23,8 @@ export default class TemplateGallery extends React.Component {
 
     get_memeTemplates() {
         const jwt = localStorage.getItem('memeGen_jwt')
-        fetch(this.props.templateEndpoint, {
-            method: 'GET',
-            headers: {"Authorization": jwt }
-          }).then(response => {
+        authorizedFetch( this.props.templateEndpoint, 'GET')
+        .then(response => {
               if (!response.ok) {
                 if(response.status === 401) this.props.setIsAuthenticated(false)
                 return Promise.reject("Server responded with " + response.status + " " + response.statusText)
