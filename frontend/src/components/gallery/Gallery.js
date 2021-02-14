@@ -1,5 +1,6 @@
 import React from 'react';
-import './Gallery.css'
+import './Gallery.css';
+import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
 
@@ -70,6 +71,8 @@ class Gallery extends React.Component {
         ];
 
         return (
+        <div>
+            <CustomAppBar></CustomAppBar>
             <div className="gallery-container">
                 <div className="image-gallery" style={gallery_style}>
                     <div className="column">
@@ -90,6 +93,7 @@ class Gallery extends React.Component {
                     </div>
                 </div>
                 <SingleImage images={this.state.images} id={id} />
+            </div>
             </div>
         );
     }
