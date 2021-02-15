@@ -4,6 +4,8 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
 
+const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
+
 class Gallery extends React.Component {
 
     constructor() {
@@ -35,13 +37,15 @@ class Gallery extends React.Component {
     }
 
     get_memes() {
-        fetch("https://api.imgflip.com/get_memes")
+
+        fetch(MEMES_ENDPOINT)
             .then(response => response.json())
-            .then(json =>
+            .then(json => {
+                console.log(json.data);
                 this.setState({
                     'images': json.data.memes
                 })
-            );
+            });
     }
 
     render() {
@@ -109,7 +113,7 @@ class Gallery extends React.Component {
         return (
             <Link to={imageRoute} key={image.id}>
                 <div className="image-container" id={image.id}>
-                    <img src={image.url} alt={image.name} />
+                    <img src={image.img} alt={image.name} />
                     <div className="image-title">{image.name}</div>
                 </div>
             </Link>

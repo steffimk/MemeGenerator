@@ -7,6 +7,7 @@ import EditorControl from "./components/editor/EditorControl";
 
 const API_ENDPOINT = "http://localhost:3030/"
 const TEMPLATE_ENDPOINT = API_ENDPOINT+"memes/templates";
+const MEMES_ENDPOINT = API_ENDPOINT+"memes/memes";
 
 class App extends React.Component {
 
@@ -32,6 +33,7 @@ class App extends React.Component {
       canvasSize: {width: "97%", height: "90%"},
       drawingCoordinates: []
     };
+    this.imageCarousel = React.createRef();
   }
 
   /**
@@ -85,12 +87,52 @@ class App extends React.Component {
      this.setState({ captions: newCaptions });
    }
 
+  handleSaveAsMeme = async () => {
+    const carouselCanvas = this.imageCarousel.current.canvasRef.current;
+    const dataURL = carouselCanvas.toDataURL();
+
+    const memeToSave = {
+      template_id : this.state.currentImage._id,
+      img: dataURL,
+      template_url: this.state.currentImage.url,
+      name: this.state.title,
+      box_count: this.state.captions.length,
+      captions: this.state.captions,
+      captionPositions: this.state.captionPositions_X
+          .map((x, i) => [x, this.state.captionPositions_Y[i]]),
+      fontSize: this.state.fontSize,
+      isItalic: this.state.isItalic,
+      isBold: this.state.isBold,
+      fontColor: this.state.fontColor
+    }
+
+    console.log("meme to save ", memeToSave)
+
+    fetch(MEMES_ENDPOINT, {
+      method: 'POST',
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(memeToSave),
+    }).then(response => {
+      if(response.ok) {
+        return true;
+      }else{
+        return Promise.reject(
+            "API Responded with an error: "+response.status+" "+response.statusText
+        )
+      }
+    })
+        .catch((error) => {
+          console.error('Error:', error);
+          return false;
+        })
+  }
+
   handleAddCaption = () => {
     const newBoxCount = this.state.currentImage.box_count + 1
     const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
     const newCaptions = [...this.state.captions,''] // append captions by empty string
     const newCaptionPositions_X = [...this.state.captionPositions_X,50] // place new caption in center
-    const newCaptionPositions_Y = [...this.state.captionPositions_Y, 10 + (90 * (newBoxCount-1) / newBoxCount)] 
+    const newCaptionPositions_Y = [...this.state.captionPositions_Y, 10 + (90 * (newBoxCount-1) / newBoxCount)]
     this.setState({
       currentImage: newCurrentImage,
       captions: newCaptions,
@@ -262,10 +304,11 @@ class App extends React.Component {
             templateEndpoint={TEMPLATE_ENDPOINT}
             apiEndpoint={API_ENDPOINT}
             isInAddImageMode={this.state.isInAddImageMode}
-          />
-        </div>
-        <div className="middle">
-          <ImageCarousel
+        />
+      </div>
+      <div className="middle">
+        <ImageCarousel
+            ref = {this.imageCarousel}
             image={this.state.currentImage}
             imageInfo={this.state.imageInfo}
             captions={this.state.captions}
@@ -308,9 +351,10 @@ class App extends React.Component {
             canvasSize={this.state.canvasSize}
             setCanvasSize={this.setCanvasSize.bind(this)}
             imageInfo={this.state.imageInfo}
-          />
+        />
+        <button name="saveTemplateButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
+          <button name="saveButton" onClick={this.handleSaveAsMeme}>Generate image</button>
           <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>Add caption</button>
-          <button name="saveButton" onClick={this.handleSaveAsTemplate}>Save as template</button>
         </div>
       </div>
 
