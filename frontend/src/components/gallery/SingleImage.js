@@ -15,12 +15,13 @@ export default class SingleImage extends React.Component {
                 let next_image = this.props.images[image_index < this.props.images.length - 1 ? image_index + 1 : 0];
 
 
+                console.log("image log", image)
                 return (
                     <Link to="."> {/* relative link up one level*/}
                         <div className="modal">
                             <h1 className="modal-title">{image.name}</h1>
                             <Link className="modal-nav modal-left" to={"/gallery/" + prev_image.id}/>
-                            <img src={image.url} alt={image.name}/>
+                            <img src={image.img} alt={image.name}/>
                             <Link className="modal-nav modal-right" to={"/gallery/" + next_image.id}/>
                         </div>
                     </Link>

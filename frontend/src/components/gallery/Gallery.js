@@ -4,6 +4,9 @@ import { Redirect } from 'react-router-dom'
 import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
+import { authorizedFetch } from '../../communication/requests';
+
+const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
 
 class Gallery extends React.Component {
 
@@ -37,18 +40,19 @@ class Gallery extends React.Component {
     }
 
     get_memes() {
-        fetch("https://api.imgflip.com/get_memes") // TODO: turn into authorized fetch once memes are pulled from our server
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 401) this.setState({ isAuthenticated: false })
-                    return Promise.reject("Server responded with " + response.status + " " + response.statusText)
-                }
-                return response.json()
-            }).then(json =>
-                this.setState({
-                    'images': json.data.memes
-                })
-            ).catch(e => console.log(e))
+        authorizedFetch(MEMES_ENDPOINT, 'GET')
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) this.setState({ isAuthenticated: false })
+                return Promise.reject("Server responded with " + response.status + " " + response.statusText)
+            }
+            return response.json()
+        }).then(json => {
+            console.log(json.data);
+            this.setState({
+                'images': json.data.memes
+            })
+        });
     }
 
     render() {
@@ -118,7 +122,7 @@ class Gallery extends React.Component {
         return (
             <Link to={imageRoute} key={image.id}>
                 <div className="image-container" id={image.id}>
-                    <img src={image.url} alt={image.name} />
+                    <img src={image.img} alt={image.name} />
                     <div className="image-title">{image.name}</div>
                 </div>
             </Link>

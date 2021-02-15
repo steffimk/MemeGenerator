@@ -59,7 +59,7 @@ export default class AccountHistory extends Component {
           <GridList cols={2.5}>
             {this.state.ownMemes.map((meme) => (
               <GridListTile key={meme.id}>
-                <img src={meme.url} alt={meme.id} />
+                <img src={meme.img} alt={meme.id} />
                 <GridListTileBar
                   title={meme.name}
                 />
