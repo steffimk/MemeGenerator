@@ -38,6 +38,10 @@ function Router() {
                 <Login />
             </Route>
 
+            <Route path="/history/:id">
+                <AccountHistory />
+            </Route>
+
             <Route path="/history">
                 <AccountHistory />
             </Route>

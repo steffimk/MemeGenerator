@@ -34,9 +34,7 @@ class Gallery extends React.Component {
                 // this could happen e.g. if the prevId was invalid or is currently not shown in the gallery
                 console.log(e)
             }
-
         }
-
     }
 
     get_memes() {
@@ -105,7 +103,7 @@ class Gallery extends React.Component {
                         {slices[3]}
                     </div>
                 </div>
-                <SingleImage images={this.state.images} id={id} />
+                <SingleImage images={this.state.images} id={id} parentRoute="/gallery/"/>
             </div>
             </div>
         );
@@ -114,14 +112,14 @@ class Gallery extends React.Component {
     renderImage(image, currentRoute) {
         let imageRoute;
         if(currentRoute.slice(-1) === '/'){
-            imageRoute = currentRoute+image.id;
+            imageRoute = currentRoute+image._id;
         }else{
-            imageRoute = currentRoute+"/"+image.id;
+            imageRoute = currentRoute+"/"+image._id;
         }
 
         return (
             <Link to={imageRoute} key={image.id}>
-                <div className="image-container" id={image.id}>
+                <div className="image-container" id={image._id}>
                     <img src={image.img} alt={image.name} />
                     <div className="image-title">{image.name}</div>
                 </div>
