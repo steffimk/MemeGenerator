@@ -1,10 +1,12 @@
-import { GridList, GridListTile, GridListTileBar } from '@material-ui/core'
+import { GridList, GridListTile, GridListTileBar, IconButton } from '@material-ui/core'
 import React, { Component } from 'react'
 import { Link, Redirect, withRouter } from 'react-router-dom'
 import { authorizedFetch, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
 import CustomAppBar from '../CustomAppBar/CustomAppBar'
 import SingleImage from '../gallery/SingleImage'
 import './AccountHistory.css'
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+
 class AccountHistory extends Component {
   constructor(props) {
     super(props);
@@ -57,7 +59,14 @@ class AccountHistory extends Component {
       <GridListTile key={image._id}>
         <img src={imageSrc} alt={image._id} />
         <Link to={imageRoute} key={image._id}>
-          <GridListTileBar title={image.name} />
+          <GridListTileBar
+            title={image.name}
+            actionIcon={
+              <IconButton>
+                <FullscreenIcon style={{ color: 'white' }} />
+              </IconButton>
+            }
+          />
         </Link>
       </GridListTile>
     );
@@ -90,8 +99,8 @@ class AccountHistory extends Component {
             {renderedTemplates}
           </GridList>
         </div>
-        ({isMeme && <SingleImage images={this.state.ownMemes} id={id} parentRoute="/history/"/>})
-        ({!isMeme && <SingleImage images={this.state.ownTemplates} id={id} parentRoute="/history/"/>})
+        {isMeme && <SingleImage images={this.state.ownMemes} id={id} parentRoute="/history/"/>}
+        {!isMeme && <SingleImage images={this.state.ownTemplates} id={id} parentRoute="/history/"/>}
       </div>
     );
   }
