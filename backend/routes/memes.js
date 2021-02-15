@@ -108,7 +108,14 @@ router.post('/templates', function(req, res){
 router.get('/memes', function (req, res) {
     let db = req.db;
     console.log("in memes", db)
-    Promise.all([dbOp.findAllFromDB(db,memeCollection)])
+    const username = req.query.username
+    // if username is defined: only get memes of user
+    if (username) {
+        dbOp.findAllOfUser(db, memeCollection, username).then((docs) => {
+            responseTemplates.successBoundResponse(res, true, {"memes": docs})
+        })
+    } else { // get all memes
+        Promise.all([dbOp.findAllFromDB(db,memeCollection)])
         .then(([docs]) => {
             docs.forEach((template) => template.id = template._id)
             return (docs);
@@ -116,6 +123,7 @@ router.get('/memes', function (req, res) {
         .then((docs) => {
             responseTemplates.successBoundResponse(res, true, {"memes": docs})
         });
+    }
 });
 router.post("/memes", function (req, res){
     const meme = req.body;
@@ -133,7 +141,7 @@ router.post("/memes", function (req, res){
 
         // ignore any unknown values in the input data
         const normalizedMeme = {
-            template_id, img, template_url, name, box_count, captions,
+            template_id, img, template_url, name, box_count, username, captions,
             captionPositions, fontColor, fontSize, isItalic, isBold,
         }
 
