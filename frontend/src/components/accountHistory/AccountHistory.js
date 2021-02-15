@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { authorizedFetch, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
 import CustomAppBar from '../CustomAppBar/CustomAppBar'
-
+import './AccountHistory.css'
 export default class AccountHistory extends Component {
 
   constructor(props){
@@ -54,33 +54,31 @@ export default class AccountHistory extends Component {
     return (
       <div>
         <CustomAppBar />
-        <h3>Your memes: </h3>
-        <div>
-          <GridList cols={2.5}>
-            {this.state.ownMemes.map((meme) => (
-              <GridListTile key={meme.id}>
-                <img src={meme.img} alt={meme.id} />
-                <GridListTileBar
-                  title={meme.name}
-                />
-              </GridListTile>
-            ))}
-          </GridList>
-        </div>
-        <h3>Your drafts: </h3>
-        <div>
-          <GridList cols={2.5}>
-            {this.state.ownTemplates.map((template) => (
-              <GridListTile key={template.id}>
-                <img src={template.url} alt={template.id} />
-                <GridListTileBar
-                  title={template.name}
-                />
-              </GridListTile>
-            ))}
-          </GridList>
-        </div>
+          <h2 style={{ paddingLeft: '8px'}}>Your memes: </h2>
+          <div className="grid-root">
+            <GridList style={gridListStyle} cellHeight={window.innerHeight / 2.3} cols={3.5}>
+              {this.state.ownMemes.map((meme) => (
+                <GridListTile key={meme.id}>
+                  <img src={meme.img} alt={meme.id} />
+                  <GridListTileBar title={meme.name} />
+                </GridListTile>
+              ))}
+            </GridList>
+          </div>
+          <h2 style={{ paddingLeft: '8px'}}>Your drafts: </h2>
+          <div className="grid-root">
+            <GridList style={gridListStyle} cellHeight={window.innerHeight / 2.3} cols={3.5}>
+              {this.state.ownTemplates.map((template) => (
+                <GridListTile key={template.id}>
+                  <img src={template.url} alt={template.id} />
+                  <GridListTileBar title={template.name} />
+                </GridListTile>
+              ))}
+            </GridList>
+          </div>
       </div>
     );
   }
 }
+
+const gridListStyle = { flexWrap: 'nowrap', transform: 'translateZ(0)' };
