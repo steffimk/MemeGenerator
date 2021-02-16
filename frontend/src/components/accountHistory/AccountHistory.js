@@ -6,6 +6,7 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar'
 import SingleImage from '../gallery/SingleImage'
 import './AccountHistory.css'
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import EditIcon from '@material-ui/icons/Edit'
 
 class AccountHistory extends Component {
   constructor(props) {
@@ -48,22 +49,24 @@ class AccountHistory extends Component {
       .catch((e) => console.log(e));
   };
 
-  renderImage = (image, imageSrc, currentRoute) => {
+  renderImage = (image, imageSrc, currentRoute, isMeme) => {
     let imageRoute;
     if (currentRoute.slice(-1) === '/') {
       imageRoute = currentRoute + image._id;
     } else {
       imageRoute = currentRoute + '/' + image._id;
     }
+    const linkRoute = isMeme? imageRoute : `/editor/${image._id}`
+    const icon = isMeme ? <FullscreenIcon style={{ color: 'white' }} /> : <EditIcon style={{ color: 'white' }} />;
     return (
       <GridListTile key={image._id}>
         <img src={imageSrc} alt={image._id} />
-        <Link to={imageRoute} key={image._id}>
+        <Link to={linkRoute} key={image._id}>
           <GridListTileBar
             title={image.name}
             actionIcon={
               <IconButton>
-                <FullscreenIcon style={{ color: 'white' }} />
+                {icon}
               </IconButton>
             }
           />
@@ -79,9 +82,9 @@ class AccountHistory extends Component {
     const { id } = this.props.match.params;
     const isMeme = this.state.ownMemes.filter((meme) => meme._id === id).length > 0 ? true : false
     const currentRoute = this.props.location.pathname
-    const renderedMemes = this.state.ownMemes.map((meme) => this.renderImage(meme, meme.img, currentRoute));
+    const renderedMemes = this.state.ownMemes.map((meme) => this.renderImage(meme, meme.img, currentRoute, true));
     const renderedTemplates = this.state.ownTemplates.map((template) =>
-      this.renderImage(template, template.url, currentRoute)
+      this.renderImage(template, template.url, currentRoute, false)
     );
 
     return (
@@ -100,7 +103,7 @@ class AccountHistory extends Component {
           </GridList>
         </div>
         {isMeme && <SingleImage images={this.state.ownMemes} id={id} parentRoute="/history/"/>}
-        {!isMeme && <SingleImage images={this.state.ownTemplates} id={id} parentRoute="/history/"/>}
+        {/* {!isMeme && <SingleImage images={this.state.ownTemplates} id={id} parentRoute="/history/"/>} */}
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Redirect } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
@@ -289,7 +289,7 @@ class App extends React.Component {
   render () {
     // If not logged in: Redirect to login page
     if (!this.state.isAuthenticated) return <Redirect to='/login'/>
-    
+    const { id } = this.props.match.params;
     return (
       <div>
         <CustomAppBar></CustomAppBar>
@@ -302,6 +302,7 @@ class App extends React.Component {
               apiEndpoint={API_ENDPOINT}
               isInAddImageMode={this.state.isInAddImageMode}
               setIsAuthenticated={this.setIsAuthenticated}
+              queryId={id}
             />
           </div>
           <div className="middle">
@@ -366,4 +367,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);

@@ -26,6 +26,10 @@ function Router() {
                 <Gallery />
             </Route>
 
+            <Route path="/editor/:id">
+                <App />
+            </Route>
+
             <Route path="/editor">
                 <App />
             </Route>
