@@ -5,6 +5,8 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
 import { authorizedFetch } from '../../communication/requests';
+import { Fab } from '@material-ui/core';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
 
@@ -120,14 +122,25 @@ class Gallery extends React.Component {
         }
 
         return (
-            <Link to={imageRoute} key={image.id}>
-                <div className="image-container" id={image.id}>
+            <div className="image-container" id={image.id}>
+                <Link to={imageRoute} key={image.id}>
                     <img src={image.img} alt={image.name} />
-                    <div className="image-title">{image.name}</div>
-                </div>
-            </Link>
-        )
+                </Link>
+              <div className="image-title">
+                &nbsp;&nbsp;{image.name}
+                <Fab size="small" color="white" aria-label="like" style={fabStyle} onClick={this.likeImage}>
+                  <FavoriteIcon color="secondary"/>
+                </Fab>
+              </div>
+            </div>
+        );
+    }
+
+    likeImage = () => {
+        console.log("LIKE")
     }
 }
+
+const fabStyle = { position: 'absolute', right: '10px', top: '20%' }
 
 export default withRouter(Gallery);
