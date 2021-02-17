@@ -5,7 +5,7 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
 import { authorizedFetch } from '../../communication/requests';
-import { Fab } from '@material-ui/core';
+import { Badge, Chip, Fab } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
@@ -131,19 +131,26 @@ class Gallery extends React.Component {
             imageRoute = currentRoute+"/"+image.id;
         }
         let favIconColor = "primary"
+        const likeCount = image.likes ? image.likes.length : 0
         if (this.state.likedMemeIds.includes(image._id)) favIconColor = "secondary"
         return (
-            <div className="image-container" id={image._id}>
-                <Link to={imageRoute} key={image._id}>
-                    <img src={image.img} alt={image.name} />
-                </Link>
-              <div className="image-title">
-                &nbsp;&nbsp;{image.name}
-                <Fab size="small" color="white" aria-label="like" style={fabStyle} onClick={() => this.likeImage(image._id)}>
-                  <FavoriteIcon color={favIconColor}/>
+          <div className="image-container" id={image._id}>
+            <Link to={imageRoute} key={image._id}>
+              <img src={image.img} alt={image.name} />
+            </Link>
+            <div className="image-title">
+              &nbsp;&nbsp;{image.name}
+              <Badge badgeContent={likeCount} max={999} color={favIconColor} style={fabStyle}>
+                <Fab
+                  size="small"
+                  color="white"
+                  aria-label="like"
+                  onClick={() => this.likeImage(image._id)}>
+                  <FavoriteIcon color={favIconColor} />
                 </Fab>
-              </div>
+              </Badge>
             </div>
+          </div>
         );
     }
 
@@ -152,7 +159,21 @@ class Gallery extends React.Component {
         authorizedFetch(MEMES_ENDPOINT+'/like', 'POST', JSON.stringify({memeId: id, username: username}))
         .then((response) => {
             if (response.ok) {
-                this.setState({ likedMemeIds: [...this.state.likedMemeIds, id] })
+                let newImages = this.state.images.map(img => { 
+                    if(img._id === id) {
+                        if (img.likes && img.likes.includes(username)) {
+                            // Do nothing. User alredy likes meme.
+                        } else if (img.likes) {
+                            img.likes.push(username) 
+                        } else {
+                            img.likes = [username]
+                        }
+                    }
+                    return img
+                })
+                const newLikedMemeIds = this.state.likedMemeIds.includes(id) ? this.state.likedMemeIds : [...this.state.likedMemeIds, id]
+                this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
+                // window.location.reload() // alternatively just get updated memes from server
             }
             else {
               if (response.status === 401) this.setState({ isAuthenticated: false });
@@ -161,6 +182,6 @@ class Gallery extends React.Component {
     }
 }
 
-const fabStyle = { position: 'absolute', right: '10px', top: '20%' }
+const fabStyle = { position: 'absolute', right: '20px', top: '22%' }
 
 export default withRouter(Gallery);
