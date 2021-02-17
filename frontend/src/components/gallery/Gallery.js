@@ -17,6 +17,7 @@ class Gallery extends React.Component {
         this.state = {
             isAuthenticated: true,
             images: [],
+            likedMemeIds: []
         };
     }
 
@@ -36,9 +37,7 @@ class Gallery extends React.Component {
                 // this could happen e.g. if the prevId was invalid or is currently not shown in the gallery
                 console.log(e)
             }
-
         }
-
     }
 
     get_memes() {
@@ -54,7 +53,18 @@ class Gallery extends React.Component {
             this.setState({
                 'images': json.data.memes
             })
+            this.getLikedMemeIds(json.data.memes, localStorage.getItem('memeGen_username'))
         });
+    }
+
+    getLikedMemeIds(memes, username) {
+        if (username && memes.length > 0){
+            const likedMemeIds = memes
+              .filter((meme) => meme.likes && meme.likes.includes(username)) // meme has likes and they include this user
+              .map((meme) => meme._id);
+            this.setState({ likedMemeIds: likedMemeIds })
+            console.log("likedMemeIds: " + likedMemeIds)
+        }
     }
 
     render() {
@@ -120,24 +130,34 @@ class Gallery extends React.Component {
         }else{
             imageRoute = currentRoute+"/"+image.id;
         }
-
+        let favIconColor = "primary"
+        if (this.state.likedMemeIds.includes(image._id)) favIconColor = "secondary"
         return (
-            <div className="image-container" id={image.id}>
-                <Link to={imageRoute} key={image.id}>
+            <div className="image-container" id={image._id}>
+                <Link to={imageRoute} key={image._id}>
                     <img src={image.img} alt={image.name} />
                 </Link>
               <div className="image-title">
                 &nbsp;&nbsp;{image.name}
-                <Fab size="small" color="white" aria-label="like" style={fabStyle} onClick={this.likeImage}>
-                  <FavoriteIcon color="secondary"/>
+                <Fab size="small" color="white" aria-label="like" style={fabStyle} onClick={() => this.likeImage(image._id)}>
+                  <FavoriteIcon color={favIconColor}/>
                 </Fab>
               </div>
             </div>
         );
     }
 
-    likeImage = () => {
-        console.log("LIKE")
+    likeImage = (id) => {
+        const username = localStorage.getItem('memeGen_username')
+        authorizedFetch(MEMES_ENDPOINT+'/like', 'POST', JSON.stringify({memeId: id, username: username}))
+        .then((response) => {
+            if (response.ok) {
+                this.setState({ likedMemeIds: [...this.state.likedMemeIds, id] })
+            }
+            else {
+              if (response.status === 401) this.setState({ isAuthenticated: false });
+            }
+        })
     }
 }
 

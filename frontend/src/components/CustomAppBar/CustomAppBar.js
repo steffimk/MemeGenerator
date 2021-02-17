@@ -9,6 +9,7 @@ export default class CustomAppBar extends React.Component {
 
   logout = () => {
     localStorage.removeItem('memeGen_jwt')
+    localStorage.removeItem('memeGen_username')
     window.location.reload() // Reload page to check whether still authenticated to see this page
   }
   

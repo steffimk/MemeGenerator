@@ -31,6 +31,7 @@ export default class Login extends Component {
         if(json.success) {
           const jwt = json.data.token
           localStorage.setItem('memeGen_jwt', jwt)
+          localStorage.setItem('memeGen_username', userData.username)
           this.setState({ isLoggedIn: true })
         } else {
           this.setState({ loginErrorMessage: json.data.message })
