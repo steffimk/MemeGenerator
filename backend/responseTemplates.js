@@ -1,5 +1,4 @@
 const jwt = require('njwt')
-const constants = require('./constants')
 
 module.exports = {
 
@@ -12,7 +11,7 @@ module.exports = {
 
   sendJWT(res, username) {
     const claims = {permission: 'read-data', username: username}
-    const token = jwt.create(claims, constants.SIGNING_KEY)
+    const token = jwt.create(claims, process.env.SIGNING_KEY)
     token.setExpiration(new Date().getTime() + 60*60*5000) // token expires after five hours
     const jwtTokenString = token.compact()
     res.json({

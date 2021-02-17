@@ -31,4 +31,7 @@ function encryptPassword(password, salt) {
   return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 }
 
-module.exports = router;
+module.exports = {
+  signupRouter: router,
+  encryptPassword: encryptPassword
+}
