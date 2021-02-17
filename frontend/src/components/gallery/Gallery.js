@@ -63,16 +63,10 @@ class Gallery extends React.Component {
             }
         }
 
-        const n_columns = 4.0;
         let images = this.state.images.map(
             (e) => this.renderImage(e, this.props.location.pathname)
         );
-        let slices = [
-            images.slice(0, images.length/n_columns),
-            images.slice(images.length/n_columns, images.length/n_columns*2),
-            images.slice(images.length/n_columns*2, images.length/n_columns*3),
-            images.slice(images.length/n_columns*3, images.length),
-        ];
+        let slices = distributeImagesToColumns(images);
 
         return (
         <div>
@@ -120,5 +114,21 @@ class Gallery extends React.Component {
         )
     }
 }
+
+/*
+    This distributes images to 4 equally sized slices
+     */
+export function distributeImagesToColumns(images) {
+
+    const n_columns = 4.0;
+    let slices = [
+        images.slice(0, images.length / n_columns),
+        images.slice(images.length / n_columns, images.length / n_columns * 2),
+        images.slice(images.length / n_columns * 2, images.length / n_columns * 3),
+        images.slice(images.length / n_columns * 3, images.length),
+    ];
+    return slices;
+}
+
 
 export default withRouter(Gallery);
