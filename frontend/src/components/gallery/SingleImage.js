@@ -1,7 +1,7 @@
 import React from 'react';
 import './SingleImage.css'
 import {Link} from "react-router-dom";
-
+import AudioDescription from '../textToSpeech/AudioDescription';
 export default class SingleImage extends React.Component {
 
     render() {
@@ -17,14 +17,21 @@ export default class SingleImage extends React.Component {
 
                 console.log("image log", image)
                 return (
-                    <Link to="."> {/* relative link up one level*/}
-                        <div className="modal">
-                            <h1 className="modal-title">{image.name}</h1>
+                    <div className="modal">
+                        <h1 className="modal-title">{image.name}&nbsp;
+                            <AudioDescription 
+                                isEditor={false} 
+                                imageDescription={image.imageDescription}
+                                imageName={image.name}
+                                captions={image.captions}
+                            />
+                        </h1>
+                        <Link to="."> {/* relative link up one level*/}
                             <Link className="modal-nav modal-left" to={parentRoute + prev_image._id}/>
                             <img src={imageSrc} alt={image.name}/>
                             <Link className="modal-nav modal-right" to={parentRoute + next_image._id}/>
-                        </div>
-                    </Link>
+                        </Link>
+                    </div>
                 )
             }else{
                 return (
