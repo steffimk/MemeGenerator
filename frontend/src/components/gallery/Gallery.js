@@ -74,6 +74,9 @@ class Gallery extends React.Component {
             images.slice(images.length/n_columns*3, images.length),
         ];
 
+        console.log("images ", this.state.images)
+        console.log("images lengt", this.state.images.length < 1)
+
         return (
         <div>
             <CustomAppBar></CustomAppBar>
@@ -85,6 +88,11 @@ class Gallery extends React.Component {
                             <p>Create new Meme</p>
                         </Link>
                         {slices[0]}
+                    </div>
+                    <div>
+                        {this.state.images.length < 1 &&
+                            <h1>There are no memes created and published until now. Be the first one!</h1>
+                        }
                     </div>
                     <div className="column">
                         {slices[1]}
