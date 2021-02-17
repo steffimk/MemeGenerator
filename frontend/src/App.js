@@ -1,11 +1,15 @@
 import React from 'react';
 import './App.css';
 import { Redirect } from 'react-router-dom'
+
 import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
 import ImageCarousel from "./components/editor/ImageCarousel";
 import TemplateGallery from "./components/editor/TemplateGallery";
 import EditorControl from "./components/editor/EditorControl";
 import { authorizedFetch } from './communication/requests';
+
+import AudioDescription from "./components/textToSpeech/AudioDescription"
+import { Button } from '@material-ui/core';
 
 const API_ENDPOINT = "http://localhost:3030/"
 const TEMPLATE_ENDPOINT = API_ENDPOINT+"memes/templates";
@@ -35,8 +39,9 @@ class App extends React.Component {
       addedImgPositions_Y: [],
       addedImgSizes: [],
       canvasSize: {width: "97%", height: "90%"},
-      drawingCoordinates: []
-    };
+      drawingCoordinates: [],
+      imageDescription: ""
+    }
     this.imageCarousel = React.createRef();
   }
 
@@ -62,7 +67,8 @@ class App extends React.Component {
       addedImgInfo: this.state.addedImgSizes
          .map((size, i) => [size, this.state.addedImgPositions_X[i], this.state.addedImgPositions_Y[i]]),
       canvasSize: this.state.canvasSize,
-      drawingCoordinates: this.state.drawingCoordinates
+      drawingCoordinates: this.state.drawingCoordinates,
+      imageDescription: this.state.imageDescription
     }
     console.log(memeTemplateToSave)
     authorizedFetch(TEMPLATE_ENDPOINT, 'POST', JSON.stringify(memeTemplateToSave))
@@ -120,6 +126,9 @@ class App extends React.Component {
     })
   }
 
+  /**
+   * Adds an empty caption
+   */
   handleAddCaption = () => {
     const newBoxCount = this.state.currentImage.box_count + 1
     const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
@@ -158,7 +167,8 @@ class App extends React.Component {
     }
   }
 
-  /**
+
+  /*
    * Call when image in template gallery is clicked on
    * Lets the user edit the selected image in the editor
    * OR adds the image to the current template if in "AddImage"-mode
@@ -226,6 +236,7 @@ class App extends React.Component {
     const addedImgInfo = getAddedImgInfo(newCurrentImage);
     const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"});
     const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : [];
+    const imageDescription = newCurrentImage.hasOwnProperty("imageDescription") ? newCurrentImage.imageDescription : "";
 
     this.setState({
       currentImage: newCurrentImage,
@@ -243,7 +254,8 @@ class App extends React.Component {
       addedImgPositions_X: addedImgInfo.map(x => x[1]),
       addedImgPositions_Y: addedImgInfo.map(y => y[2]),
       canvasSize: canvasSize,
-      drawingCoordinates: drawingCoordinates
+      drawingCoordinates: drawingCoordinates,
+      imageDescription: imageDescription
     });
   }
 
@@ -329,7 +341,14 @@ class App extends React.Component {
             />
           </div>
           <div className="control right">
-            <h3 style={{ fontWeight: 'bold' }}>Create Your Meme</h3>
+              <h3 style={{fontWeight: 'bold'}}>Editor&nbsp;
+              <AudioDescription 
+                isEditor={true}
+                captions={this.state.captions}
+                imageDescription={this.state.imageDescription}
+                imageName={this.state.currentImage.name}
+              />
+            </h3>
             <EditorControl
               captions={this.state.captions}
               captionPositions_X={this.state.captionPositions_X}
@@ -350,16 +369,27 @@ class App extends React.Component {
               canvasSize={this.state.canvasSize}
               setCanvasSize={this.setCanvasSize.bind(this)}
               imageInfo={this.state.imageInfo}
+              imageDescription={this.state.imageDescription}
+              handleAddCaption={this.handleAddCaption}
             />
-            <button name="addCaption" onClick={this.handleAddCaption} style={{ display: 'block' }}>
-              Add caption
-            </button>
-            <button name="saveTemplateButton" onClick={this.handleSaveAsTemplate}>
+            <Button 
+              name="saveTemplateButton"
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={this.handleSaveAsTemplate}
+              style= {{ marginTop: '10px' }}>
               Save as template
-            </button>
-            <button name="saveButton" onClick={this.handleSaveAsMeme}>
-              Generate image
-            </button>
+            </Button>
+            <Button 
+              name="saveTemsaveButtonplateButton"
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={this.handleSaveAsMeme}
+              style= {{ marginTop: '10px', display: 'block' }}>
+              Generate meme
+            </Button>
           </div>
         </div>
       </div>
