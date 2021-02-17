@@ -22,6 +22,10 @@ class Gallery extends React.Component {
         this.get_memes();
     }
 
+    isNotAuthenticated = () => {
+        this.setState({ isAuthenticated: false})
+      }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         // after leaving single image view, scroll to the position of the last image in the gallery
         const { id } = this.props.match.params;
@@ -40,14 +44,8 @@ class Gallery extends React.Component {
     }
 
     get_memes() {
-        authorizedFetch(MEMES_ENDPOINT, 'GET')
-        .then(response => {
-            if (!response.ok) {
-                if (response.status === 401) this.setState({ isAuthenticated: false })
-                return Promise.reject("Server responded with " + response.status + " " + response.statusText)
-            }
-            return response.json()
-        }).then(json => {
+        authorizedFetch(MEMES_ENDPOINT, 'GET', {}, this.isNotAuthenticated)
+        .then(json => {
             console.log(json.data);
             this.setState({
                 'images': json.data.memes
