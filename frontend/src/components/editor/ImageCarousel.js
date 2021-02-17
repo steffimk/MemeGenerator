@@ -37,6 +37,8 @@ export default class ImageCarousel extends React.Component {
             height = window.innerHeight * 0.8
             width = height * imgRatio
         }
+        height = Math.round(height)
+        width = Math.round(width)
         try {
             const context = this.canvasRef.getContext("2d")
             context.clearRect(0, 0, this.props.canvasSize.width, this.props.canvasSize.height)
