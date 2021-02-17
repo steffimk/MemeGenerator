@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import Gallery from './components/gallery/Gallery';
 import Editor from './components/editor/Editor';
 import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog';
@@ -17,13 +16,7 @@ import reportWebVitals from './reportWebVitals';
 function Router() {
     return (
         <Switch>
-            <Route path="/gallery/:id">
-                <Gallery />
-            </Route>
 
-            <Route path="/gallery">
-                <Gallery />
-            </Route>
 
             <Route path="/editor">
                 <Editor />
@@ -33,26 +26,20 @@ function Router() {
                 <NewTemplateDialog />
             </Route>
 
-            {/* Note how these two routes are ordered. The more specific
-        path="/contact/:id" comes before path="/contact" so that
-        route will render when viewing an individual contact
-            <Route path="/contact/:id">
-                <Contact />
-            </Route>
-            <Route path="/contact">
-                <AllContacts />
+            <Route path="/gallery/:id">
+                <Gallery />
             </Route>
 
-            */}
+            <Route path="/gallery">
+                <Gallery />
+            </Route>
 
-            {/* If none of the previous routes render anything,
-        this route acts as a fallback.
+            <Route path="/:id">
+                <Gallery />
+            </Route>
 
-        Important: A route with path="/" will *always* match
-        the URL because all URLs begin with a /. So that's
-        why we put this one last of all */}
             <Route path="/">
-                <App />
+                <Gallery />
             </Route>
         </Switch>
     );
