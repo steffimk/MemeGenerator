@@ -79,6 +79,7 @@ function isPositiveInteger(x){
 
 router.post('/templates', function(req, res){
     const memeTemplate = req.body;
+    console.log("memeTemplate ", req.body)
     const {
         name, url, width, height, box_count, captions,
         captionPositions, fontColor, fontSize, isItalic, isBold,
@@ -104,6 +105,51 @@ router.post('/templates', function(req, res){
         }
 
         addToDB(req.db, templateCollection, normalizedTemplate);
+
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
+});
+
+router.get('/memes', function (req, res) {
+    let db = req.db;
+    console.log("in memes", db)
+    Promise.all([findAllFromDB(db,memeCollection)])
+        .then(([docs]) => {
+            docs.forEach((template) => template.id = template._id)
+            return (docs);
+        } )
+        .then((docs) => {
+            res.json({
+                "success": true,
+                "data": {"memes": docs}
+            })
+        });
+});
+router.post("/memes", function (req, res){
+    const meme = req.body;
+
+    const {
+        template_id, img, template_url, name, box_count,
+        captions, captionPositions, fontSize, isItalic, isBold, fontColor
+    } = meme;
+    // validate input
+    if(
+        typeof name === "string" && name.length > 0 &&
+        isValidUrl(template_url) &&
+        isPositiveInteger(box_count)
+    ){
+
+        // ignore any unknown values in the input data
+        const normalizedMeme = {
+            template_id, img, template_url, name, box_count, captions,
+            captionPositions, fontColor, fontSize, isItalic, isBold,
+        }
+
+        addToDB(req.db, memeCollection, normalizedMeme);
 
         res.status(200);
         res.send();

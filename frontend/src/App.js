@@ -8,7 +8,9 @@ import EditorControl from "./components/editor/EditorControl";
 import AudioDescription from "./components/textToSpeech/AudioDescription"
 import { Button } from '@material-ui/core';
 
-const TEMPLATE_ENDPOINT = "http://localhost:3030/memes/templates";
+const API_ENDPOINT = "http://localhost:3030/"
+const TEMPLATE_ENDPOINT = API_ENDPOINT+"memes/templates";
+const MEMES_ENDPOINT = API_ENDPOINT+"memes/memes";
 
 class App extends React.Component {
 
@@ -35,6 +37,7 @@ class App extends React.Component {
       drawingCoordinates: [],
       imageDescription: ""
     }
+    this.imageCarousel = React.createRef();
   }
 
   /**
@@ -89,6 +92,46 @@ class App extends React.Component {
      this.setState({ captions: newCaptions });
    }
 
+  handleSaveAsMeme = async () => {
+    const carouselCanvas = this.imageCarousel.current.canvasRef.current;
+    const dataURL = carouselCanvas.toDataURL();
+
+    const memeToSave = {
+      template_id : this.state.currentImage._id,
+      img: dataURL,
+      template_url: this.state.currentImage.url,
+      name: this.state.title,
+      box_count: this.state.captions.length,
+      captions: this.state.captions,
+      captionPositions: this.state.captionPositions_X
+          .map((x, i) => [x, this.state.captionPositions_Y[i]]),
+      fontSize: this.state.fontSize,
+      isItalic: this.state.isItalic,
+      isBold: this.state.isBold,
+      fontColor: this.state.fontColor
+    }
+
+    console.log("meme to save ", memeToSave)
+
+    fetch(MEMES_ENDPOINT, {
+      method: 'POST',
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(memeToSave),
+    }).then(response => {
+      if(response.ok) {
+        return true;
+      }else{
+        return Promise.reject(
+            "API Responded with an error: "+response.status+" "+response.statusText
+        )
+      }
+    })
+        .catch((error) => {
+          console.error('Error:', error);
+          return false;
+        })
+  }
+
   /**
    * Adds an empty caption
    */
@@ -97,7 +140,7 @@ class App extends React.Component {
     const newCurrentImage = {...this.state.currentImage, box_count: newBoxCount}
     const newCaptions = [...this.state.captions,''] // append captions by empty string
     const newCaptionPositions_X = [...this.state.captionPositions_X,50] // place new caption in center
-    const newCaptionPositions_Y = [...this.state.captionPositions_Y, 10 + (90 * (newBoxCount-1) / newBoxCount)] 
+    const newCaptionPositions_Y = [...this.state.captionPositions_Y, 10 + (90 * (newBoxCount-1) / newBoxCount)]
     this.setState({
       currentImage: newCurrentImage,
       captions: newCaptions,
@@ -155,12 +198,13 @@ class App extends React.Component {
    * @param {object} image that is now the main template in the editor
    */
   onChangeCurrentImage = (newCurrentImage) => {
-    function getCaptionPositions(newCurrentImage) {
+    let getCaptionPositions = (newCurrentImage) => {
 
       if (newCurrentImage.hasOwnProperty("captionPositions")) {
         return newCurrentImage.captionPositions;
       } else {
-        let captionPositions = [];
+        let captionPositions = this.state.captionPositions_X
+            .map((val, i) => [val, this.state.captionPositions_Y[i]]);
         for (let i = 0; i < newCurrentImage.box_count; i++) {
           captionPositions.push([50, 10 + (90 * i / newCurrentImage.box_count)]);
         }
@@ -168,13 +212,13 @@ class App extends React.Component {
       }
     }
 
-    function getCaptions(newCurrentImage) {
+    let getCaptions= (newCurrentImage) => {
 
       if (newCurrentImage.hasOwnProperty("captions")) {
         return newCurrentImage.captions;
       } else {
-        let captions = [];
-        for (let i = 0; i < newCurrentImage.box_count; i++) {
+        let captions = this.state.captions;
+        for (let i = captions.length; i < newCurrentImage.box_count; i++) {
           captions.push('');
         }
         return captions;
@@ -193,12 +237,12 @@ class App extends React.Component {
       } else return [];
     }
 
-    const imageInfo =  (newCurrentImage.hasOwnProperty("imageInfo") ? newCurrentImage.imageInfo : {size: null, x:0, y:0})
+    const imageInfo =  (newCurrentImage.hasOwnProperty("imageInfo") ? newCurrentImage.imageInfo : {size: null, x:0, y:0});
     const captionPositions = getCaptionPositions(newCurrentImage);
-    const addedImgInfo = getAddedImgInfo(newCurrentImage)
-    const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"})
-    const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : []
-    const imageDescription = newCurrentImage.hasOwnProperty("imageDescription") ? newCurrentImage.imageDescription : "" 
+    const addedImgInfo = getAddedImgInfo(newCurrentImage);
+    const canvasSize = (newCurrentImage.hasOwnProperty("canvasSize") ? newCurrentImage.canvasSize : {width: "97%", height: "90%"});
+    const drawingCoordinates = newCurrentImage.hasOwnProperty("drawingCoordinates") ? newCurrentImage.drawingCoordinates : [];
+    const imageDescription = newCurrentImage.hasOwnProperty("imageDescription") ? newCurrentImage.imageDescription : "";
 
     this.setState({
       currentImage: newCurrentImage,
@@ -206,11 +250,11 @@ class App extends React.Component {
       captionPositions_X: captionPositions.map(x => x[0]),
       captionPositions_Y: captionPositions.map(y => y[1]),
       captions: getCaptions(newCurrentImage),
-      title: (newCurrentImage.hasOwnProperty("name") ? newCurrentImage.name : ''),
-      fontSize: (newCurrentImage.hasOwnProperty("fontSize") ? newCurrentImage.fontSize : 45),
-      isItalic: (newCurrentImage.hasOwnProperty("isItalic") ? newCurrentImage.isItalic : false),
-      isBold: (newCurrentImage.hasOwnProperty("isBold") ? newCurrentImage.isBold : false),
-      fontColor: (newCurrentImage.hasOwnProperty("fontColor") ? newCurrentImage.fontColor : 'black'),
+      title: (newCurrentImage.hasOwnProperty("name") ? newCurrentImage.name : this.state.name),
+      fontSize: (newCurrentImage.hasOwnProperty("fontSize") ? newCurrentImage.fontSize : this.state.fontSize),
+      isItalic: (newCurrentImage.hasOwnProperty("isItalic") ? newCurrentImage.isItalic : this.state.isItalic),
+      isBold: (newCurrentImage.hasOwnProperty("isBold") ? newCurrentImage.isBold : this.state.isBold),
+      fontColor: (newCurrentImage.hasOwnProperty("fontColor") ? newCurrentImage.fontColor : this.state.fontColor),
       addedImages: getAddedImages(newCurrentImage),
       addedImgSizes: addedImgInfo.map(size => size[0]),
       addedImgPositions_X: addedImgInfo.map(x => x[1]),
@@ -269,11 +313,13 @@ class App extends React.Component {
             currentImage={this.state.currentImage}
             changeCurrentImage={this.onClickedOnImageInGallery}
             templateEndpoint={TEMPLATE_ENDPOINT}
+            apiEndpoint={API_ENDPOINT}
             isInAddImageMode={this.state.isInAddImageMode}
-          />
-        </div>
-        <div className="middle">
-          <ImageCarousel
+        />
+      </div>
+      <div className="middle">
+        <ImageCarousel
+            ref = {this.imageCarousel}
             image={this.state.currentImage}
             imageInfo={this.state.imageInfo}
             captions={this.state.captions}
@@ -327,13 +373,22 @@ class App extends React.Component {
           handleAddCaption={this.handleAddCaption}
         />
         <Button 
-          name="saveButton"
+          name="saveTemplateButton"
           variant="contained"
           size="small"
-          color="secondary"
+          color="primary"
           onClick={this.handleSaveAsTemplate}
           style= {{ marginTop: '10px' }}>
           Save as template
+        </Button>
+        <Button 
+          name="saveTemsaveButtonplateButton"
+          variant="contained"
+          size="small"
+          color="secondary"
+          onClick={this.handleSaveAsMeme}
+          style= {{ marginTop: '10px', display: 'block' }}>
+          Generate meme
         </Button>
         </div>
       </div>

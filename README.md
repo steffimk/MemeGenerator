@@ -4,14 +4,14 @@
 
 Start the stack by calling
 ```bash
-docker-compose -f dev-stack.yml up -d
+docker-compose up -d
 ```
 After some seconds the app will be available on port 3000. An admin
 interface for the mongoDB will be available on port 8081.
 
 Stop the stack by calling
 ```bash
-docker-compose -f dev-stack.yml down
+docker-compose down
 ```
 
 Alternatively you can also run the app locally. This requires having 
