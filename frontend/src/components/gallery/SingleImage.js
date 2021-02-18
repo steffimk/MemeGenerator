@@ -2,7 +2,19 @@ import React from 'react';
 import './SingleImage.css'
 import {Link} from "react-router-dom";
 import AudioDescription from '../textToSpeech/AudioDescription';
+import CommentIcon from '@material-ui/icons/Comment';
+import { Fab } from '@material-ui/core';
+import Comments from './Comments';
 export default class SingleImage extends React.Component {
+
+    constructor(props){
+        super(props)
+        this.state = {
+            openComments: false
+        }
+    }
+
+    setComments = (areOpen) => this.setState({ openComments: areOpen })
 
     render() {
         if(this.props.id !== undefined && this.props.images !== undefined && this.props.images.length > 0) {
@@ -26,12 +38,16 @@ export default class SingleImage extends React.Component {
                                 imageName={image.name}
                                 captions={image.captions}
                             />
+                            <Fab size="small" onClick={() => this.setComments(true)}>
+                                <CommentIcon/>
+                            </Fab>
                         </h1>
                         <Link to="."> {/* relative link up one level*/}
                             <Link className="modal-nav modal-left" to={"/gallery/" + prev_image.id}/>
                             <img src={image.img} alt={image.name}/>
                             <Link className="modal-nav modal-right" to={"/gallery/" + next_image.id}/>
                         </Link>
+                        <Comments open={this.state.openComments} handleClose={() => this.setComments(false)}/>
                     </div>
                     // </Link>
                 )
