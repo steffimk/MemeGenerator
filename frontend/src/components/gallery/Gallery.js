@@ -5,7 +5,7 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
 import { authorizedFetch } from '../../communication/requests';
-import { Badge, Chip, Fab } from '@material-ui/core';
+import { Badge, Fab } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
@@ -154,29 +154,22 @@ class Gallery extends React.Component {
 
     likeImage = (id) => {
         const username = localStorage.getItem('memeGen_username')
-        authorizedFetch(MEMES_ENDPOINT+'/like', 'POST', JSON.stringify({memeId: id, username: username}))
-        .then((response) => {
-            if (response.ok) {
-                let newImages = this.state.images.map(img => { 
-                    if(img._id === id) {
-                        if (img.likes && img.likes.includes(username)) {
-                            // Do nothing. User alredy likes meme.
-                        } else if (img.likes) {
-                            img.likes.push(username) 
-                        } else {
-                            img.likes = [username]
-                        }
-                    }
-                    return img
-                })
-                const newLikedMemeIds = this.state.likedMemeIds.includes(id) ? this.state.likedMemeIds : [...this.state.likedMemeIds, id]
-                this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
-                // window.location.reload() // alternatively just get updated memes from server
+        authorizedFetch(MEMES_ENDPOINT+'/like', 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
+        .catch((error) => { console.error('Error:', error) });
+        let newImages = this.state.images.map(img => { 
+            if(img._id === id) {
+                if (img.likes && img.likes.includes(username)) {
+                    // Do nothing. User alredy likes meme.
+                } else if (img.likes) {
+                    img.likes.push(username)
+                } else {
+                    img.likes = [username]
+                }
             }
-            else {
-              if (response.status === 401) this.setState({ isAuthenticated: false });
-            }
+            return img
         })
+        const newLikedMemeIds = this.state.likedMemeIds.includes(id) ? this.state.likedMemeIds : [...this.state.likedMemeIds, id]
+        this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
     }
 }
 
