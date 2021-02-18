@@ -12,6 +12,9 @@ class Gallery extends React.Component {
         super();
         this.state = {
             images: [],
+            isPlaying: false,
+            playIcon: "fas fa-fw fa-play",
+            isRandom: false
         };
     }
 
@@ -46,6 +49,31 @@ class Gallery extends React.Component {
                     'images': json.data.memes
                 })
             });
+    }
+
+    changePlaying = (event) => {
+        console.log("in handle change")
+        console.log("before state", this.state)
+        console.log("Welches" + event);
+        let isPlaying = !this.state.isPlaying;
+
+
+        if(isPlaying) {
+            this.setState({playIcon: "fas fa-fw fa-pause"});
+        } else {
+            this.setState({playIcon: "fas fa-fw fa-play"});
+        }
+        this.setState({isPlaying : isPlaying})
+        console.log("new state ", this.state)
+    }
+
+    stopPlaying = () => {
+        this.setState({playIcon: "fas fa-fw fa-play"})
+        this.setState({isPlaying : false})
+    }
+
+    changeRandom = () => {
+        this.setState({isRandom : !this.state.isRandom})
     }
 
     render() {
@@ -96,11 +124,19 @@ class Gallery extends React.Component {
                         {slices[3]}
                     </div>
                 </div>
-                <SingleImage images={this.state.images} id={id} />
+                <SingleImage images={this.state.images}
+                             id={id}
+                             isPlaying={this.state.isPlaying}
+                             playIcon={this.state.playIcon}
+                             isRandom={this.state.isRandom}
+                             changePlaying={this.changePlaying}
+                             stopPlaying = {this.stopPlaying}
+                             changeRandom={this.changeRandom}/>
             </div>
             </div>
         );
     }
+
 
     renderImage(image, currentRoute) {
         let imageRoute;
