@@ -23,15 +23,14 @@ class AccountHistory extends Component {
     this.getOwnTemplates();
   }
 
+  isNotAuthenticated = () => {
+    this.setState({ isAuthenticated: false})
+  }
+
   getOwnMemes = () => {
     const username = localStorage.getItem('memeGen_username');
     const endpointWithQuery = `${MEMES_ENDPOINT}?username=${username}`;
-    authorizedFetch(endpointWithQuery, 'GET')
-      .then((res) => {
-        if (res.ok) return res.json();
-        else if (res.status === 401) this.setState({ isAuthenticated: false });
-        return Promise.reject('API Responded with an error: ' + res.status + ' ' + res.statusText);
-      })
+    authorizedFetch(endpointWithQuery, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownMemes: json.data.memes }))
       .catch((e) => console.log(e));
   };
@@ -39,12 +38,7 @@ class AccountHistory extends Component {
   getOwnTemplates = () => {
     const username = localStorage.getItem('memeGen_username');
     const endpointWithQuery = `${TEMPLATE_ENDPOINT}?username=${username}`;
-    authorizedFetch(endpointWithQuery, 'GET')
-      .then((res) => {
-        if (res.ok) return res.json();
-        else if (res.status === 401) this.setState({ isAuthenticated: false });
-        return Promise.reject(`API Responded with an error: ${res.status} ${res.statusText}`);
-      })
+    authorizedFetch(endpointWithQuery, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownTemplates: json.data.templates }))
       .catch((e) => console.log(e));
   };

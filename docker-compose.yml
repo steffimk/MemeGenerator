@@ -22,6 +22,7 @@ services:
     working_dir: /backend/
     environment:
       - NODE_ENV=development
+      - SIGNING_KEY=${SIGNING_KEY}
     ports:
       - 3030:3030
     volumes:

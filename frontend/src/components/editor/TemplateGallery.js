@@ -22,14 +22,8 @@ export default class TemplateGallery extends React.Component {
     }
 
     get_memeTemplates() {
-        authorizedFetch( this.props.templateEndpoint, 'GET')
-        .then(response => {
-              if (!response.ok) {
-                if(response.status === 401) this.props.setIsAuthenticated(false)
-                return Promise.reject("Server responded with " + response.status + " " + response.statusText)
-              }
-              return response.json()
-            }).then(json => {
+        authorizedFetch( this.props.templateEndpoint, 'GET', {}, () => this.props.setIsAuthenticated(false))
+        .then(json => {
                 console.log(json.data);
                 this.setState({
                     'templates': json.data.templates
