@@ -4,19 +4,24 @@ import PropTypes from 'prop-types';
 import {Link} from "react-router-dom";
 import AudioDescription from '../textToSpeech/AudioDescription';
 import CommentIcon from '@material-ui/icons/Comment';
-import { AppBar, Badge, Fab, Toolbar } from '@material-ui/core';
+import { AppBar, Badge, Button, Chip, Fab, Toolbar } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import FaceIcon from '@material-ui/icons/Face'
 import Comments from './Comments';
+import Likes from './Likes';
 export default class SingleImage extends React.Component {
 
     constructor(props){
         super(props)
         this.state = {
-            openComments: false
+            openComments: false,
+            openLikes: false
         }
     }
 
     setOpenComments = (areOpen) => this.setState({ openComments: areOpen })
+
+    setOpenLikes = (areOpen) => this.setState({ openLikes: areOpen })
 
     render() {
         if(this.props.id !== undefined && this.props.images !== undefined && this.props.images.length > 0) {
@@ -30,7 +35,9 @@ export default class SingleImage extends React.Component {
                 // Likes of image
                 let favIconColor = "primary"
                 let likeCount = 0
+                let likes = []
                 if(image.likes) {
+                    likes = image.likes
                     likeCount = image.likes.length
                     if (image.likes.includes(localStorage.getItem('memeGen_username'))) favIconColor = "secondary"
                 }
@@ -49,11 +56,13 @@ export default class SingleImage extends React.Component {
                     </Link>
                     <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
                       <Toolbar>
-                        <Badge
-                          badgeContent={likeCount}
-                          max={999}
-                          color={favIconColor}
-                          style={{ marginLeft: window.innerWidth * 0.6, marginRight: '20px' }}>
+                        <Chip
+                          icon={<FaceIcon style={{color: 'white'}}/>}
+                          label="Liked by..."
+                          onClick={() => this.setOpenLikes(true)}
+                          style={{ marginLeft: window.innerWidth * 0.5, marginRight: '10px', color: 'white', backgroundColor: 'dimgray' }}
+                        />
+                        <Badge badgeContent={likeCount} max={999} color={favIconColor} style={{ marginRight: '20px' }}>
                           <Fab size="small" color="white" onClick={() => this.props.likeImage(image._id)}>
                             <FavoriteIcon color={favIconColor} />
                           </Fab>
@@ -77,8 +86,8 @@ export default class SingleImage extends React.Component {
                       handleClose={() => this.setOpenComments(false)}
                       isNotAuthenticated={this.props.isNotAuthenticated}
                     />
+                    <Likes open={this.state.openLikes} likes={likes} handleClose={() => this.setOpenLikes(false)}/>
                   </div>
-                  // </Link>
                 );
             }else{
                 return (
