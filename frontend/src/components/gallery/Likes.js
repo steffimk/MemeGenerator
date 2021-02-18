@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { Avatar, Button, Card, CardHeader, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
-import { randomColor, dialogStyle } from '../constants/stylingConstants'
+import { randomColor, dialogStyle } from '../../constants'
 
 export default class Likes extends Component {
 

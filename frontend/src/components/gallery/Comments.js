@@ -28,7 +28,7 @@ export default class Comments extends Component {
 
   renderComment = (comment) => {
     return (
-      <Card variant="outlined" style={{ marginBottom: '10px' }}>
+      <Card variant="outlined" style={{ marginBottom: '10px', maxWidth: '325px' }}>
         <CardHeader
           title={comment.username}
           subheader={comment.date.slice(0, comment.date.indexOf('GMT'))}
