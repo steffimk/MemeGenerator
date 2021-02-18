@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import { Avatar, Button, Card, CardContent, CardHeader, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputBase, Paper, Typography } from '@material-ui/core'
-
-const colors = ['orange', '#00a170', '#0072b5', '#d2386c']
-const randomColor = (ascii) => colors[ascii%colors.length]
+import { Avatar, Button, Card, CardHeader, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import { randomColor, dialogStyle } from '../constants/stylingConstants'
 
 export default class Likes extends Component {
 
   renderLike = (username) => {
     return (<Card variant="outlined" style={{ marginBottom: '10px' }}>
         <CardHeader
+          style={{ padding: '4px 4px', width: '200px' }}
           title={username}
           avatar={
             <Avatar size="small" style={{ backgroundColor: randomColor(username.charCodeAt(0)) }}>
@@ -24,7 +23,7 @@ export default class Likes extends Component {
   render() {
     const renderedLikes = this.props.likes.map(this.renderLike)
     return (
-      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={dialogStyle}>
+      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={{...dialogStyle, marginLeft: window.innerWidth * 0.5, marginTop: window.innerHeight*0.35}}>
         <DialogTitle>Likes</DialogTitle>
         <DialogContent dividers={true}>{renderedLikes}</DialogContent>
         <DialogActions>
@@ -35,13 +34,6 @@ export default class Likes extends Component {
       </Dialog>
     );
   }
-}
-
-const dialogStyle =  {
-  padding: '2px 4px',
-  display: 'flex',
-  alignItems: 'center',
-  marginLeft: window.innerWidth * 0.5
 }
 
 Likes.propTypes = {

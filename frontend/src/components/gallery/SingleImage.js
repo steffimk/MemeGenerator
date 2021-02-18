@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import {Link} from "react-router-dom";
 import AudioDescription from '../textToSpeech/AudioDescription';
 import CommentIcon from '@material-ui/icons/Comment';
-import { AppBar, Badge, Button, Chip, Fab, Toolbar } from '@material-ui/core';
+import { AppBar, Badge, Chip, Fab, Toolbar } from '@material-ui/core';
+import { LS_USERNAME } from '../../constants'
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FaceIcon from '@material-ui/icons/Face'
 import Comments from './Comments';
@@ -39,7 +40,7 @@ export default class SingleImage extends React.Component {
                 if(image.likes) {
                     likes = image.likes
                     likeCount = image.likes.length
-                    if (image.likes.includes(localStorage.getItem('memeGen_username'))) favIconColor = "secondary"
+                    if (image.likes.includes(localStorage.getItem(LS_USERNAME))) favIconColor = "secondary"
                 }
 
                 return (

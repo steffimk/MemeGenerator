@@ -7,6 +7,7 @@ import SingleImage from "./SingleImage";
 import { authorizedFetch, LIKE_ENDPOINT } from '../../communication/requests';
 import { Badge, Fab } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import { LS_USERNAME } from '../../constants'
 
 const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
 
@@ -51,7 +52,7 @@ class Gallery extends React.Component {
             this.setState({
                 'images': json.data.memes
             })
-            this.getLikedMemeIds(json.data.memes, localStorage.getItem('memeGen_username'))
+            this.getLikedMemeIds(json.data.memes, localStorage.getItem(LS_USERNAME))
         });
     }
 
@@ -152,7 +153,7 @@ class Gallery extends React.Component {
     }
 
     likeImage = (id) => {
-        const username = localStorage.getItem('memeGen_username')
+        const username = localStorage.getItem(LS_USERNAME)
         authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
         .catch((error) => { console.error('Error:', error) });
         let newImages = this.state.images.map(img => { 

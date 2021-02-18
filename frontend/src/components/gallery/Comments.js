@@ -3,9 +3,7 @@ import SendIcon from '@material-ui/icons/Send'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { authorizedFetch, COMMENT_ENDPOINT } from '../../communication/requests';
-
-const colors = ['orange', '#00a170', '#0072b5', '#d2386c']
-const randomColor = (ascii) => colors[ascii%colors.length]
+import { randomColor, dialogStyle, LS_USERNAME } from '../../constants'
 export default class Comments extends Component {
 
   constructor(props) {
@@ -14,7 +12,7 @@ export default class Comments extends Component {
       newComment: '',
       comments: this.props.meme.comments ? this.props.meme.comments : []
     }
-    this.username = localStorage.getItem('memeGen_username')
+    this.username = localStorage.getItem(LS_USERNAME)
   }
 
   changeComment = (e) => this.setState({ newComment: e.target.value })
@@ -77,10 +75,4 @@ Comments.propTypes = {
   open: PropTypes.bool.isRequired,
   meme: PropTypes.object.isRequired,
   isNotAuthenticated: PropTypes.func.isRequired
-}
-
-const dialogStyle =  {
-  padding: '2px 4px',
-  display: 'flex',
-  alignItems: 'center'
 }
