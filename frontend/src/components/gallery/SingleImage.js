@@ -10,7 +10,13 @@ export default class SingleImage extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            openComments: false
+            openComments: false,
+            comments: [{username: "TestPerson", comment: "Test Nachricht 1", date: Date()},
+            {username: "User", comment: "Test Nachricht 2", date: Date()},
+            {username: "MaxMuster", comment: "Test Nachricht 3", date: Date()}, 
+            {username: "TestPerson", comment: "Test Nachricht 4", date: Date()}, 
+            {username: "User", comment: "Test Nachricht 5", date: Date()},  
+            {username: "MaxMuster", comment: "Test Nachricht 6", date: Date()}]
         }
     }
 
@@ -47,7 +53,7 @@ export default class SingleImage extends React.Component {
                             <img src={image.img} alt={image.name}/>
                             <Link className="modal-nav modal-right" to={"/gallery/" + next_image.id}/>
                         </Link>
-                        <Comments open={this.state.openComments} handleClose={() => this.setComments(false)}/>
+                        <Comments open={this.state.openComments} comments={this.state.comments} handleClose={() => this.setComments(false)}/>
                     </div>
                     // </Link>
                 )

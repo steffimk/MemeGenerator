@@ -1,13 +1,31 @@
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputBase, Paper } from '@material-ui/core'
+import { Avatar, Button, Card, CardContent, CardHeader, Chip, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputBase, Paper, Typography } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
 import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 
 export default class Comments extends Component {
-  render() {
+
+  renderComment = (comment) => {
     return (
-      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="papaer" style={dialogStyle}>
+      <Card variant='outlined' style={{marginBottom: '10px'}}>
+        <CardHeader
+          title={comment.username}
+          subheader={comment.date.slice(0, comment.date.indexOf('GMT'))}
+          avatar={<Avatar size='small' style={{ backgroundColor: 'orange' }}>{comment.username[0]}</Avatar>}
+        />
+        <CardContent>
+          <Typography>{comment.comment}</Typography>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  render() {
+    const renderedComments = this.props.comments.map(this.renderComment);
+    return (
+      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={dialogStyle}>
         <DialogTitle>Comments</DialogTitle>
-        <DialogContent dividers={true}></DialogContent>
+        <DialogContent dividers={true}>{renderedComments}</DialogContent>
         <DialogActions>
           <Paper component="form">
             <IconButton>
@@ -25,6 +43,12 @@ export default class Comments extends Component {
       </Dialog>
     );
   }
+}
+
+Comments.propTypes = {
+  handleClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  comments: PropTypes.array.isRequired
 }
 
 const dialogStyle =  {
