@@ -35,4 +35,9 @@ module.exports = {
     const collection = db.get(MEME_COLLECTION);
     collection.update({ _id: memeId}, {$addToSet: {likes: username} }).then((promise) => console.log(promise))
   },
+
+  addCommentToMeme(db, memeId, comment) {
+    const collection = db.get(MEME_COLLECTION);
+    collection.update({ _id: memeId}, {$addToSet: {comments: comment} }).then((promise) => console.log(promise))
+  },
 };

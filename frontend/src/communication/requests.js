@@ -1,3 +1,7 @@
+export const API_ENDPOINT = 'http://localhost:3030/'
+export const LIKE_ENDPOINT = API_ENDPOINT + 'memes/memes/like'
+export const COMMENT_ENDPOINT = API_ENDPOINT + 'memes/memes/comment'
+
 export function authorizedFetch(endpoint, method, bodyJson, isNotAuthenticatedCallback) {
   const jwt = localStorage.getItem('memeGen_jwt');
   if (method === 'GET') {

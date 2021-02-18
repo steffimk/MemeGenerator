@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom'
 import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
-import { authorizedFetch } from '../../communication/requests';
+import { authorizedFetch, LIKE_ENDPOINT } from '../../communication/requests';
 import { Badge, Fab } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
@@ -115,7 +115,7 @@ class Gallery extends React.Component {
                         {slices[3]}
                     </div>
                 </div>
-                <SingleImage images={this.state.images} id={id} />
+                <SingleImage images={this.state.images} id={id} isNotAuthenticated={this.isNotAuthenticated} />
             </div>
             </div>
         );
@@ -154,7 +154,7 @@ class Gallery extends React.Component {
 
     likeImage = (id) => {
         const username = localStorage.getItem('memeGen_username')
-        authorizedFetch(MEMES_ENDPOINT+'/like', 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
+        authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
         .catch((error) => { console.error('Error:', error) });
         let newImages = this.state.images.map(img => { 
             if(img._id === id) {
