@@ -94,30 +94,29 @@ class Gallery extends React.Component {
         ];
 
         return (
-        <div>
+          <div>
             <CustomAppBar></CustomAppBar>
             <div className="gallery-container">
-                <div className="image-gallery" style={gallery_style}>
-                    <div className="column">
-                        <Link to="/editor" className="image-container create-meme">
-                            <h1>+</h1>
-                            <p>Create new Meme</p>
-                        </Link>
-                        {slices[0]}
-                    </div>
-                    <div className="column">
-                        {slices[1]}
-                    </div>
-                    <div className="column">
-                        {slices[2]}
-                    </div>
-                    <div className="column">
-                        {slices[3]}
-                    </div>
+              <div className="image-gallery" style={gallery_style}>
+                <div className="column">
+                  <Link to="/editor" className="image-container create-meme">
+                    <h1>+</h1>
+                    <p>Create new Meme</p>
+                  </Link>
+                  {slices[0]}
                 </div>
-                <SingleImage images={this.state.images} id={id} isNotAuthenticated={this.isNotAuthenticated} />
+                <div className="column">{slices[1]}</div>
+                <div className="column">{slices[2]}</div>
+                <div className="column">{slices[3]}</div>
+              </div>
+              <SingleImage
+                images={this.state.images}
+                id={id}
+                isNotAuthenticated={this.isNotAuthenticated}
+                likeImage={this.likeImage}
+              />
             </div>
-            </div>
+          </div>
         );
     }
 

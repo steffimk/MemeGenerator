@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { authorizedFetch, COMMENT_ENDPOINT } from '../../communication/requests';
 
 const colors = ['orange', '#00a170', '#0072b5', '#d2386c']
-const randomColor = () => colors[Math.floor(Math.random() * colors.length)]
+const randomColor = (ascii) => colors[ascii%colors.length]
 export default class Comments extends Component {
 
   constructor(props) {
@@ -30,11 +30,15 @@ export default class Comments extends Component {
 
   renderComment = (comment) => {
     return (
-      <Card variant='outlined' style={{marginBottom: '10px'}}>
+      <Card variant="outlined" style={{ marginBottom: '10px' }}>
         <CardHeader
           title={comment.username}
           subheader={comment.date.slice(0, comment.date.indexOf('GMT'))}
-          avatar={<Avatar size='small' style={{ backgroundColor: randomColor() }}>{comment.username[0]}</Avatar>}
+          avatar={
+            <Avatar size="small" style={{ backgroundColor: randomColor(comment.username.charCodeAt(0)) }}>
+              {comment.username[0]}
+            </Avatar>
+          }
         />
         <CardContent>
           <Typography>{comment.comment}</Typography>
