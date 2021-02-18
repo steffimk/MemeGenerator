@@ -14,41 +14,43 @@ function getTemplatesFromImgFlip(){
         .then(json => json.data.memes)
 }
 
-router.get('/templates', function (req, res, next) {
+router.get('/templates/:username', function(req, res, next){
     let db = req.db;
-    const username = req.query.username
-    // if username is defined: only get templates of user
+    const username = req.params.username
     if (username) {
         dbOp.findAllOfUser(db, templateCollection, username).then((docs) => {
             responseTemplates.successBoundResponse(res, true, {"templates": docs})
         })
-    } else { // get all templates
-        Promise.all([dbOp.findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
-            .then(([docs, imgflip]) => {
-                imgflip.forEach((template) => template.source = "imgflip")
-                docs.forEach((template) => template.id = template._id)
-                return (docs.concat(imgflip));
-            } )
-            .then((docs) => {
-                responseTemplates.successBoundResponse(res, true, {"templates": docs})
-        });
     }
 });
 
-router.get('/', function (req, res, next) {
+router.get('/templates', function (req, res, next) {
     let db = req.db;
-    const username = req.query.username
-    // if username is defined: only get memes of user
-    if (username) {
-        dbOp.findAllOfUser(db, memeCollection, username).then((docs) => {
-            responseTemplates.successBoundResponse(res, true, {"memes": docs})
-        })
-    } else { // get all memes
-        dbOp.findAllFromDB(db, memeCollection).then((docs) => {
-        responseTemplates.successBoundResponse(res, true, {"memes": docs})
-        });
-    }
+    Promise.all([dbOp.findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
+        .then(([docs, imgflip]) => {
+            imgflip.forEach((template) => template.source = "imgflip")
+            docs.forEach((template) => template.id = template._id)
+            return (docs.concat(imgflip));
+        } )
+        .then((docs) => {
+            responseTemplates.successBoundResponse(res, true, {"templates": docs})
+    });
 });
+
+// router.get('/', function (req, res, next) {
+//     let db = req.db;
+//     const username = req.query.username
+//     // if username is defined: only get memes of user
+//     if (username) {
+//         dbOp.findAllOfUser(db, memeCollection, username).then((docs) => {
+//             responseTemplates.successBoundResponse(res, true, {"memes": docs})
+//         })
+//     } else { // get all memes
+//         dbOp.findAllFromDB(db, memeCollection).then((docs) => {
+//         responseTemplates.successBoundResponse(res, true, {"memes": docs})
+//         });
+//     }
+// });
 
 
 const isValidUrl = (s) => {
@@ -79,7 +81,7 @@ router.post('/templates', function(req, res){
         imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates,
         imageDescription
     } = memeTemplate;
-    console.log(memeTemplate)
+    // console.log(memeTemplate)
     // validate input
     if(
         typeof name === "string" && name.length > 0 &&
@@ -107,26 +109,29 @@ router.post('/templates', function(req, res){
     }
 });
 
-router.get('/memes', function (req, res) {
+router.get('/memes/:username', function(req,res) {
     let db = req.db;
-    console.log("in memes", db)
-    const username = req.query.username
-    // if username is defined: only get memes of user
+    const username = req.params.username
     if (username) {
         dbOp.findAllOfUser(db, memeCollection, username).then((docs) => {
             responseTemplates.successBoundResponse(res, true, {"memes": docs})
         })
-    } else { // get all memes
-        Promise.all([dbOp.findAllFromDB(db,memeCollection)])
-        .then(([docs]) => {
-            docs.forEach((template) => template.id = template._id)
-            return (docs);
-        } )
-        .then((docs) => {
-            responseTemplates.successBoundResponse(res, true, {"memes": docs})
-        });
     }
 });
+
+router.get('/memes', function (req, res) {
+    let db = req.db;
+    // console.log("in memes", db)
+    Promise.all([dbOp.findAllFromDB(db,memeCollection)])
+    .then(([docs]) => {
+        docs.forEach((template) => template.id = template._id)
+        return (docs);
+    } )
+    .then((docs) => {
+        responseTemplates.successBoundResponse(res, true, {"memes": docs})
+    });
+});
+
 router.post("/memes", function (req, res){
     const meme = req.body;
 

@@ -29,16 +29,16 @@ class AccountHistory extends Component {
 
   getOwnMemes = () => {
     const username = localStorage.getItem('memeGen_username');
-    const endpointWithQuery = `${MEMES_ENDPOINT}?username=${username}`;
-    authorizedFetch(endpointWithQuery, 'GET', {}, this.isNotAuthenticated)
+    const endpointWithParam = `${MEMES_ENDPOINT}/${username}`;
+    authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownMemes: json.data.memes }))
       .catch((e) => console.log(e));
   };
 
   getOwnTemplates = () => {
     const username = localStorage.getItem('memeGen_username');
-    const endpointWithQuery = `${TEMPLATE_ENDPOINT}?username=${username}`;
-    authorizedFetch(endpointWithQuery, 'GET', {}, this.isNotAuthenticated)
+    const endpointWithParam = `${TEMPLATE_ENDPOINT}/${username}`;
+    authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownTemplates: json.data.templates }))
       .catch((e) => console.log(e));
   };
