@@ -6,13 +6,12 @@ var logger = require('morgan');
 var cors = require('cors');
 var db = require('monk')('mongo:27017/ommOfficialDB');
 const jwt = require('njwt');
-const constants = require('./constants')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var memesRouter = require('./routes/memes');
 var loginRouter = require('./routes/login');
-var signupRouter =require('./routes/signup')
+var { signupRouter } = require('./routes/signup')
 var screenshotRouter = require('./routes/screenshot')
 
 var app = express();
@@ -41,7 +40,7 @@ app.use('/signup', signupRouter);
 // Authentication middleware: Verify jwt token
 app.use((req,res,next) => {
   const sentToken = req.headers.authorization
-  jwt.verify(sentToken, constants.SIGNING_KEY, (err, verifiedJwt) => {
+  jwt.verify(sentToken, process.env.SIGNING_KEY, (err, verifiedJwt) => {
     if(err) {
       console.log("Authentication failed!")
       res.status(401).send(err.message)

@@ -1,6 +1,6 @@
 const express = require('express');
 var router = express.Router();
-var crypto = require('crypto');
+var { encryptPassword } = require('./signup')
 
 const responseTemplates = require('../responseTemplates')
 /* Database Operations */
@@ -25,7 +25,7 @@ router.post('/', function(req, res, next) {
 });
 
 function passwordIsValid(password, dbSalt, dbHash){
-  const hash = crypto.pbkdf2Sync(password, dbSalt, 1000, 64, 'sha512').toString('hex')
+  const hash = encryptPassword(password, dbSalt)
   return hash == dbHash
 }
 

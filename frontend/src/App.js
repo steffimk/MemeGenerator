@@ -45,6 +45,10 @@ class App extends React.Component {
     this.imageCarousel = React.createRef();
   }
 
+  isNotAuthenticated = () => {
+    this.setState({ isAuthenticated: false})
+  }
+
   /**
    * Saves a template to the database
    */
@@ -71,14 +75,7 @@ class App extends React.Component {
       imageDescription: this.state.imageDescription
     }
     console.log(memeTemplateToSave)
-    authorizedFetch(TEMPLATE_ENDPOINT, 'POST', JSON.stringify(memeTemplateToSave))
-      .then((response) => {
-        if (response.ok) return true;
-        else {
-          if (response.status === 401) this.setState({ isAuthenticated: false });
-          return Promise.reject('API Responded with an error: ' + response.status + ' ' + response.statusText);
-        }
-      })
+    authorizedFetch(TEMPLATE_ENDPOINT, 'POST', JSON.stringify(memeTemplateToSave), this.isNotAuthenticated)
       .catch((error) => {
         console.error('Error:', error);
         return false;
@@ -113,17 +110,11 @@ class App extends React.Component {
 
     console.log("meme to save ", memeToSave)
 
-    authorizedFetch(MEMES_ENDPOINT, 'POST', JSON.stringify(memeToSave))
-    .then((response) => {
-      if (response.ok) return true;
-      else {
-        if (response.status === 401) this.setState({ isAuthenticated: false });
-        return Promise.reject('API Responded with an error: ' + response.status + ' ' + response.statusText);
-      }
-    }).catch((error) => {
-          console.error('Error:', error);
-          return false;
-    })
+    authorizedFetch(MEMES_ENDPOINT, 'POST', JSON.stringify(memeToSave), this.isNotAuthenticated)
+    .catch((error) => {
+      console.error('Error:', error);
+      return false;
+    });
   }
 
   /**
