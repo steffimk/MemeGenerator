@@ -1,4 +1,4 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import Gallery from './Gallery';
 import {distributeImagesToColumns} from './Gallery';
 import React from "react";
@@ -12,7 +12,6 @@ test('Create new Meme button exists', () => {
   ));
   const linkElement = screen.getByText(/Create new Meme/i);
   expect(linkElement).toBeInTheDocument();
-  fireEvent.click(linkElement);
   expect(linkElement.parentNode).toHaveAttribute("href", "/editor")
 });
 
@@ -21,7 +20,6 @@ test('memes are correctly distributed across columns', () => {
   let list = [1,2,3,4,5,6,7,8,9]
 
   let slices = distributeImagesToColumns(list);
-  console.log([].concat.apply([], slices));
 
   // No images have been lost
   expect([].concat.apply([], slices).length).toEqual(list.length);
