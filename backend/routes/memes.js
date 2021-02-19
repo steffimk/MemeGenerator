@@ -96,9 +96,11 @@ router.post('/templates', function(req, res){
         isPositiveInteger(box_count)
     ){
 
+        const creation_time = Date.now();
+
         // ignore any unknown values in the input data
         const normalizedTemplate = {
-            name, url, width, height, box_count, captions,
+            name, creation_time, url, width, height, box_count, captions,
             captionPositions, fontColor, fontSize, isItalic, isBold,
             imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates,
             imageDescription
@@ -143,9 +145,11 @@ router.post("/memes", function (req, res){
         isPositiveInteger(box_count)
     ){
 
+        const creation_time = Date.now();
+
         // ignore any unknown values in the input data
         const normalizedMeme = {
-            template_id, img, template_url, name, box_count, captions,
+            template_id, creation_time, img, template_url, name, box_count, captions,
             captionPositions, fontColor, fontSize, isItalic, isBold,
         }
 
