@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import './TemplateGallery.css';
 import {Button} from "@material-ui/core";
 import NewTemplateDialog from "../newTemplateDialog/NewTemplateDialog"
+import { authorizedFetch } from '../../communication/requests';
+import { FormatColorResetSharp } from '@material-ui/icons';
 export default class TemplateGallery extends React.Component {
 
     constructor(props){
@@ -21,15 +23,14 @@ export default class TemplateGallery extends React.Component {
     }
 
     get_memeTemplates() {
-        fetch(this.props.templateEndpoint)
-            .then(response => response.json())
-            .then(json => {
+        authorizedFetch( this.props.templateEndpoint, 'GET', {}, () => this.props.setIsAuthenticated(false))
+        .then(json => {
                 console.log(json.data);
                 this.setState({
                     'templates': json.data.templates
                 });
                 this.props.changeCurrentImage(json.data.templates[0]);
-            });
+        }).catch(e => console.log(e))
     }
 
     addTemplate(template) {
@@ -94,5 +95,6 @@ TemplateGallery.propTypes = {
     images: PropTypes.array.isRequired,
     changeCurrentImage: PropTypes.func.isRequired,
     isInAddImageMode: PropTypes.bool.isRequired,
-    apiEndpoint: PropTypes.string.isRequired,
+    setIsAuthenticated: PropTypes.func.isRequired,
+    apiEndpoint: PropTypes.string.isRequired
 }

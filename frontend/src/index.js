@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import Gallery from './components/gallery/Gallery'
 import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog'
+import Login from './components/login/Login'
 import {
     BrowserRouter,
     Switch,
@@ -30,6 +31,10 @@ function Router() {
 
             <Route path="/newtemplate">
                 <NewTemplateDialog />
+            </Route>
+
+            <Route path="/login">
+                <Login />
             </Route>
 
             {/* Note how these two routes are ordered. The more specific
