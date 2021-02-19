@@ -26,11 +26,6 @@ function getTemplatesFromImgFlip(){
         .then(json => json.data.memes)
 }
 
-function findOneFromDB(db, collection, id) {
-    collection = db.get(collection);
-    collection.find(id).then((docs) => console.log(docs));
-}
-
 router.get('/templates', function (req, res, next) {
     let db = req.db;
     Promise.all([findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
@@ -117,7 +112,7 @@ router.post('/templates', function(req, res){
 router.get('/memes', function (req, res) {
     let db = req.db;
     console.log("in memes", db)
-    Promise.all([findAllFromDB(db,memeCollection)])
+    findAllFromDB(db,memeCollection)
         .then(([docs]) => {
             docs.forEach((template) => template.id = template._id)
             return (docs);
@@ -129,6 +124,28 @@ router.get('/memes', function (req, res) {
             })
         });
 });
+
+router.get('/memes/:id', function (req, res) {
+    let db = req.db;
+    let id = req.params.id;
+    console.log(id);
+
+    db.get(memeCollection).find({"_id": id})
+        .then((docs) => {
+            res.json({
+                "success": true,
+                "data": {"memes": docs}
+            })
+            res.set('Content-Type', 'image/png');
+
+        })
+        .catch((reason) => {
+            console.log(reason);
+            res.status(404);
+            res.send();
+        });
+});
+
 router.post("/memes", function (req, res){
     const meme = req.body;
 
