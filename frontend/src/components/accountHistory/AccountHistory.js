@@ -53,8 +53,8 @@ class AccountHistory extends Component {
     const linkRoute = isMeme? imageRoute : `/editor/${image._id}`
     const icon = isMeme ? <FullscreenIcon style={{ color: 'white' }} /> : <EditIcon style={{ color: 'white' }} />;
     return (
-      <GridListTile key={image._id}>
-        <img src={imageSrc} alt={image._id} />
+      <GridListTile key={image._id} style={{width:'27%'}}>
+        <img src={imageSrc} alt={image._id} style={{width:'100%', height: 'auto'}}/>
         <Link to={linkRoute} key={image._id}>
           <GridListTileBar
             title={image.name}
