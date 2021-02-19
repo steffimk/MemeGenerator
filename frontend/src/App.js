@@ -108,6 +108,7 @@ class App extends React.Component {
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
       fontColor: this.state.fontColor,
+      imageDescription: this.state.imageDescription,
       privacyLabel: privacyLabel
     }
 

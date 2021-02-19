@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, MenuItem, Select } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 
 export default class NewMeme extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      privacyLabel: 'Private'
+      privacyLabel: 'private'
     }
   }
 
@@ -39,19 +39,19 @@ export default class NewMeme extends Component {
           <img src={this.props.canvasImage} alt="canvasImage" style={{ width: '100%' }} />
         </DialogContent>
         <DialogActions>
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={this.downloadMeme}
-              style={{ marginRight: '70px' }}>
-              Download
-            </Button>
+          <Button
+            variant="contained"
+            size="small"
+            color="primary"
+            onClick={this.downloadMeme}
+            style={{ marginRight: '70px' }}>
+            Download
+          </Button>
           <FormControl color="primary" style={{ width: '150px' }}>
-            <Select value={this.state.privacyLabel} onChange={this.handleChange}>
-              <MenuItem value={'Private'}>Private</MenuItem>
-              <MenuItem value={'Unlisted'}>Unlisted</MenuItem>
-              <MenuItem value={'Public'}>Public</MenuItem>
+            <Select native value={this.state.privacyLabel} onChange={this.handleChange}>
+              <option value={'private'}>Private</option>
+              <option value={'unlisted'}>Unlisted</option>
+              <option value={'public'}>Public</option>
             </Select>
           </FormControl>
           <Button
