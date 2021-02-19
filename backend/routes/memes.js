@@ -12,7 +12,7 @@ function addToDB(db,collection, data) {
     // Delete id so that db generates new unique one (prevents duplicate error)
     //delete data._id;
     collection = db.get(collection);
-    collection.insert(data).then((docs) => console.log(docs));
+    collection.insert(data);
 }
 
 function findAllFromDB(db,collection) {
@@ -28,12 +28,12 @@ function getTemplatesFromImgFlip(){
 
 function findOneFromDB(db, collection, id) {
     collection = db.get(collection);
-    collection.find(id).then((docs) => console.log(docs));
+    collection.find(id);
 }
 
 router.get('/templates', function (req, res, next) {
     let db = req.db;
-    Promise.all([findAllFromDB(db,templateCollection), getTemplatesFromImgFlip()])
+    Promise.all([db.get(templateCollection).find({}, req.sort_term), getTemplatesFromImgFlip()])
         .then(([docs, imgflip]) => {
             imgflip.forEach((template) => template.source = "imgflip")
             docs.forEach((template) => template.id = template._id)
@@ -86,7 +86,7 @@ router.post('/templates', function(req, res){
         imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates,
         imageDescription
     } = memeTemplate;
-    console.log(memeTemplate)
+
     // validate input
     if(
         typeof name === "string" && name.length > 0 &&
@@ -116,11 +116,25 @@ router.post('/templates', function(req, res){
     }
 });
 
+router.use((req, res, next) => {
+    let sort_term = {};
+    if(req.query.hasOwnProperty("orderBy")){
+        // {sort: {_id: -1}} to order by insertion time
+        sort_term = {sort: JSON.parse(req.query.orderBy)};
+    }
+    console.log(sort_term);
+    req.sort_term = sort_term;
+    console.log(req);
+    next();
+})
+
 router.get('/memes', function (req, res) {
     let db = req.db;
-    console.log("in memes", db)
-    Promise.all([findAllFromDB(db,memeCollection)])
-        .then(([docs]) => {
+
+    console.log("get"+req);
+
+    db.get(memeCollection).find({}, req.sort_term)
+        .then((docs) => {
             docs.forEach((template) => template.id = template._id)
             return (docs);
         } )
