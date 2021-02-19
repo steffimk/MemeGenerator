@@ -9,6 +9,7 @@ import EditorControl from "./components/editor/EditorControl";
 import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT } from './communication/requests';
 import AudioDescription from "./components/textToSpeech/AudioDescription"
 import { Button } from '@material-ui/core';
+import NewMeme from './components/newMemeDialog/NewMeme';
 
 class App extends React.Component {
 
@@ -16,6 +17,8 @@ class App extends React.Component {
     super();
     this.state = {
       isAuthenticated: true,
+      newMemeDialogIsOpen: false,
+      canvasImage: undefined,
 
       currentImage: {},
       isInAddImageMode: false,
@@ -83,16 +86,18 @@ class App extends React.Component {
      var newCaptions = this.state.captions;
      newCaptions[count] = result;
      this.setState({ captions: newCaptions });
-   }
+  }
 
-  handleSaveAsMeme = async () => {
+  generateMeme = () => {
     const carouselCanvas = this.imageCarousel.current.canvasRef.current;
-    const dataURL = carouselCanvas.toDataURL();
+    this.setState({ canvasImage: carouselCanvas.toDataURL(), newMemeDialogIsOpen: true });
+  }
 
+  handleSaveAsMeme = async (privacyLabel) => {
     const memeToSave = {
       username: localStorage.getItem('memeGen_username'),
       template_id: this.state.currentImage._id,
-      img: dataURL,
+      img: this.state.canvasImage,
       template_url: this.state.currentImage.url,
       name: this.state.title,
       box_count: this.state.captions.length,
@@ -102,7 +107,8 @@ class App extends React.Component {
       fontSize: this.state.fontSize,
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
-      fontColor: this.state.fontColor
+      fontColor: this.state.fontColor,
+      privacyLabel: privacyLabel
     }
 
     console.log("meme to save ", memeToSave)
@@ -227,6 +233,7 @@ class App extends React.Component {
     const imageDescription = newCurrentImage.hasOwnProperty("imageDescription") ? newCurrentImage.imageDescription : "";
 
     this.setState({
+      canvasImage: undefined,
       currentImage: newCurrentImage,
       imageInfo: imageInfo,
       captionPositions_X: captionPositions.map(x => x[0]),
@@ -375,10 +382,15 @@ class App extends React.Component {
               variant="contained"
               size="small"
               color="secondary"
-              onClick={this.handleSaveAsMeme}
+              onClick={this.generateMeme}
               style= {{ marginTop: '10px', display: 'block' }}>
               Generate meme
             </Button>
+            <NewMeme
+              open={this.state.newMemeDialogIsOpen}
+              handleClose={() => this.setState({ newMemeDialogIsOpen: false })}
+              canvasImage={this.state.canvasImage}
+              uploadMeme={this.handleSaveAsMeme}/>
           </div>
         </div>
       </div>
