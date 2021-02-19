@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import Gallery from './Gallery';
 import {distributeImagesToColumns} from './Gallery';
 import React from "react";
@@ -12,6 +12,8 @@ test('Create new Meme button exists', () => {
   ));
   const linkElement = screen.getByText(/Create new Meme/i);
   expect(linkElement).toBeInTheDocument();
+  fireEvent.click(linkElement);
+  expect(linkElement.parentNode).toHaveAttribute("href", "/editor")
 });
 
 test('memes are correctly distributed across columns', () => {
