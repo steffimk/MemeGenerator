@@ -74,9 +74,6 @@ class Gallery extends React.Component {
             images.slice(images.length/n_columns*3, images.length),
         ];
 
-        console.log("images ", this.state.images)
-        console.log("images lengt", this.state.images.length < 1)
-
         return (
         <div>
             <CustomAppBar></CustomAppBar>
