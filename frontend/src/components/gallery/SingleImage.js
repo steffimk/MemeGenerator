@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Link} from "react-router-dom";
 import AudioDescription from '../textToSpeech/AudioDescription';
 import CommentIcon from '@material-ui/icons/Comment';
-import { AppBar, Badge, Chip, Fab, Toolbar } from '@material-ui/core';
+import { AppBar, Badge, Chip, Fab, Toolbar, Button } from '@material-ui/core';
 import { LS_USERNAME } from '../../constants'
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FaceIcon from '@material-ui/icons/Face'
@@ -23,6 +23,10 @@ export default class SingleImage extends React.Component {
     setOpenComments = (areOpen) => this.setState({ openComments: areOpen })
 
     setOpenLikes = (areOpen) => this.setState({ openLikes: areOpen })
+
+    getRandomId = () => {
+        return this.props.images[Math.floor(Math.random() * this.props.images.length)].id;
+    }
 
     render() {
         if(this.props.id !== undefined && this.props.images !== undefined && this.props.images.length > 0) {
@@ -71,7 +75,7 @@ export default class SingleImage extends React.Component {
                         <Fab size="small" onClick={() => this.setOpenComments(true)} style={{ marginRight: '20px' }}>
                           <CommentIcon />
                         </Fab>
-                        <Fab size="small">
+                        <Fab size="small" style={{ marginRight: '130px' }}>
                           <AudioDescription
                             isEditor={false}
                             imageDescription={image.imageDescription}
@@ -79,6 +83,15 @@ export default class SingleImage extends React.Component {
                             captions={image.captions}
                           />
                         </Fab>
+                        <Link to={"/gallery/"+ this.getRandomId()}>
+                            <Button
+                                name="random"
+                                variant="contained"
+                                size="small"
+                                color="primary">
+                                Shuffle
+                            </Button>
+                        </Link>
                       </Toolbar>
                     </AppBar>
                     <Comments
