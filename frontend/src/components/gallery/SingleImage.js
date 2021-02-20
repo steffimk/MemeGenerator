@@ -6,6 +6,10 @@ import {Button} from "@material-ui/core";
 
 export default class SingleImage extends React.Component {
 
+    getRandomId = () => {
+        return this.props.images[Math.floor(Math.random() * this.props.images.length)].id;
+    }
+
     render() {
         if(this.props.id !== undefined && this.props.images !== undefined && this.props.images.length > 0) {
             const image_index = this.props.images.findIndex((image) => image.id === this.props.id);
@@ -34,8 +38,7 @@ export default class SingleImage extends React.Component {
                             <img src={image.img} alt={image.name}/>
                             <Link className="modal-nav modal-right" to={"/gallery/" + next_image.id}/>
                         </Link>
-                        <Link className="modal-control" to={"/gallery/"+
-                        this.props.images[Math.floor(Math.random() * this.props.images.length)].id}>
+                        <Link className="modal-control" to={"/gallery/"+ this.getRandomId()}>
                             <Button
                                 name="random"
                                 variant="contained"
