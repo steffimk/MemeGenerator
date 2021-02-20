@@ -7,7 +7,7 @@ import {Button} from "@material-ui/core";
 export default class SingleImage extends React.Component {
 
     getRandomId = () => {
-        return this.props.images[Math.floor(Math.random() * this.props.images.length)].id;
+        return this.props.images[Math.floor(Math.random() * this.props.images.length)]._id;
     }
 
     render() {
@@ -37,7 +37,7 @@ export default class SingleImage extends React.Component {
                             <img src={imageSrc} alt={image.name}/>
                             <Link className="modal-nav modal-right" to={parentRoute + next_image._id}/>
                         </Link>
-                        <Link className="modal-control" to={"/gallery/"+ this.getRandomId()}>
+                        <Link className="modal-control" to={parentRoute + this.getRandomId()}>
                             <Button
                                 name="random"
                                 variant="contained"
