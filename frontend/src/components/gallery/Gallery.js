@@ -4,7 +4,10 @@ import { Redirect } from 'react-router-dom'
 import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
-import { authorizedFetch } from '../../communication/requests';
+import { authorizedFetch, LIKE_ENDPOINT } from '../../communication/requests';
+import { Badge, Fab } from '@material-ui/core';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import { LS_USERNAME } from '../../constants'
 
 const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
 
@@ -15,6 +18,7 @@ class Gallery extends React.Component {
         this.state = {
             isAuthenticated: true,
             images: [],
+            likedMemeIds: []
         };
     }
 
@@ -38,9 +42,7 @@ class Gallery extends React.Component {
                 // this could happen e.g. if the prevId was invalid or is currently not shown in the gallery
                 console.log(e)
             }
-
         }
-
     }
 
     get_memes() {
@@ -50,7 +52,18 @@ class Gallery extends React.Component {
             this.setState({
                 'images': json.data.memes
             })
+            this.getLikedMemeIds(json.data.memes, localStorage.getItem(LS_USERNAME))
         });
+    }
+
+    getLikedMemeIds(memes, username) {
+        if (username && memes.length > 0){
+            const likedMemeIds = memes
+              .filter((meme) => meme.likes && meme.likes.includes(username)) // meme has likes and they include this user
+              .map((meme) => meme._id);
+            this.setState({ likedMemeIds: likedMemeIds })
+            console.log("likedMemeIds: " + likedMemeIds)
+        }
     }
 
     render() {
@@ -76,35 +89,34 @@ class Gallery extends React.Component {
         let slices = distributeImagesToColumns(images);
 
         return (
-        <div>
+          <div>
             <CustomAppBar></CustomAppBar>
             <div className="gallery-container">
-                <div className="image-gallery" style={gallery_style}>
-                    <div className="column">
-                        <Link to="/editor" className="image-container create-meme">
-                            <h1>+</h1>
-                            <p>Create new Meme</p>
-                        </Link>
-                        {slices[0]}
-                    </div>
-                    <div>
+              <div className="image-gallery" style={gallery_style}>
+                <div className="column">
+                  <Link to="/editor" className="image-container create-meme">
+                    <h1>+</h1>
+                    <p>Create new Meme</p>
+                  </Link>
+                  {slices[0]}
+                </div>
+                <div>
                         {this.state.images.length < 1 &&
                             <h1>There are no memes created and published until now. Be the first one!</h1>
                         }
                     </div>
-                    <div className="column">
-                        {slices[1]}
-                    </div>
-                    <div className="column">
-                        {slices[2]}
-                    </div>
-                    <div className="column">
-                        {slices[3]}
-                    </div>
-                </div>
-                <SingleImage images={this.state.images} id={id} />
+                <div className="column">{slices[1]}</div>
+                <div className="column">{slices[2]}</div>
+                <div className="column">{slices[3]}</div>
+              </div>
+              <SingleImage
+                images={this.state.images}
+                id={id}
+                isNotAuthenticated={this.isNotAuthenticated}
+                likeImage={this.likeImage}
+              />
             </div>
-            </div>
+          </div>
         );
     }
 
@@ -115,17 +127,52 @@ class Gallery extends React.Component {
         }else{
             imageRoute = currentRoute+"/"+image.id;
         }
-
+        let favIconColor = "primary"
+        const likeCount = image.likes ? image.likes.length : 0
+        if (this.state.likedMemeIds.includes(image._id)) favIconColor = "secondary"
         return (
-            <Link to={imageRoute} key={image.id}>
-                <div className="image-container" id={image.id}>
-                    <img src={image.img} alt={image.name} />
-                    <div className="image-title">{image.name}</div>
-                </div>
+          <div className="image-container" id={image._id}>
+            <Link to={imageRoute} key={image._id}>
+              <img src={image.img} alt={image.name} />
             </Link>
-        )
+            <div className="image-title">
+              &nbsp;&nbsp;{image.name}
+              <Badge badgeContent={likeCount} max={999} color={favIconColor} style={fabStyle}>
+                <Fab
+                  size="small"
+                  color="white"
+                  aria-label="like"
+                  onClick={() => this.likeImage(image._id)}>
+                  <FavoriteIcon color={favIconColor} />
+                </Fab>
+              </Badge>
+            </div>
+          </div>
+        );
+    }
+
+    likeImage = (id) => {
+        const username = localStorage.getItem(LS_USERNAME)
+        authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
+        .catch((error) => { console.error('Error:', error) });
+        let newImages = this.state.images.map(img => { 
+            if(img._id === id) {
+                if (img.likes && img.likes.includes(username)) {
+                    // Do nothing. User alredy likes meme.
+                } else if (img.likes) {
+                    img.likes.push(username)
+                } else {
+                    img.likes = [username]
+                }
+            }
+            return img
+        })
+        const newLikedMemeIds = this.state.likedMemeIds.includes(id) ? this.state.likedMemeIds : [...this.state.likedMemeIds, id]
+        this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
     }
 }
+
+const fabStyle = { position: 'absolute', right: '20px', top: '22%' }
 
 /*
     This distributes images to 4 equally sized slices
@@ -141,6 +188,5 @@ export function distributeImagesToColumns(images) {
     ];
     return slices;
 }
-
 
 export default withRouter(Gallery);

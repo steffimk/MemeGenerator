@@ -62,14 +62,14 @@ function isPositiveInteger(x){
 
 router.post('/templates', function(req, res){
     const memeTemplate = req.body;
-    console.log("memeTemplate ", req.body)
+    // console.log("memeTemplate ", req.body)
     const {
         name, url, width, height, box_count, captions,
         captionPositions, fontColor, fontSize, isItalic, isBold,
         imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates,
         imageDescription
     } = memeTemplate;
-    console.log(memeTemplate)
+    // console.log(memeTemplate)
     // validate input
     if(
         typeof name === "string" && name.length > 0 &&
@@ -99,7 +99,7 @@ router.post('/templates', function(req, res){
 
 router.get('/memes', function (req, res) {
     let db = req.db;
-    console.log("in memes", db)
+    // console.log("in memes", db)
     Promise.all([dbOp.findAllFromDB(db,memeCollection)])
         .then(([docs]) => {
             docs.forEach((template) => template.id = template._id)
@@ -134,6 +134,35 @@ router.post("/memes", function (req, res){
 
         dbOp.addToDB(req.db, memeCollection, normalizedMeme);
 
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
+});
+
+router.post("/memes/like", function(req, res) {
+    let db = req.db;
+    const memeId = req.body.memeId;
+    const username = req.body.username;
+    console.log(memeId + " " + username)
+    if (memeId && username) {
+        dbOp.likeMeme(db, memeId, username)
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
+});
+
+router.post("/memes/comment", function(req, res) {
+    let db = req.db;
+    const memeId = req.body.memeId;
+    const comment = req.body.comment;
+    if (memeId && comment) {
+        dbOp.addCommentToMeme(db, memeId, comment)
         res.status(200);
         res.send();
     } else {
