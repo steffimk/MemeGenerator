@@ -47,7 +47,8 @@ export default class SingleImage extends React.Component {
                         </h1>
 
                         <Link className="modal-icon modal-esc" to=".">{/* relative link up one level*/}
-                            <i className="fa fa-fw fa-times" onClick={this.props.stopPlaying} />
+                            <i className="fa fa-fw fa-times"
+                               onClick={(e) => this.props.changeListener(e)} />
                         </Link>
 
                         <Link className="modal-nav modal-left" to={"/gallery/" + prev_image.id}/>
@@ -56,11 +57,11 @@ export default class SingleImage extends React.Component {
 
                         <div className="modal-icon modal-bottom modal-play">
                             <i className={this.props.playIcon}
-                               onClick={this.props.changePlaying}/>
+                               onClick={(e) => this.props.changeListener(e)}/>
                         </div>
                         <div className={this.props.isRandom ? "modal-random-on" : "modal-button modal-random-off"}>
                             <i className="fa fa-fw fa-random"
-                               onClick={this.props.changeRandom}/>
+                               onClick={(e) => this.props.changeListener(e)}/>
                         </div>
                         <Link id="randomButton" className="modal-bottom modal-shuffle" to={"/gallery/"+
                         this.props.images[Math.floor(Math.random() * this.props.images.length)].id}>
@@ -95,7 +96,5 @@ SingleImage.propTypes = {
     isPlaying: PropTypes.bool.isRequired,
     playIcon: PropTypes.string.isRequired,
     isRandom: PropTypes.bool.isRequired,
-    changePlaying: PropTypes.func.isRequired,
-    stopPlaying: PropTypes.func.isRequired,
-    changeRandom: PropTypes.func.isRequired
+    changeListener: PropTypes.func.isRequired
 }

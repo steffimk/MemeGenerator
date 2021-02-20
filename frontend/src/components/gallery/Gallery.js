@@ -51,29 +51,16 @@ class Gallery extends React.Component {
             });
     }
 
-    changePlaying = (event) => {
-        console.log("in handle change")
-        console.log("before state", this.state)
-        console.log("Welches" + event);
-        let isPlaying = !this.state.isPlaying;
-
-
-        if(isPlaying) {
-            this.setState({playIcon: "fas fa-fw fa-pause"});
-        } else {
-            this.setState({playIcon: "fas fa-fw fa-play"});
+    handleChange = (event) => {
+        const className = event.target.className;
+        if(className.includes("play") || className.includes("pause")) {
+            this.setState({isPlaying: !this.state.isPlaying,
+                                playIcon: !this.state.isPlaying ? "fas fa-fw fa-pause" : "fas fa-fw fa-play"})
+        } else if(className.includes("random")) {
+            this.setState({isRandom : !this.state.isRandom});
+        } else if(className.includes("times")) {
+            this.setState({isPlaying : false, playIcon: "fas fa-fw fa-play"})
         }
-        this.setState({isPlaying : isPlaying})
-        console.log("new state ", this.state)
-    }
-
-    stopPlaying = () => {
-        this.setState({playIcon: "fas fa-fw fa-play"})
-        this.setState({isPlaying : false})
-    }
-
-    changeRandom = () => {
-        this.setState({isRandom : !this.state.isRandom})
     }
 
     render() {
@@ -129,9 +116,7 @@ class Gallery extends React.Component {
                              isPlaying={this.state.isPlaying}
                              playIcon={this.state.playIcon}
                              isRandom={this.state.isRandom}
-                             changePlaying={this.changePlaying}
-                             stopPlaying = {this.stopPlaying}
-                             changeRandom={this.changeRandom}/>
+                             changeListener={this.handleChange}/>
             </div>
             </div>
         );
