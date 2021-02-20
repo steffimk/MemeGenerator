@@ -23,7 +23,7 @@ export default class Likes extends Component {
   render() {
     const renderedLikes = this.props.likes.map(this.renderLike)
     return (
-      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={{...dialogStyle, marginLeft: window.innerWidth * 0.5, marginTop: window.innerHeight*0.35}}>
+      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={dialogStyle}>
         <DialogTitle>Likes</DialogTitle>
         <DialogContent dividers={true}>{renderedLikes}</DialogContent>
         <DialogActions>
