@@ -1,13 +1,19 @@
 import React from 'react';
-import './Gallery.css'
+import './Gallery.css';
+import { Redirect } from 'react-router-dom'
+import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
+import { authorizedFetch } from '../../communication/requests';
+
+const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
 
 class Gallery extends React.Component {
 
     constructor() {
         super();
         this.state = {
+            isAuthenticated: true,
             images: [],
         };
     }
@@ -15,6 +21,10 @@ class Gallery extends React.Component {
     componentDidMount(){
         this.get_memes();
     }
+
+    isNotAuthenticated = () => {
+        this.setState({ isAuthenticated: false})
+      }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         // after leaving single image view, scroll to the position of the last image in the gallery
@@ -34,16 +44,18 @@ class Gallery extends React.Component {
     }
 
     get_memes() {
-        fetch("https://api.imgflip.com/get_memes")
-            .then(response => response.json())
-            .then(json =>
-                this.setState({
-                    'images': json.data.memes
-                })
-            );
+        authorizedFetch(MEMES_ENDPOINT, 'GET', {}, this.isNotAuthenticated)
+        .then(json => {
+            console.log(json.data);
+            this.setState({
+                'images': json.data.memes
+            })
+        });
     }
 
     render() {
+        // If not logged in: Redirect to login page
+        if (!this.state.isAuthenticated) return <Redirect to='/login'/>
 
         // try to get image id from url
         const { id } = this.props.match.params;
@@ -58,18 +70,14 @@ class Gallery extends React.Component {
             }
         }
 
-        const n_columns = 4.0;
         let images = this.state.images.map(
             (e) => this.renderImage(e, this.props.location.pathname)
         );
-        let slices = [
-            images.slice(0, images.length/n_columns),
-            images.slice(images.length/n_columns, images.length/n_columns*2),
-            images.slice(images.length/n_columns*2, images.length/n_columns*3),
-            images.slice(images.length/n_columns*3, images.length),
-        ];
+        let slices = distributeImagesToColumns(images);
 
         return (
+        <div>
+            <CustomAppBar></CustomAppBar>
             <div className="gallery-container">
                 <div className="image-gallery" style={gallery_style}>
                     <div className="column">
@@ -78,6 +86,11 @@ class Gallery extends React.Component {
                             <p>Create new Meme</p>
                         </Link>
                         {slices[0]}
+                    </div>
+                    <div>
+                        {this.state.images.length < 1 &&
+                            <h1>There are no memes created and published until now. Be the first one!</h1>
+                        }
                     </div>
                     <div className="column">
                         {slices[1]}
@@ -90,6 +103,7 @@ class Gallery extends React.Component {
                     </div>
                 </div>
                 <SingleImage images={this.state.images} id={id} />
+            </div>
             </div>
         );
     }
@@ -105,12 +119,28 @@ class Gallery extends React.Component {
         return (
             <Link to={imageRoute} key={image.id}>
                 <div className="image-container" id={image.id}>
-                    <img src={image.url} alt={image.name} />
+                    <img src={image.img} alt={image.name} />
                     <div className="image-title">{image.name}</div>
                 </div>
             </Link>
         )
     }
 }
+
+/*
+    This distributes images to 4 equally sized slices
+     */
+export function distributeImagesToColumns(images) {
+
+    const n_columns = 4.0;
+    let slices = [
+        images.slice(0, images.length / n_columns),
+        images.slice(images.length / n_columns, images.length / n_columns * 2),
+        images.slice(images.length / n_columns * 2, images.length / n_columns * 3),
+        images.slice(images.length / n_columns * 3, images.length),
+    ];
+    return slices;
+}
+
 
 export default withRouter(Gallery);

@@ -37,6 +37,8 @@ export default class ImageCarousel extends React.Component {
             height = window.innerHeight * 0.8
             width = height * imgRatio
         }
+        height = Math.round(height)
+        width = Math.round(width)
         try {
             const context = this.canvasRef.getContext("2d")
             context.clearRect(0, 0, this.props.canvasSize.width, this.props.canvasSize.height)
@@ -165,7 +167,7 @@ export default class ImageCarousel extends React.Component {
     /**
      * Draws the captions onto the canvas
      * @param {string} captionText 
-     * @param {numbe} captionPosition_X 
+     * @param {number} captionPosition_X
      * @param {number} captionPosition_Y 
      */
     renderCaption(captionText, captionPosition_X, captionPosition_Y) {
@@ -207,7 +209,7 @@ export default class ImageCarousel extends React.Component {
                 {/* <div className="container"> */}
                     <canvas ref={this.canvasRef} onMouseDown={this.setIsDrawing} onMouseUp={this.setIsDrawing} onMouseLeave={this.setIsDrawing} onMouseMove={this.drawWithMouse}
                         style={{width:this.props.canvasSize.width, height:this.props.canvasSize.height, resize:"true"}}/>
-                    <img ref={this.imgRef} alt="" src={this.props.image.url} style={{display: "none"}}/>
+                    <img ref={this.imgRef} alt="" src={this.props.image.url} crossOrigin={"anonymous"} style={{display: "none"}}/>
                     {addedImages}
                 {/* </div> */}
             </div>

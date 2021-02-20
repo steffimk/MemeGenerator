@@ -17,11 +17,12 @@ services:
       - mongo
 
   backend:
-    image: node:15.4.0
+    image: buildkite/puppeteer:5.2.1
     restart: always
     working_dir: /backend/
     environment:
       - NODE_ENV=development
+      - SIGNING_KEY=${SIGNING_KEY}
     ports:
       - 3030:3030
     volumes:
