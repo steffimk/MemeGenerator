@@ -2,7 +2,13 @@ import React from 'react';
 import './SingleImage.css'
 import {Link} from "react-router-dom";
 import AudioDescription from '../textToSpeech/AudioDescription';
+import {Button} from "@material-ui/core";
+
 export default class SingleImage extends React.Component {
+
+    getRandomId = () => {
+        return this.props.images[Math.floor(Math.random() * this.props.images.length)].id;
+    }
 
     render() {
         if(this.props.id !== undefined && this.props.images !== undefined && this.props.images.length > 0) {
@@ -30,6 +36,16 @@ export default class SingleImage extends React.Component {
                             <Link className="modal-nav modal-left" to={parentRoute + prev_image._id}/>
                             <img src={imageSrc} alt={image.name}/>
                             <Link className="modal-nav modal-right" to={parentRoute + next_image._id}/>
+                        </Link>
+                        <Link className="modal-control" to={"/gallery/"+ this.getRandomId()}>
+                            <Button
+                                name="random"
+                                variant="contained"
+                                size="small"
+                                color="primary"
+                                style= {{ marginTop: '10px', marginLeft: '10px', display: 'block' }}>
+                                Shuffle
+                            </Button>
                         </Link>
                     </div>
                 )
