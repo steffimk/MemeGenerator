@@ -1,8 +1,10 @@
 import React from 'react';
 import './Gallery.css';
+import { Redirect } from 'react-router-dom'
 import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage from "./SingleImage";
+import { authorizedFetch } from '../../communication/requests';
 
 const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
 
@@ -11,6 +13,7 @@ class Gallery extends React.Component {
     constructor() {
         super();
         this.state = {
+            isAuthenticated: true,
             images: [],
         };
     }
@@ -18,6 +21,10 @@ class Gallery extends React.Component {
     componentDidMount(){
         this.get_memes();
     }
+
+    isNotAuthenticated = () => {
+        this.setState({ isAuthenticated: false})
+      }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         // after leaving single image view, scroll to the position of the last image in the gallery
@@ -37,18 +44,18 @@ class Gallery extends React.Component {
     }
 
     get_memes() {
-
-        fetch(MEMES_ENDPOINT)
-            .then(response => response.json())
-            .then(json => {
-                console.log(json.data);
-                this.setState({
-                    'images': json.data.memes
-                })
-            });
+        authorizedFetch(MEMES_ENDPOINT, 'GET', {}, this.isNotAuthenticated)
+        .then(json => {
+            console.log(json.data);
+            this.setState({
+                'images': json.data.memes
+            })
+        });
     }
 
     render() {
+        // If not logged in: Redirect to login page
+        if (!this.state.isAuthenticated) return <Redirect to='/login'/>
 
         // try to get image id from url
         const { id } = this.props.match.params;
