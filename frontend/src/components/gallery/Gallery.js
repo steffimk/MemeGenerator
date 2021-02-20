@@ -93,6 +93,11 @@ class Gallery extends React.Component {
                         </Link>
                         {slices[0]}
                     </div>
+                    <div>
+                        {this.state.images.length < 1 &&
+                            <h1>There are no memes created and published until now. Be the first one!</h1>
+                        }
+                    </div>
                     <div className="column">
                         {slices[1]}
                     </div>
