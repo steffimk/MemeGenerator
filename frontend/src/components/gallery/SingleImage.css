@@ -57,6 +57,13 @@
     right: 6vh;
 }
 
+.modal-control {
+    position: fixed;
+    top: 90%;
+    left: 65%;
+    text-decoration: none;
+}
+
 /* Add Animation */
 .modal img, .modal-title {
     animation-name: zoom;
