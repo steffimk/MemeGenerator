@@ -12,19 +12,21 @@ import FaceIcon from '@material-ui/icons/Face'
 import ShareIcon from '@material-ui/icons/Share';
 import Comments from './Comments';
 import Likes from './Likes';
+import ShareDialog from '../shareDialog/Share';
 export default class SingleImage extends React.Component {
 
     constructor(props){
         super(props)
         this.state = {
             openComments: false,
-            openLikes: false
+            openLikes: false,
+            openShare: false
         }
     }
 
     setOpenComments = (areOpen) => this.setState({ openComments: areOpen })
-
     setOpenLikes = (areOpen) => this.setState({ openLikes: areOpen })
+    setOpenShare = (areOpen) => this.setState({ openShare: areOpen })
 
     getRandomId = () => {
         return this.props.images[Math.floor(Math.random() * this.props.images.length)]._id;
@@ -92,9 +94,9 @@ export default class SingleImage extends React.Component {
                           <CommentIcon />
                         </Fab>
                         <Fab size="small" onClick={() => this.downloadImage(imageSrc)} style={{ marginRight: '20px' }}>
-                          <CloudDownloadIcon color="primary"/>
+                          <CloudDownloadIcon />
                         </Fab>
-                        <Fab size="small" style={{ marginRight: '20px' }}>
+                        <Fab size="small" onClick={() => this.setOpenShare(true)} style={{ marginRight: '20px' }}>
                           <ShareIcon />
                         </Fab>
                         <Fab size="small" style={{ marginRight: '130px' }}>
@@ -119,6 +121,7 @@ export default class SingleImage extends React.Component {
                       isNotAuthenticated={this.props.isNotAuthenticated}
                     />
                     <Likes open={this.state.openLikes} likes={likes} handleClose={() => this.setOpenLikes(false)} />
+                    <ShareDialog open={this.state.openShare} handleClose={() => this.setOpenShare(false)} shareUrl={imageSrc}/>
                   </div>
                 );
             }else{
