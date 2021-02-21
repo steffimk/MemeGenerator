@@ -96,6 +96,7 @@ class App extends React.Component {
       img: dataURL,
       template_url: this.state.currentImage.url,
       name: this.state.title,
+      imageDescription: this.state.imageDescription,
       box_count: this.state.captions.length,
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
