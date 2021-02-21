@@ -74,7 +74,7 @@ function isPositiveInteger(x){
 
 router.post('/templates', function(req, res){
     const memeTemplate = req.body;
-    console.log("memeTemplate ", req.body)
+    // console.log("memeTemplate ", req.body)
     const {
         name, url, username, width, height, box_count, captions,
         captionPositions, fontColor, fontSize, isItalic, isBold,
@@ -154,6 +154,35 @@ router.post("/memes", function (req, res){
 
         dbOp.addToDB(req.db, memeCollection, normalizedMeme);
 
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
+});
+
+router.post("/memes/like", function(req, res) {
+    let db = req.db;
+    const memeId = req.body.memeId;
+    const username = req.body.username;
+    console.log(memeId + " " + username)
+    if (memeId && username) {
+        dbOp.likeMeme(db, memeId, username)
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
+});
+
+router.post("/memes/comment", function(req, res) {
+    let db = req.db;
+    const memeId = req.body.memeId;
+    const comment = req.body.comment;
+    if (memeId && comment) {
+        dbOp.addCommentToMeme(db, memeId, comment)
         res.status(200);
         res.send();
     } else {

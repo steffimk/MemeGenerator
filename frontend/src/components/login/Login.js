@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CustomAppBar from '../CustomAppBar/CustomAppBar'
+import { LS_JWT, LS_USERNAME } from '../../constants'
 
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from '../../communication/requests'
 
@@ -29,8 +30,8 @@ export default class Login extends Component {
       .then( json => {
         if(json.success) {
           const jwt = json.data.token
-          localStorage.setItem('memeGen_username', userData.username)
-          localStorage.setItem('memeGen_jwt', jwt)
+          localStorage.setItem(LS_JWT, jwt)
+          localStorage.setItem(LS_USERNAME, userData.username)
           this.setState({ isLoggedIn: true })
         } else {
           this.setState({ loginErrorMessage: json.data.message })

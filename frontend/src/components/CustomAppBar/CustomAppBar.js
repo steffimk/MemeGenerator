@@ -5,11 +5,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button'
 import { Link } from "react-router-dom";
+import { LS_JWT, LS_USERNAME} from '../../constants'
 
 export default class CustomAppBar extends React.Component { 
 
   logout = () => {
-    localStorage.removeItem('memeGen_jwt')
+    localStorage.removeItem(LS_JWT)
+    localStorage.removeItem(LS_USERNAME)
     window.location.reload() // Reload page to check whether still authenticated to see this page
   }
   
