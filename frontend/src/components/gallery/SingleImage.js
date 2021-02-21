@@ -10,39 +10,61 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FaceIcon from '@material-ui/icons/Face'
 import ShareIcon from '@material-ui/icons/Share';
+import PlayIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import RandomIcon from '@material-ui/icons/Shuffle';
+import ClearIcon from '@material-ui/icons/Clear';
 import Comments from './Comments';
 import Likes from './Likes';
 import ShareDialog from '../shareDialog/Share';
 export default class SingleImage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openComments: false,
+      openLikes: false,
+      openShare: false
+    };
+  }
 
-    constructor(props){
-        super(props)
-        this.state = {
-            openComments: false,
-            openLikes: false,
-            openShare: false
-        }
+  setOpenComments = (areOpen) => this.setState({ openComments: areOpen })
+  setOpenLikes = (areOpen) => this.setState({ openLikes: areOpen })
+  setOpenShare = (areOpen) => this.setState({ openShare: areOpen })
+
+  getRandomId = () => {
+    return this.props.images[Math.floor(Math.random() * this.props.images.length)]._id;
+  };
+
+  timer = null;
+
+  componentDidUpdate() {
+    clearTimeout(this.timer);
+    if (this.props.isPlaying) {
+      this.timer = setTimeout(
+        function () {
+          if (this.props.isRandom) {
+            document.getElementById('randomButton').click();
+          } else {
+            document.getElementById('nextLink').click();
+          }
+        }.bind(this),
+        4000
+      );
     }
+  }
 
-    setOpenComments = (areOpen) => this.setState({ openComments: areOpen })
-    setOpenLikes = (areOpen) => this.setState({ openLikes: areOpen })
-    setOpenShare = (areOpen) => this.setState({ openShare: areOpen })
-
-    getRandomId = () => {
-        return this.props.images[Math.floor(Math.random() * this.props.images.length)]._id;
-    }
-
-    downloadImage = (imageSrc) => {
-        var downloadLink = document.createElement("a")
-        downloadLink.href = imageSrc
-        downloadLink.download = "Meme.jpg"
-        downloadLink.click()
-    }
+  downloadImage = (imageSrc) => {
+    var downloadLink = document.createElement("a")
+    downloadLink.href = imageSrc
+    downloadLink.download = "Meme.jpg"
+    downloadLink.click()
+  }
 
     render() {
         if(this.props.id !== undefined && this.props.images !== undefined && this.props.images.length > 0) {
             const image_index = this.props.images.findIndex((image) => image._id === this.props.id);
             const parentRoute = this.props.parentRoute
+            const isGallery = parentRoute === ""
             if(image_index >= 0) {
                 // image to view
                 let image = this.props.images[image_index];
@@ -60,24 +82,52 @@ export default class SingleImage extends React.Component {
                 }
                 return (
                   <div className="modal">
-                    <h1 className="modal-title">{image.name}</h1>
-                    <Link to="."> {/* relative link up one level*/}
-                      <Link className="modal-nav modal-left" to={parentRoute + prev_image._id} />
-                      <img
-                        src={imageSrc}
-                        alt={image.name}
-                        style={{ height: window.innerHeight * 0.8, width: 'auto' }}
-                      />
-                      <Link className="modal-nav modal-right" to={parentRoute + next_image._id} />
-                    </Link>
-                    <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
-                      <Toolbar>
+                                <AppBar position="fixed" style={{ top: '0', bottom: 'auto', backgroundColor: 'rgba(0,0,0,0.9)' }}>
+              <Toolbar>
+                <h1 className="modal-title">{image.name}</h1>
+                <Link to=".">
+                  <Fab size="small" color="white" style={{ marginRight: '30px' }} onClick={this.props.stopPlaying}>
+                    <ClearIcon />
+                  </Fab>
+                </Link>
+              </Toolbar>
+            </AppBar>
+            <Link className="modal-nav modal-left" to={parentRoute + prev_image.id} />
+            <img
+              src={imageSrc}
+              alt={image.name}
+              style={{ height: window.innerHeight * 0.8, width: 'auto', marginTop: '100px', marginBottom: '100px' }}
+            />
+            <Link id="nextLink" className="modal-nav modal-right" to={parentRoute + next_image.id} />
+            <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
+              <Toolbar>
+                {isGallery && (
+                  <div>
+                    <Fab
+                      size="small"
+                      color="white"
+                      style={{ marginLeft: window.innerWidth * 0.15, marginRight: '20px' }}
+                      onClick={this.props.changePlaying}>
+                      {this.props.isPlaying ? <PauseIcon /> : <PlayIcon />}
+                    </Fab>
+                    <Fab size="small" color="white" style={{ marginRight: '20px' }} onClick={this.props.changeRandom}>
+                      <RandomIcon color={this.props.isRandom ? 'primary' : 'black'} />
+                    </Fab>
+                  </div>)}
+                <Link
+                  id="randomButton"
+                  className="modal-shuffle"
+                  style={{ marginRight: '200px', marginLeft: (isGallery ? '' :  window.innerWidth * 0.2) }}
+                  to={this.getRandomId()}>
+                  <Button name="random" variant="contained" size="small" color="primary">
+                    Shuffle
+                  </Button>
+                </Link>
                         <Chip
                           icon={<FaceIcon style={{ color: 'white' }} />}
                           label="Liked by..."
                           onClick={() => this.setOpenLikes(true)}
                           style={{
-                            marginLeft: window.innerWidth * 0.4,
                             marginRight: '10px',
                             color: 'white',
                             backgroundColor: 'dimgray',
@@ -105,11 +155,6 @@ export default class SingleImage extends React.Component {
                             captions={image.captions}
                           />
                         </Fab>
-                        <Link to={parentRoute + this.getRandomId()}>
-                          <Button name="random" variant="contained" size="small" color="primary">
-                            Shuffle
-                          </Button>
-                        </Link>
                       </Toolbar>
                     </AppBar>
                     <Comments
@@ -123,7 +168,7 @@ export default class SingleImage extends React.Component {
                       open={this.state.openShare}
                       handleClose={() => this.setOpenShare(false)}
                       imageId={image._id}
-                      isGallery={parentRoute === '/gallery/'}
+                      isGallery={isGallery}
                     />
                   </div>
                 );
@@ -138,13 +183,19 @@ export default class SingleImage extends React.Component {
             }
         }else{
             return null;
-        }
     }
+  }
 }
 
 SingleImage.propTypes = {
     images: PropTypes.array.isRequired,
     id: PropTypes.string.isRequired,
     isNotAuthenticated: PropTypes.func.isRequired,
-    likeImage: PropTypes.func.isRequired
+    likeImage: PropTypes.func.isRequired,
+    isPlaying: PropTypes.bool,
+    playIcon: PropTypes.string,
+    isRandom: PropTypes.bool,
+    changePlaying: PropTypes.func,
+    stopPlaying: PropTypes.func,
+    changeRandom: PropTypes.func
 }
