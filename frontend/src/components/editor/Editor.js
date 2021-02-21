@@ -8,7 +8,7 @@ import EditorControl from "./EditorControl";
 import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT  } from '../../communication/requests';
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button } from '@material-ui/core';
-import NewMeme from './components/newMemeDialog/NewMeme';
+import NewMeme from '../newMemeDialog/NewMeme';
 
 class App extends React.Component {
 
