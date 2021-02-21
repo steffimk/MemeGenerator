@@ -1,11 +1,15 @@
+import { LS_JWT } from '../constants'
+
 export const API_ENDPOINT = 'http://localhost:3030/'
 export const TEMPLATE_ENDPOINT = API_ENDPOINT + 'memes/templates'
 export const LOGIN_ENDPOINT = API_ENDPOINT + 'login'
 export const SIGNUP_ENDPOINT= API_ENDPOINT + 'signup'
 export const MEMES_ENDPOINT = API_ENDPOINT + 'memes/memes'
+export const LIKE_ENDPOINT = API_ENDPOINT + 'memes/memes/like'
+export const COMMENT_ENDPOINT = API_ENDPOINT + 'memes/memes/comment'
 
 export function authorizedFetch(endpoint, method, bodyJson, isNotAuthenticatedCallback) {
-  const jwt = localStorage.getItem('memeGen_jwt');
+  const jwt = localStorage.getItem(LS_JWT);
   if (method === 'GET') {
     return fetch(endpoint, {
       method: method,

@@ -46,7 +46,7 @@ app.use((req,res,next) => {
       res.status(401).send(err.message)
       return
     } else {
-      console.log("Authentication successful! JWT: " + verifiedJwt)
+      console.log("JWT Authentication successful!")
       next()
     } 
   })

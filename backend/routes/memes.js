@@ -162,4 +162,33 @@ router.post("/memes", function (req, res){
     }
 });
 
+router.post("/memes/like", function(req, res) {
+    let db = req.db;
+    const memeId = req.body.memeId;
+    const username = req.body.username;
+    console.log(memeId + " " + username)
+    if (memeId && username) {
+        dbOp.likeMeme(db, memeId, username)
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
+});
+
+router.post("/memes/comment", function(req, res) {
+    let db = req.db;
+    const memeId = req.body.memeId;
+    const comment = req.body.comment;
+    if (memeId && comment) {
+        dbOp.addCommentToMeme(db, memeId, comment)
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
+});
+
 module.exports = router;
