@@ -18,7 +18,10 @@ class Gallery extends React.Component {
         this.state = {
             isAuthenticated: true,
             images: [],
-            likedMemeIds: []
+            likedMemeIds: [],
+            isPlaying: false,
+            playIcon: "fas fa-fw fa-play",
+            isRandom: false
         };
     }
 
@@ -64,6 +67,18 @@ class Gallery extends React.Component {
             this.setState({ likedMemeIds: likedMemeIds })
             console.log("likedMemeIds: " + likedMemeIds)
         }
+    }
+
+    handleChangePlaying = () => {
+        this.setState({isPlaying: !this.state.isPlaying})
+    }
+
+    handleStopPlaying = () => {
+        this.setState({isPlaying : false})
+    }
+
+    handleChangeRandom = () => {
+        this.setState({isRandom : !this.state.isRandom});
     }
 
     render() {
@@ -115,11 +130,18 @@ class Gallery extends React.Component {
                 isNotAuthenticated={this.isNotAuthenticated}
                 likeImage={this.likeImage}
                 parentRoute=""
+                isPlaying={this.state.isPlaying}
+                playIcon={this.state.playIcon}
+                isRandom={this.state.isRandom}
+                changePlaying={this.handleChangePlaying}
+                stopPlaying={this.handleStopPlaying}
+                changeRandom={this.handleChangeRandom}
               />
             </div>
           </div>
         );
     }
+
 
     renderImage(image, currentRoute) {
         let imageRoute;
@@ -156,7 +178,7 @@ class Gallery extends React.Component {
         const username = localStorage.getItem(LS_USERNAME)
         authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
         .catch((error) => { console.error('Error:', error) });
-        let newImages = this.state.images.map(img => { 
+        let newImages = this.state.images.map(img => {
             if(img._id === id) {
                 if (img.likes && img.likes.includes(username)) {
                     // Do nothing. User alredy likes meme.
