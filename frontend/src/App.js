@@ -390,7 +390,7 @@ class App extends React.Component {
             <NewMeme
               open={this.state.newMemeDialogIsOpen}
               handleClose={() => this.setState({ newMemeDialogIsOpen: false })}
-              canvasImage={this.state.canvasImage}
+              dataUrl={this.state.canvasImage}
               uploadMeme={this.handleSaveAsMeme}/>
           </div>
         </div>

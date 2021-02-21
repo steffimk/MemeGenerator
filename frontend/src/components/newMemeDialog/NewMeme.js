@@ -23,7 +23,7 @@ export default class NewMeme extends Component {
 
   downloadMeme = () => {
     var downloadLink = document.createElement("a")
-    downloadLink.href = this.props.canvasImage
+    downloadLink.href = this.props.dataUrl
     downloadLink.download = "MyMeme.jpg"
     downloadLink.click()
   }
@@ -42,7 +42,7 @@ export default class NewMeme extends Component {
         <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={dialogStyle}>
           <DialogTitle>Generated Meme</DialogTitle>
           <DialogContent dividers={true}>
-            <img src={this.props.canvasImage} alt="canvasImage" style={{ width: '100%' }} />
+            <img src={this.props.dataUrl} alt="canvasImage" style={{ width: '100%' }} />
           </DialogContent>
           <DialogActions>
             <Button
@@ -76,7 +76,11 @@ export default class NewMeme extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-        <ShareDialog open={this.state.openShare} handleClose={() => this.setOpenShare(false)} shareUrl={this.props.canvasImage}/>
+        <ShareDialog
+          open={this.state.openShare}
+          handleClose={() => this.setOpenShare(false)}
+          isGallery={false}
+        />
       </div>
     );
   }
@@ -85,6 +89,6 @@ export default class NewMeme extends Component {
 NewMeme.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  canvasImage: PropTypes.object.isRequired,
+  dataUrl: PropTypes.object.isRequired,
   uploadMeme: PropTypes.func.isRequired
 }

@@ -121,7 +121,12 @@ export default class SingleImage extends React.Component {
                       isNotAuthenticated={this.props.isNotAuthenticated}
                     />
                     <Likes open={this.state.openLikes} likes={likes} handleClose={() => this.setOpenLikes(false)} />
-                    <ShareDialog open={this.state.openShare} handleClose={() => this.setOpenShare(false)} shareUrl={imageSrc}/>
+                    <ShareDialog
+                      open={this.state.openShare}
+                      handleClose={() => this.setOpenShare(false)}
+                      imageId={image._id}
+                      isGallery={parentRoute === '/gallery/'}
+                    />
                   </div>
                 );
             }else{
