@@ -114,7 +114,7 @@ class Gallery extends React.Component {
                 id={id}
                 isNotAuthenticated={this.isNotAuthenticated}
                 likeImage={this.likeImage}
-                parentRoute="/gallery/"
+                parentRoute=""
               />
             </div>
           </div>

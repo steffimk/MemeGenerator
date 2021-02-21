@@ -21,7 +21,7 @@ export default class CustomAppBar extends React.Component {
       <div className="CustomAppBar">
         <AppBar position="static">
           <Toolbar>
-            <Link to='/gallery' style={{ color: 'white', textDecoration: 'none' }}>
+            <Link to='/' style={{ color: 'white', textDecoration: 'none' }}>
               {this.props.name}
             </Link>
             <Button style={{ marginLeft: screenWidth/5 }}>
