@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core';
-import { dialogStyle, FRONTEND_URL } from '../../constants'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import { dialogStyle, MEME_URL } from '../../constants'
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -22,7 +22,7 @@ import {
 export default class ShareDialog extends Component {
 
   render() {
-    var shareUrl = FRONTEND_URL
+    var shareUrl = MEME_URL
     var isDisabled = true
     var message = "To share your meme, upload it marked as \'public\' or \'unlisted\' and open it in your meme history."
     const title = "MemeGenerator - Check out this meme!"

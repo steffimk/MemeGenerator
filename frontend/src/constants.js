@@ -10,3 +10,4 @@ export const LS_JWT = 'memeGen_jwt'
 
 export const FRONTEND_URL = 'http://localhost:3000'
 export const GALLERY_URL = FRONTEND_URL + '/gallery'
+export const MEME_URL = FRONTEND_URL + '/meme'
