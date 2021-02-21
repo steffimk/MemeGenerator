@@ -34,11 +34,11 @@ export default class SingleImage extends React.Component {
                             />
                         </h1>
                         <Link to="."> {/* relative link up one level*/}
-                            <Link className="modal-nav modal-left" to={"/gallery/" + prev_image.id}/>
+                            <Link className="modal-nav modal-left" to={prev_image.id}/>
                             <img src={image.img} alt={image.name}/>
-                            <Link className="modal-nav modal-right" to={"/gallery/" + next_image.id}/>
+                            <Link className="modal-nav modal-right" to={ next_image.id}/>
                         </Link>
-                        <Link className="modal-control" to={"/gallery/"+ this.getRandomId()}>
+                        <Link className="modal-control" to={this.getRandomId()}>
                             <Button
                                 name="random"
                                 variant="contained"

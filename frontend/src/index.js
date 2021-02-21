@@ -17,51 +17,28 @@ import reportWebVitals from './reportWebVitals';
 
 function Router() {
     return (
-        <Switch>
-            
-            <Route path="/gallery/:id">
-                <Gallery />
-            </Route>
+    <Switch>
+        <Route path="/login">
+            <Login />
+        </Route>
 
-            <Route path="/gallery">
-                <Gallery />
-            </Route>
+        <Route path="/editor">
+            <Editor />
+        </Route>
 
-            <Route path="/editor">
-                <Editor />
-            </Route>
+        <Route path="/newtemplate">
+            <NewTemplateDialog />
+        </Route>
 
-            <Route path="/newtemplate">
-                <NewTemplateDialog />
-            </Route>
+        <Route path="/:id">
+            <Gallery />
+        </Route>
 
-            <Route path="/login">
-                <Login />
-            </Route>
+        <Route path="/">
+            <Gallery />
+        </Route>
+    </Switch>
 
-            {/* Note how these two routes are ordered. The more specific
-        path="/contact/:id" comes before path="/contact" so that
-        route will render when viewing an individual contact
-            <Route path="/contact/:id">
-                <Contact />
-            </Route>
-            <Route path="/contact">
-                <AllContacts />
-            </Route>
-
-            <Route path="/gallery">
-                <Gallery />
-            </Route>
-
-            <Route path="/:id">
-                <Gallery />
-            </Route>
-            */}
-
-            <Route path="/">
-                <Gallery />
-            </Route>
-        </Switch>
     );
 }
 
