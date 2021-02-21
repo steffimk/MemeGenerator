@@ -1,12 +1,13 @@
 import { Button, GridList, GridListTile, GridListTileBar, IconButton } from '@material-ui/core'
 import React, { Component } from 'react'
 import { Link, Redirect, withRouter } from 'react-router-dom'
-import { authorizedFetch, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
+import { authorizedFetch, LIKE_ENDPOINT, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
 import CustomAppBar from '../CustomAppBar/CustomAppBar'
 import SingleImage from '../gallery/SingleImage'
 import './AccountHistory.css'
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import EditIcon from '@material-ui/icons/Edit'
+import { LS_USERNAME } from '../../constants'
 
 class AccountHistory extends Component {
   constructor(props) {
@@ -76,6 +77,25 @@ class AccountHistory extends Component {
     );
   };
 
+  likeMeme = (id) => {
+    const username = localStorage.getItem(LS_USERNAME)
+    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
+    .catch((error) => { console.error('Error:', error) });
+    let newMemes = this.state.ownMemes.map(img => { 
+        if(img._id === id) {
+            if (img.likes && img.likes.includes(username)) {
+                // Do nothing. User alredy likes meme.
+            } else if (img.likes) {
+                img.likes.push(username)
+            } else {
+                img.likes = [username]
+            }
+        }
+        return img
+    })
+    this.setState({ ownMemes: newMemes })
+}
+
   render() {
     // If not logged in: Redirect to login page
     if (!this.state.isAuthenticated) return <Redirect to="/login" />;
@@ -103,7 +123,7 @@ class AccountHistory extends Component {
             {renderedTemplates}
           </GridList>
         </div>
-        {isMeme && <SingleImage images={this.state.ownMemes} id={id} parentRoute="/history/"/>}
+        {isMeme && <SingleImage images={this.state.ownMemes} id={id} parentRoute="/history/" likeImage={this.likeMeme}/>}
         {/* {!isMeme && <SingleImage images={this.state.ownTemplates} id={id} parentRoute="/history/"/>} */}
       </div>
     );

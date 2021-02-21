@@ -1,15 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import Gallery from './components/gallery/Gallery'
-import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog'
-import Login from './components/login/Login'
-import {
-    BrowserRouter,
-    Switch,
-    Route
-} from "react-router-dom";
+import Gallery from './components/gallery/Gallery';
+import Editor from './components/editor/Editor';
+import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog';
+import Login from './components/login/Login';
+
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import AccountHistory from './components/accountHistory/AccountHistory';
 import Meme from './components/Meme';
@@ -17,55 +14,47 @@ import Meme from './components/Meme';
 
 
 function Router() {
-    return (
-        <Switch>
-            <Route path="/gallery/:id">
-                <Gallery />
-            </Route>
+  return (
+    <Switch>
 
-            <Route path="/gallery">
-                <Gallery />
-            </Route>
+      <Route path="/login">
+        <Login />
+      </Route>
 
-            <Route path="/editor/:id">
-                <App />
-            </Route>
+      <Route path="/editor/:id">
+        <Editor />
+      </Route>
 
-            <Route path="/editor">
-                <App />
-            </Route>
+      <Route path="/editor">
+        <Editor />
+      </Route>
 
-            <Route path="/newtemplate">
-                <NewTemplateDialog />
-            </Route>
+      <Route path="/history/:id">
+        <AccountHistory />
+      </Route>
 
-            <Route path="/login">
-                <Login />
-            </Route>
+      <Route path="/history">
+        <AccountHistory />
+      </Route>
 
-            <Route path="/history/:id">
-                <AccountHistory />
-            </Route>
+      <Route path="/newtemplate">
+        <NewTemplateDialog />
+      </Route>
 
-            <Route path="/history">
-                <AccountHistory />
-            </Route>
+      <Route path="/meme/:id">
+          <Meme />
+      </Route>
 
-            <Route path="/meme/:id">
-                <Meme />
-            </Route>
+      <Route path="/:id">
+        <Gallery />
+      </Route>
 
-            {/* If none of the previous routes render anything,
-        this route acts as a fallback.
+      <Route path="/">
+        <Gallery />
+      </Route>
 
-        Important: A route with path="/" will *always* match
-        the URL because all URLs begin with a /. So that's
-        why we put this one last of all */}
-            <Route path="/">
-                <App />
-            </Route>
-        </Switch>
-    );
+    </Switch>
+  );
 }
 
 ReactDOM.render(

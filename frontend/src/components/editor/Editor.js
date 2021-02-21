@@ -1,15 +1,14 @@
 import React from 'react';
-import './App.css';
-import { Redirect, withRouter } from 'react-router-dom'
-
-import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
-import ImageCarousel from "./components/editor/ImageCarousel";
-import TemplateGallery from "./components/editor/TemplateGallery";
-import EditorControl from "./components/editor/EditorControl";
-import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT } from './communication/requests';
-import AudioDescription from "./components/textToSpeech/AudioDescription"
+import { Redirect, withRouter } from 'react-router-dom';
+import './Editor.css';
+import CustomAppBar from "../CustomAppBar/CustomAppBar";
+import ImageCarousel from "./ImageCarousel";
+import TemplateGallery from "./TemplateGallery";
+import EditorControl from "./EditorControl";
+import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT  } from '../../communication/requests';
+import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button } from '@material-ui/core';
-import NewMeme from './components/newMemeDialog/NewMeme';
+import NewMeme from '../newMemeDialog/NewMeme';
 
 class App extends React.Component {
 

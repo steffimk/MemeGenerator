@@ -61,9 +61,7 @@ export default class SingleImage extends React.Component {
                 return (
                   <div className="modal">
                     <h1 className="modal-title">{image.name}</h1>
-                    <Link to=".">
-                      {' '}
-                      {/* relative link up one level*/}
+                    <Link to="."> {/* relative link up one level*/}
                       <Link className="modal-nav modal-left" to={parentRoute + prev_image._id} />
                       <img
                         src={imageSrc}
