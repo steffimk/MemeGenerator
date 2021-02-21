@@ -50,7 +50,7 @@ export default class AudioDescription extends Component {
 
   render() {
     return (
-      <i class="fas fa-audio-description" onClick={this.read}/>
+      <i class="fas fa-audio-description fa-2x" onClick={this.read}/>
     )
   }
 }
