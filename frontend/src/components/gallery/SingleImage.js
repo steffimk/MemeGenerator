@@ -48,18 +48,18 @@ export default class SingleImage extends React.Component {
                     if (image.likes.includes(localStorage.getItem(LS_USERNAME))) favIconColor = "secondary"
                 }
                 return (
-                    <div className="modal">
-                        <h1 className="modal-title">{image.name}</h1>
-                        <Link to="."> {/* relative link up one level*/}
-                            <Link className="modal-nav modal-left" to={parentRoute + prev_image._id}/>
-                            <img
-                                src={image.img}
-                                alt={image.name}
-                                style={{ height: window.innerHeight * 0.8, width: 'auto' }}
-                            />
-                            <Link className="modal-nav modal-right" to={parentRoute + next_image._id}/>
-                        </Link>
-                        <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
+                  <div className="modal">
+                    <h1 className="modal-title">{image.name}</h1>
+                    <Link to=".">
+                      <Link className="modal-nav modal-left" to={parentRoute + prev_image.id} />
+                      <img
+                        src={image.img}
+                        alt={image.name}
+                        style={{ height: window.innerHeight * 0.8, width: 'auto' }}
+                      />
+                      <Link className="modal-nav modal-right" to={parentRoute + next_image.id} />
+                    </Link>
+                    <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
                       <Toolbar>
                         <Chip
                           icon={<FaceIcon style={{color: 'white'}}/>}
