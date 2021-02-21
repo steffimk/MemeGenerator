@@ -69,16 +69,16 @@ class Gallery extends React.Component {
         }
     }
 
-    handleChange = (event) => {
-        const className = event.target.className;
-        if(className.includes("play") || className.includes("pause")) {
-            this.setState({isPlaying: !this.state.isPlaying,
-                                playIcon: !this.state.isPlaying ? "fas fa-fw fa-pause" : "fas fa-fw fa-play"})
-        } else if(className.includes("random")) {
-            this.setState({isRandom : !this.state.isRandom});
-        } else if(className.includes("times")) {
-            this.setState({isPlaying : false, playIcon: "fas fa-fw fa-play"})
-        }
+    handleChangePlaying = () => {
+        this.setState({isPlaying: !this.state.isPlaying})
+    }
+
+    handleStopPlaying = () => {
+        this.setState({isPlaying : false})
+    }
+
+    handleChangeRandom = () => {
+        this.setState({isRandom : !this.state.isRandom});
     }
 
     render() {
@@ -132,7 +132,9 @@ class Gallery extends React.Component {
                 isPlaying={this.state.isPlaying}
                 playIcon={this.state.playIcon}
                 isRandom={this.state.isRandom}
-                changeListener={this.handleChange}
+                changePlaying={this.handleChangePlaying}
+                stopPlaying={this.handleStopPlaying}
+                changeRandom={this.handleChangeRandom}
               />
             </div>
           </div>

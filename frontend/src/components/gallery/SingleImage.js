@@ -7,7 +7,11 @@ import CommentIcon from '@material-ui/icons/Comment';
 import { AppBar, Badge, Chip, Fab, Toolbar, Button } from '@material-ui/core';
 import { LS_USERNAME } from '../../constants'
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import FaceIcon from '@material-ui/icons/Face'
+import PlayIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import RandomIcon from '@material-ui/icons/Shuffle';
+import ClearIcon from '@material-ui/icons/Clear';
+import FaceIcon from '@material-ui/icons/Face';
 import Comments from './Comments';
 import Likes from './Likes';
 export default class SingleImage extends React.Component {
@@ -67,27 +71,59 @@ export default class SingleImage extends React.Component {
                 return (
                     // <Link to="."> {/* relative link up one level*/}
                     <div className="modal">
-                        <Link className="modal-icon modal-esc" to=".">{/* relative link up one level*/}
-                            <i className="fa fa-fw fa-times"
-                               onClick={(e) => this.props.changeListener(e)} />
-                        </Link>
+                        <AppBar position="fixed" style={{ top: '0', bottom: 'auto', backgroundColor: 'rgba(0,0,0,0.9)' }}>
+                            <Toolbar>
+                                <h1 className="modal-title">{image.name}&nbsp;</h1>
+                                <Link to=".">
+                                    <Fab size = "small"
+                                         color="white"
+                                         style={{marginRight: '30px'}}
+                                         onClick={this.props.stopPlaying}>
+                                        <ClearIcon/>
+                                    </Fab>
+                                </Link>
+                            </Toolbar>
+                        </AppBar>
 
                         <Link className="modal-nav modal-left" to={"/gallery/" + prev_image.id}/>
                         <img
                             src={image.img}
                             alt={image.name}
-                            style={{ height: window.innerHeight * 0.8, width: 'auto' }}
+                            style={{ height: window.innerHeight * 0.8, width: 'auto', marginTop: '100px', marginBottom: '100px'}}
                         />
-
                         <Link id="nextLink" className="modal-nav modal-right" to={"/gallery/" + next_image.id}/>
 
                         <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
                             <Toolbar>
+                                <Fab size = "small"
+                                     color="white"
+                                     style={{ marginLeft: window.innerWidth * 0.3, marginRight: "20px" }}
+                                     onClick={this.props.changePlaying}>
+                                    {this.props.isPlaying? <PauseIcon/> : <PlayIcon/>}
+                                </Fab>
+                                <Fab size = "small"
+                                     color="white"
+                                     style={{marginRight: "20px" }}
+                                     onClick={this.props.changeRandom}>
+                                    <RandomIcon color={this.props.isRandom? "primary" : "black"}/>
+                                </Fab>
+                                <Link id="randomButton"
+                                      className="modal-shuffle"
+                                      style={{marginRight: "211px" }}
+                                      to={"/gallery/"+ this.getRandomId()}>
+                                    <Button
+                                        name="random"
+                                        variant="contained"
+                                        size="small"
+                                        color="primary">
+                                        Shuffle
+                                    </Button>
+                                </Link>
                                 <Chip
                                     icon={<FaceIcon style={{color: 'white'}}/>}
                                     label="Liked by..."
                                     onClick={() => this.setOpenLikes(true)}
-                                    style={{ marginLeft: window.innerWidth * 0.5, marginRight: '10px', color: 'white', backgroundColor: 'dimgray' }}
+                                    style={{marginRight: '10px', color: 'white', backgroundColor: 'dimgray' }}
                                 />
                                 <Badge badgeContent={likeCount} max={999} color={favIconColor} style={{ marginRight: '20px' }}>
                                     <Fab size="small" color="white" onClick={() => this.props.likeImage(image._id)}>
@@ -97,7 +133,7 @@ export default class SingleImage extends React.Component {
                                 <Fab size="small" onClick={() => this.setOpenComments(true)} style={{ marginRight: '20px' }}>
                                     <CommentIcon />
                                 </Fab>
-                                <Fab size="small" style={{ marginRight: '130px' }}>
+                                <Fab size="small">
                                     <AudioDescription
                                         isEditor={false}
                                         imageDescription={image.imageDescription}
@@ -105,15 +141,6 @@ export default class SingleImage extends React.Component {
                                         captions={image.captions}
                                     />
                                 </Fab>
-                                <Link id="randomButton" className="modal-bottom modal-shuffle" to={"/gallery/"+ this.getRandomId()}>
-                                    <Button
-                                        name="random"
-                                        variant="contained"
-                                        size="small"
-                                        color="primary">
-                                        Shuffle
-                                    </Button>
-                                </Link>
                             </Toolbar>
                         </AppBar>
                     <Comments
@@ -148,5 +175,7 @@ SingleImage.propTypes = {
     isPlaying: PropTypes.bool.isRequired,
     playIcon: PropTypes.string.isRequired,
     isRandom: PropTypes.bool.isRequired,
-    changeListener: PropTypes.func.isRequired
+    changePlaying: PropTypes.func.isRequired,
+    stopPlaying: PropTypes.func.isRequired,
+    changeRandom: PropTypes.func.isRequired
 }

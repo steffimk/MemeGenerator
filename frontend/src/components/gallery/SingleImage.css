@@ -13,15 +13,6 @@
     flex-direction: column; /* as column */
 }
 
-.modal-icon {
-    color:white;
-    opacity: 0.5;
-}
-
-.modal-icon:hover {
-    opacity: 1;
-}
-
 .modal-title {
     width: 100%;
     text-align: center;
@@ -66,43 +57,12 @@
     right: 6vh;
 }
 
-.modal-bottom {
-    position: fixed;
-    top: 90%;
-}
-
 .modal-shuffle {
-    position: fixed;
-    left: 65%;
     text-decoration: none;
 }
 
-.modal-play {
-    position: fixed;
-    left: 30%;
-}
-
-.modal-random-off {
-    color: white;
-    position: fixed;
-    top: 90%;
-    left: 35%;
-    opacity: 0.5;
-}
-
-.modal-random-off:hover {
-    opacity: 1;
-}
-
-.modal-random-on {
-    color: white;
-    position: fixed;
-    top: 90%;
-    left: 35%;
-    opacity: 1;
-}
-
 .modal-esc {
+    color: white;
     position: fixed;
     top: 4%;
     left: 96%;
