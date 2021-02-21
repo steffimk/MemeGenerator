@@ -6,8 +6,10 @@ import AudioDescription from '../textToSpeech/AudioDescription';
 import CommentIcon from '@material-ui/icons/Comment';
 import { AppBar, Badge, Chip, Fab, Toolbar, Button } from '@material-ui/core';
 import { LS_USERNAME } from '../../constants'
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FaceIcon from '@material-ui/icons/Face'
+import ShareIcon from '@material-ui/icons/Share';
 import Comments from './Comments';
 import Likes from './Likes';
 export default class SingleImage extends React.Component {
@@ -26,6 +28,13 @@ export default class SingleImage extends React.Component {
 
     getRandomId = () => {
         return this.props.images[Math.floor(Math.random() * this.props.images.length)]._id;
+    }
+
+    downloadImage = (imageSrc) => {
+        var downloadLink = document.createElement("a")
+        downloadLink.href = imageSrc
+        downloadLink.download = "Meme.jpg"
+        downloadLink.click()
     }
 
     render() {
@@ -48,24 +57,31 @@ export default class SingleImage extends React.Component {
                     if (image.likes.includes(localStorage.getItem(LS_USERNAME))) favIconColor = "secondary"
                 }
                 return (
-                    <div className="modal">
-                        <h1 className="modal-title">{image.name}</h1>
-                        <Link to="."> {/* relative link up one level*/}
-                            <Link className="modal-nav modal-left" to={parentRoute + prev_image._id}/>
-                            <img
-                                src={image.img}
-                                alt={image.name}
-                                style={{ height: window.innerHeight * 0.8, width: 'auto' }}
-                            />
-                            <Link className="modal-nav modal-right" to={parentRoute + next_image._id}/>
-                        </Link>
-                        <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
+                  <div className="modal">
+                    <h1 className="modal-title">{image.name}</h1>
+                    <Link to=".">
+                      {' '}
+                      {/* relative link up one level*/}
+                      <Link className="modal-nav modal-left" to={parentRoute + prev_image._id} />
+                      <img
+                        src={imageSrc}
+                        alt={image.name}
+                        style={{ height: window.innerHeight * 0.8, width: 'auto' }}
+                      />
+                      <Link className="modal-nav modal-right" to={parentRoute + next_image._id} />
+                    </Link>
+                    <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
                       <Toolbar>
                         <Chip
-                          icon={<FaceIcon style={{color: 'white'}}/>}
+                          icon={<FaceIcon style={{ color: 'white' }} />}
                           label="Liked by..."
                           onClick={() => this.setOpenLikes(true)}
-                          style={{ marginLeft: window.innerWidth * 0.5, marginRight: '10px', color: 'white', backgroundColor: 'dimgray' }}
+                          style={{
+                            marginLeft: window.innerWidth * 0.4,
+                            marginRight: '10px',
+                            color: 'white',
+                            backgroundColor: 'dimgray',
+                          }}
                         />
                         <Badge badgeContent={likeCount} max={999} color={favIconColor} style={{ marginRight: '20px' }}>
                           <Fab size="small" color="white" onClick={() => this.props.likeImage(image._id)}>
@@ -74,6 +90,12 @@ export default class SingleImage extends React.Component {
                         </Badge>
                         <Fab size="small" onClick={() => this.setOpenComments(true)} style={{ marginRight: '20px' }}>
                           <CommentIcon />
+                        </Fab>
+                        <Fab size="small" onClick={() => this.downloadImage(imageSrc)} style={{ marginRight: '20px' }}>
+                          <CloudDownloadIcon color="primary"/>
+                        </Fab>
+                        <Fab size="small" style={{ marginRight: '20px' }}>
+                          <ShareIcon />
                         </Fab>
                         <Fab size="small" style={{ marginRight: '130px' }}>
                           <AudioDescription
@@ -84,13 +106,9 @@ export default class SingleImage extends React.Component {
                           />
                         </Fab>
                         <Link to={parentRoute + this.getRandomId()}>
-                            <Button
-                                name="random"
-                                variant="contained"
-                                size="small"
-                                color="primary">
-                                Shuffle
-                            </Button>
+                          <Button name="random" variant="contained" size="small" color="primary">
+                            Shuffle
+                          </Button>
                         </Link>
                       </Toolbar>
                     </AppBar>
@@ -100,7 +118,7 @@ export default class SingleImage extends React.Component {
                       handleClose={() => this.setOpenComments(false)}
                       isNotAuthenticated={this.props.isNotAuthenticated}
                     />
-                    <Likes open={this.state.openLikes} likes={likes} handleClose={() => this.setOpenLikes(false)}/>
+                    <Likes open={this.state.openLikes} likes={likes} handleClose={() => this.setOpenLikes(false)} />
                   </div>
                 );
             }else{
