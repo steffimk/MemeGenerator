@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import Gallery from './components/gallery/Gallery'
-import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog'
-import Login from './components/login/Login'
+import Gallery from './components/gallery/Gallery';
+import Editor from './components/editor/Editor';
+import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog';
+import Login from './components/login/Login';
+
 import {
     BrowserRouter,
     Switch,
@@ -16,49 +17,28 @@ import reportWebVitals from './reportWebVitals';
 
 function Router() {
     return (
-        <Switch>
-            <Route path="/gallery/:id">
-                <Gallery />
-            </Route>
+    <Switch>
+        <Route path="/login">
+            <Login />
+        </Route>
 
-            <Route path="/gallery">
-                <Gallery />
-            </Route>
+        <Route path="/editor">
+            <Editor />
+        </Route>
 
-            <Route path="/editor">
-                <App />
-            </Route>
+        <Route path="/newtemplate">
+            <NewTemplateDialog />
+        </Route>
 
-            <Route path="/newtemplate">
-                <NewTemplateDialog />
-            </Route>
+        <Route path="/:id">
+            <Gallery />
+        </Route>
 
-            <Route path="/login">
-                <Login />
-            </Route>
+        <Route path="/">
+            <Gallery />
+        </Route>
+    </Switch>
 
-            {/* Note how these two routes are ordered. The more specific
-        path="/contact/:id" comes before path="/contact" so that
-        route will render when viewing an individual contact
-            <Route path="/contact/:id">
-                <Contact />
-            </Route>
-            <Route path="/contact">
-                <AllContacts />
-            </Route>
-
-            */}
-
-            {/* If none of the previous routes render anything,
-        this route acts as a fallback.
-
-        Important: A route with path="/" will *always* match
-        the URL because all URLs begin with a /. So that's
-        why we put this one last of all */}
-            <Route path="/">
-                <App />
-            </Route>
-        </Switch>
     );
 }
 

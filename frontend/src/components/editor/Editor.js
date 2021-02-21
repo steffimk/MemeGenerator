@@ -1,14 +1,12 @@
 import React from 'react';
-import './App.css';
-import { Redirect } from 'react-router-dom'
-
-import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
-import ImageCarousel from "./components/editor/ImageCarousel";
-import TemplateGallery from "./components/editor/TemplateGallery";
-import EditorControl from "./components/editor/EditorControl";
-import { authorizedFetch } from './communication/requests';
-
-import AudioDescription from "./components/textToSpeech/AudioDescription"
+import { Redirect } from 'react-router-dom';
+import './Editor.css';
+import CustomAppBar from "../CustomAppBar/CustomAppBar";
+import ImageCarousel from "./ImageCarousel";
+import TemplateGallery from "./TemplateGallery";
+import EditorControl from "./EditorControl";
+import { authorizedFetch } from '../../communication/requests';
+import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button } from '@material-ui/core';
 
 const API_ENDPOINT = "http://localhost:3030/"

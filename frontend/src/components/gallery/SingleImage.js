@@ -51,13 +51,13 @@ export default class SingleImage extends React.Component {
                   <div className="modal">
                     <h1 className="modal-title">{image.name}&nbsp;</h1>
                     <Link to=".">
-                      <Link className="modal-nav modal-left" to={'/gallery/' + prev_image.id} />
+                      <Link className="modal-nav modal-left" to={prev_image.id} />
                       <img
                         src={image.img}
                         alt={image.name}
                         style={{ height: window.innerHeight * 0.8, width: 'auto' }}
                       />
-                      <Link className="modal-nav modal-right" to={'/gallery/' + next_image.id} />
+                      <Link className="modal-nav modal-right" to={next_image.id} />
                     </Link>
                     <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
                       <Toolbar>
@@ -83,7 +83,7 @@ export default class SingleImage extends React.Component {
                             captions={image.captions}
                           />
                         </Fab>
-                        <Link to={"/gallery/"+ this.getRandomId()}>
+                        <Link to={this.getRandomId()}>
                             <Button
                                 name="random"
                                 variant="contained"
