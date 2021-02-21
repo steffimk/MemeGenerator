@@ -7,6 +7,7 @@ export const SIGNUP_ENDPOINT= API_ENDPOINT + 'signup'
 export const MEMES_ENDPOINT = API_ENDPOINT + 'memes/memes'
 export const LIKE_ENDPOINT = API_ENDPOINT + 'memes/memes/like'
 export const COMMENT_ENDPOINT = API_ENDPOINT + 'memes/memes/comment'
+export const SINGLE_MEME_ENDPOINT = API_ENDPOINT + 'meme'
 
 export function authorizedFetch(endpoint, method, bodyJson, isNotAuthenticatedCallback) {
   const jwt = localStorage.getItem(LS_JWT);

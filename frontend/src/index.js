@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import AccountHistory from './components/accountHistory/AccountHistory';
+import Meme from './components/Meme';
 
 
 
@@ -68,6 +69,9 @@ function Router() {
         Important: A route with path="/" will *always* match
         the URL because all URLs begin with a /. So that's
         why we put this one last of all */}
+            <Route path="/:id">
+                <Meme />
+            </Route>
             <Route path="/">
                 <App />
             </Route>

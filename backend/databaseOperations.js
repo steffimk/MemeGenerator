@@ -18,7 +18,7 @@ module.exports = {
 
   findOneFromDB(db, collection, id) {
     collection = db.get(collection);
-    collection.find(id).then(); //(docs) => console.log(docs));
+    return collection.findOne({ _id: id})
   },
 
   findUserWithName(db, name) {
