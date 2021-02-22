@@ -1,12 +1,12 @@
 import { LS_JWT } from '../constants'
 
 export const API_ENDPOINT = 'http://localhost:3030/'
-export const TEMPLATE_ENDPOINT = API_ENDPOINT + 'memes/templates'
+export const TEMPLATE_ENDPOINT = API_ENDPOINT + 'templates'
 export const LOGIN_ENDPOINT = API_ENDPOINT + 'login'
 export const SIGNUP_ENDPOINT= API_ENDPOINT + 'signup'
-export const MEMES_ENDPOINT = API_ENDPOINT + 'memes/memes'
-export const LIKE_ENDPOINT = API_ENDPOINT + 'memes/memes/like'
-export const COMMENT_ENDPOINT = API_ENDPOINT + 'memes/memes/comment'
+export const MEMES_ENDPOINT = API_ENDPOINT
+export const LIKE_ENDPOINT = API_ENDPOINT + 'like'
+export const COMMENT_ENDPOINT = API_ENDPOINT + 'comment'
 export const SINGLE_MEME_ENDPOINT = API_ENDPOINT + 'meme'
 
 export function authorizedFetch(endpoint, method, bodyJson, isNotAuthenticatedCallback) {

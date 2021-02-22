@@ -9,8 +9,7 @@ const jwt = require('njwt');
 
 var indexRouter = require('./routes/index');
 var singleMemeRouter = require('./routes/meme');
-var usersRouter = require('./routes/users');
-var memesRouter = require('./routes/memes');
+var { templatesRouter } = require('./routes/templates');
 var loginRouter = require('./routes/login');
 var { signupRouter } = require('./routes/signup')
 var screenshotRouter = require('./routes/screenshot')
@@ -56,10 +55,9 @@ app.use((req,res,next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/memes', memesRouter);
+app.use('/templates', templatesRouter);
 app.use('/screenshot', screenshotRouter);
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -30,7 +30,7 @@ class AccountHistory extends Component {
 
   getOwnMemes = () => {
     const username = localStorage.getItem('memeGen_username');
-    const endpointWithParam = `${MEMES_ENDPOINT}/${username}`;
+    const endpointWithParam = `${MEMES_ENDPOINT}${username}`;
     authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownMemes: json.data.memes }))
       .catch((e) => console.log(e));

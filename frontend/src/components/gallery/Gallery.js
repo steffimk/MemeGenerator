@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom'
 import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage, { downloadImage } from "./SingleImage";
-import { authorizedFetch, LIKE_ENDPOINT } from '../../communication/requests';
+import { authorizedFetch, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../communication/requests';
 import { AppBar, Badge, ButtonGroup, Fab, Toolbar } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { LS_USERNAME } from '../../constants'
@@ -13,8 +13,6 @@ import CommentIcon from '@material-ui/icons/Comment';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ShareIcon from '@material-ui/icons/Share';
 import ShareDialog from '../shareDialog/Share';
-
-const MEMES_ENDPOINT = "http://localhost:3030/memes/memes";
 
 class Gallery extends React.Component {
 
