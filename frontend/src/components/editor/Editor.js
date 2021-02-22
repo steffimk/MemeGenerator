@@ -89,7 +89,8 @@ class App extends React.Component {
 
   generateMeme = () => {
     const carouselCanvas = this.imageCarousel.current.canvasRef.current;
-    this.setState({ canvasImage: carouselCanvas.toDataURL(), newMemeDialogIsOpen: true });
+    const dataURL = carouselCanvas.toDataURL()
+    this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
   }
 
   handleSaveAsMeme = async (privacyLabel) => {

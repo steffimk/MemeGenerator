@@ -199,19 +199,17 @@ export default class ImageCarousel extends React.Component {
             .map((image,index) => {
                 const imgRef = this.addedImgRefs[index] ? this.addedImgRefs[index] : React.createRef()
                 this.addedImgRefs[index] = imgRef
-                return <img ref={imgRef} alt="" src={image.url} style={{display: "none"}}/>
+                return <img ref={imgRef} alt="" crossOrigin={"anonymous"} src={image.url} style={{display: "none"}}/>
             })
         this.renderMouseDrawing()
 
         return (
-            <div ref={this.containerRef} className="flex-container">
+            <div ref={this.containerRef} className="flex-container" >
                 <h1>{this.props.title}</h1>
-                {/* <div className="container"> */}
-                    <canvas ref={this.canvasRef} onMouseDown={this.setIsDrawing} onMouseUp={this.setIsDrawing} onMouseLeave={this.setIsDrawing} onMouseMove={this.drawWithMouse}
-                        style={{width:this.props.canvasSize.width, height:this.props.canvasSize.height, resize:"true"}}/>
-                    <img ref={this.imgRef} alt="" src={this.props.image.url} crossOrigin={"anonymous"} style={{display: "none"}}/>
-                    {addedImages}
-                {/* </div> */}
+                <canvas ref={this.canvasRef} onMouseDown={this.setIsDrawing} onMouseUp={this.setIsDrawing} onMouseLeave={this.setIsDrawing} onMouseMove={this.drawWithMouse}
+                    style={{width:this.props.canvasSize.width, height:this.props.canvasSize.height, resize:"true"}} />
+                <img ref={this.imgRef} alt="" src={this.props.image.url} crossOrigin={"anonymous"} style={{display: "none"}}/>
+                {addedImages}
             </div>
         )
     }
