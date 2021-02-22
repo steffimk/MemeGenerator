@@ -33,7 +33,7 @@ function findOneFromDB(db, collection, id) {
 
 router.get('/templates', function (req, res, next) {
     let db = req.db;
-    Promise.all([db.get(templateCollection).find({}, req.sort_term), getTemplatesFromImgFlip()])
+    Promise.all([db.get(templateCollection).find({...req.range_query}, req.sort_term), getTemplatesFromImgFlip()])
         .then(([docs, imgflip]) => {
             imgflip.forEach((template) => template.source = "imgflip")
             docs.forEach((template) => template.id = template._id)
@@ -119,21 +119,32 @@ router.post('/templates', function(req, res){
 router.use((req, res, next) => {
     let sort_term = {};
     if(req.query.hasOwnProperty("orderBy")){
-        // {sort: {_id: -1}} to order by insertion time
+        // ?orderBY={_id: -1} to order by insertion time
         sort_term = {sort: JSON.parse(req.query.orderBy)};
     }
-    console.log(sort_term);
+
+    let range_query = {}
+    if(req.query.hasOwnProperty("timeRange")){
+        // ?timeRange=[1,2] to filter by unix millisecond range
+        let limits = JSON.parse(req.query.timeRange)
+
+        range_query = {
+            creation_time: {
+                $gt: Math.min(...limits),
+                $lt: Math.max(...limits),
+            }
+        }
+    }
+
+    req.range_query = range_query;
     req.sort_term = sort_term;
-    console.log(req);
     next();
 })
 
 router.get('/memes', function (req, res) {
     let db = req.db;
 
-    console.log("get"+req);
-
-    db.get(memeCollection).find({}, req.sort_term)
+    db.get(memeCollection).find({...req.range_query}, req.sort_term)
         .then((docs) => {
             docs.forEach((template) => template.id = template._id)
             return (docs);
@@ -145,6 +156,7 @@ router.get('/memes', function (req, res) {
             })
         });
 });
+
 router.post("/memes", function (req, res){
     const meme = req.body;
 
