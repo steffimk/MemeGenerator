@@ -7,7 +7,7 @@ import TemplateGallery from "./TemplateGallery";
 import EditorControl from "./EditorControl";
 import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT  } from '../../communication/requests';
 import AudioDescription from "../textToSpeech/AudioDescription"
-import { Button } from '@material-ui/core';
+import { Button, Paper } from '@material-ui/core';
 import NewMeme from '../newMemeDialog/NewMeme';
 
 class App extends React.Component {
@@ -108,7 +108,6 @@ class App extends React.Component {
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
       fontColor: this.state.fontColor,
-      imageDescription: this.state.imageDescription,
       privacyLabel: privacyLabel
     }
 
@@ -303,7 +302,9 @@ class App extends React.Component {
       <div>
         <CustomAppBar></CustomAppBar>
         <div className="App">
-          <div className="left">
+          <Paper className="templates left"
+            style={{ marginTop: '5px', height: window.innerHeight * 0.95, overflow: 'scroll' }}
+            elevation={2}>
             <TemplateGallery
               currentImage={this.state.currentImage}
               changeCurrentImage={this.onClickedOnImageInGallery}
@@ -313,10 +314,10 @@ class App extends React.Component {
               setIsAuthenticated={this.setIsAuthenticated}
               queryId={id}
             />
-          </div>
+          </Paper>
           <div className="middle">
             <ImageCarousel
-              ref = {this.imageCarousel}
+              ref={this.imageCarousel}
               image={this.state.currentImage}
               imageInfo={this.state.imageInfo}
               captions={this.state.captions}
@@ -337,9 +338,13 @@ class App extends React.Component {
               addCoordinate={this.addDrawingCoordinate}
             />
           </div>
-          <div className="control right">
-              <h3 style={{fontWeight: 'bold'}}>Editor&nbsp;
-              <AudioDescription 
+          <Paper
+            className="control right"
+            style={{ marginTop: '5px', height: window.innerHeight * 0.9, overflow: 'scroll' }}
+            elevation={2}>
+            <h3 style={{ fontWeight: 'bold' }}>
+              Editor&nbsp;
+              <AudioDescription
                 isEditor={true}
                 captions={this.state.captions}
                 imageDescription={this.state.imageDescription}
@@ -369,30 +374,31 @@ class App extends React.Component {
               imageDescription={this.state.imageDescription}
               handleAddCaption={this.handleAddCaption}
             />
-            <Button 
+            <Button
               name="saveTemplateButton"
               variant="contained"
               size="small"
               color="primary"
               onClick={this.handleSaveAsTemplate}
-              style= {{ marginTop: '10px' }}>
+              style={{ marginTop: '10px' }}>
               Save as template
             </Button>
-            <Button 
+            <Button
               name="saveTemsaveButtonplateButton"
               variant="contained"
               size="small"
               color="secondary"
               onClick={this.generateMeme}
-              style= {{ marginTop: '10px', display: 'block' }}>
+              style={{ marginTop: '10px', display: 'block' }}>
               Generate meme
             </Button>
             <NewMeme
               open={this.state.newMemeDialogIsOpen}
               handleClose={() => this.setState({ newMemeDialogIsOpen: false })}
               dataUrl={this.state.canvasImage}
-              uploadMeme={this.handleSaveAsMeme}/>
-          </div>
+              uploadMeme={this.handleSaveAsMeme}
+            />
+          </Paper>
         </div>
       </div>
     );
