@@ -85,13 +85,13 @@ export default class SingleImage extends React.Component {
                 </Link>
               </Toolbar>
             </AppBar>
-            <Link className="modal-nav modal-left" to={parentRoute + prev_image.id} />
+            <Link className="modal-nav modal-left" to={parentRoute + prev_image._id} />
             <img
               src={imageSrc}
               alt={image.name}
               style={{ height: window.innerHeight * 0.8, width: 'auto', marginTop: '100px', marginBottom: '100px' }}
             />
-            <Link id="nextLink" className="modal-nav modal-right" to={parentRoute + next_image.id} />
+            <Link id="nextLink" className="modal-nav modal-right" to={parentRoute + next_image._id} />
             <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
               <Toolbar>
                 {isGallery && (
@@ -112,7 +112,7 @@ export default class SingleImage extends React.Component {
                   id="randomButton"
                   className="modal-shuffle"
                   style={{ marginRight: '200px', marginLeft: isGallery ? '' : window.innerWidth * 0.2 }}
-                  to={this.getRandomId()}>
+                  to={parentRoute + this.getRandomId()}>
                   <Button name="random" variant="contained" size="small" color="primary">
                     Shuffle
                   </Button>

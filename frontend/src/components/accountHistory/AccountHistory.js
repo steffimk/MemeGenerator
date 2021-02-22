@@ -84,7 +84,7 @@ class AccountHistory extends Component {
     let newMemes = this.state.ownMemes.map(img => { 
         if(img._id === id) {
             if (img.likes && img.likes.includes(username)) {
-                // Do nothing. User alredy likes meme.
+                // Do nothing. User already likes meme.
             } else if (img.likes) {
                 img.likes.push(username)
             } else {
