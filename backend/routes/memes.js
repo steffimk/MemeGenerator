@@ -122,7 +122,7 @@ router.get('/memes/:username', function(req,res) {
 router.get('/memes', function (req, res) {
     let db = req.db;
     // console.log("in memes", db)
-    Promise.all([dbOp.findAllWithPrivacyLabel(db,memeCollection,'public')])
+    dbOp.findAllWithPrivacyLabel(db,memeCollection,'public')
     .then(([docs]) => {
         docs.forEach((template) => template.id = template._id)
         return (docs);
