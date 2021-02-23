@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom'
 import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage, { downloadImage } from "./SingleImage";
-import { authorizedFetch, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../communication/requests';
+import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../communication/requests';
 import { AppBar, Badge, ButtonGroup, Fab, Toolbar } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { LS_USERNAME } from '../../constants'
@@ -168,7 +168,7 @@ class Gallery extends React.Component {
         if (this.state.likedMemeIds.includes(image._id)) favIconColor = "secondary"
         return (
           <div className="image-container" id={image._id}>
-            <Link to={imageRoute} key={image._id}>
+            <Link to={imageRoute} key={image._id} onClick={() => viewMeme(image._id, this.isNotAuthenticated)}>
               <img src={image.img} alt={image.name} />
             </Link>
             <div className="image-title">

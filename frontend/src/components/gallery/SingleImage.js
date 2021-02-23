@@ -17,6 +17,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import Comments from './Comments';
 import Likes from './Likes';
 import ShareDialog from '../shareDialog/Share';
+import { authorizedFetch, viewMeme, VIEW_ENDPOINT } from '../../communication/requests';
 export default class SingleImage extends React.Component {
   constructor(props) {
     super(props);
@@ -85,13 +86,22 @@ export default class SingleImage extends React.Component {
                 </Link>
               </Toolbar>
             </AppBar>
-            <Link className="modal-nav modal-left" to={parentRoute + prev_image._id} />
+            <Link
+              className="modal-nav modal-left"
+              to={parentRoute + prev_image._id}
+              onClick={() => viewMeme(prev_image._id, this.props.isNotAuthenticated)}
+            />
             <img
               src={imageSrc}
               alt={image.name}
               style={{ height: window.innerHeight * 0.8, width: 'auto', marginTop: '100px', marginBottom: '100px' }}
             />
-            <Link id="nextLink" className="modal-nav modal-right" to={parentRoute + next_image._id} />
+            <Link
+              id="nextLink"
+              className="modal-nav modal-right"
+              to={parentRoute + next_image._id}
+              onClick={() => viewMeme(next_image._id, this.props.isNotAuthenticated)}
+            />
             <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
               <Toolbar>
                 {isGallery && (
