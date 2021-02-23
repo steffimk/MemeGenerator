@@ -1,4 +1,4 @@
-import { GridList, GridListTile, GridListTileBar, IconButton } from '@material-ui/core'
+import { Button, GridList, GridListTile, GridListTileBar, IconButton } from '@material-ui/core'
 import React, { Component } from 'react'
 import { Link, Redirect, withRouter } from 'react-router-dom'
 import { authorizedFetch, LIKE_ENDPOINT, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
@@ -55,7 +55,14 @@ class AccountHistory extends Component {
     const icon = isMeme ? <FullscreenIcon style={{ color: 'white' }} /> : <EditIcon style={{ color: 'white' }} />;
     return (
       <GridListTile key={image._id} style={{width:'27%'}}>
-        <img src={imageSrc} alt={image._id} style={{width:'100%', height: 'auto'}}/>
+        <div className="grid-image-container">
+          <img src={imageSrc} alt={image._id} style={{width:'100%', height: 'auto'}}/>
+          {image.privacyLabel && <div className="privacy-label">
+            <Button variant="contained" size="small" disabled style={{backgroundColor:'lightgrey', color:'dimgrey'}}>
+              {image.privacyLabel}
+            </Button>
+          </div>}
+        </div>
         <Link to={linkRoute} key={image._id}>
           <GridListTileBar
             title={image.name}

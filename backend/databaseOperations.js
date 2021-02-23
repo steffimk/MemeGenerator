@@ -8,7 +8,7 @@ module.exports = {
     // Delete id so that db generates new unique one (prevents duplicate error)
     //delete data._id;
     collection = db.get(collection);
-    collection.insert(data).then((docs) => console.log(docs));
+    collection.insert(data).then(); //(docs) => console.log(docs));
   },
 
   findAllFromDB(db, collection) {
@@ -18,7 +18,7 @@ module.exports = {
 
   findOneFromDB(db, collection, id) {
     collection = db.get(collection);
-    collection.find(id).then((docs) => console.log(docs));
+    collection.find(id).then(); //(docs) => console.log(docs));
   },
 
   findUserWithName(db, name) {
@@ -34,6 +34,11 @@ module.exports = {
   findAllOfUser(db, collection, username) {
     collection = db.get(collection);
     return collection.find({ username: username });
+  },
+
+  findAllWithPrivacyLabel(db, collection, privacyLabel) {
+    collection = db.get(collection);
+    return collection.find({ privacyLabel: privacyLabel });
   },
 
   likeMeme(db, memeId, username) {

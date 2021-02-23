@@ -122,7 +122,7 @@ router.get('/memes/:username', function(req,res) {
 router.get('/memes', function (req, res) {
     let db = req.db;
     // console.log("in memes", db)
-    Promise.all([dbOp.findAllFromDB(db,memeCollection)])
+    Promise.all([dbOp.findAllWithPrivacyLabel(db,memeCollection,'public')])
     .then(([docs]) => {
         docs.forEach((template) => template.id = template._id)
         return (docs);
@@ -136,8 +136,8 @@ router.post("/memes", function (req, res){
     const meme = req.body;
 
     const {
-        template_id, img, template_url, name, box_count, username,
-        captions, captionPositions, fontSize, isItalic, isBold, fontColor
+        template_id, img, template_url, name, box_count, username, imageDescription,
+        captions, captionPositions, fontSize, isItalic, isBold, fontColor, privacyLabel
     } = meme;
     // validate input
     if(
@@ -148,8 +148,8 @@ router.post("/memes", function (req, res){
 
         // ignore any unknown values in the input data
         const normalizedMeme = {
-            template_id, img, template_url, name, box_count, username, captions,
-            captionPositions, fontColor, fontSize, isItalic, isBold,
+            template_id, img, template_url, name, box_count, username, imageDescription,
+            captions, captionPositions, fontColor, fontSize, isItalic, isBold, privacyLabel
         }
 
         dbOp.addToDB(req.db, memeCollection, normalizedMeme);
