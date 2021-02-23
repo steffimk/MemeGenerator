@@ -5,7 +5,7 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage, { downloadImage } from "./SingleImage";
 import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../communication/requests';
-import { AppBar, Badge, ButtonGroup, Fab, Toolbar } from '@material-ui/core';
+import { AppBar, Badge, ButtonGroup, Fab, Toolbar, Tooltip } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { LS_USERNAME } from '../../constants'
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -174,15 +174,17 @@ class Gallery extends React.Component {
             <div className="image-title">
               &nbsp;&nbsp;{image.name}
               <ButtonGroup style={{ marginTop: '10px' }}>
-                <Badge
-                    badgeContent={viewCount}
-                    max={999}
-                    color="primary"
-                    style={{ marginRight: '20px' }}>
-                  <Fab size="small">
-                    <VisibilityIcon />
-                  </Fab>
-                </Badge>
+                <Tooltip title='Views'>
+                  <Badge
+                      badgeContent={viewCount}
+                      max={999}
+                      color="primary"
+                      style={{ marginRight: '20px' }}>
+                    <Fab size="small">
+                      <VisibilityIcon />
+                    </Fab>
+                  </Badge>
+                </Tooltip>
                 <Badge
                   badgeContent={likeCount}
                   max={999}
