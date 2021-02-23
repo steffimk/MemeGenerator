@@ -9,6 +9,7 @@ import Login from './components/login/Login';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import AccountHistory from './components/accountHistory/AccountHistory';
+import Meme from './components/Meme';
 
 
 
@@ -38,6 +39,10 @@ function Router() {
 
       <Route path="/newtemplate">
         <NewTemplateDialog />
+      </Route>
+
+      <Route path="/meme/:id">
+          <Meme />
       </Route>
 
       <Route path="/:id">

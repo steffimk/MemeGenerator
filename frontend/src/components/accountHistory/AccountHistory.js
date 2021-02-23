@@ -30,7 +30,7 @@ class AccountHistory extends Component {
 
   getOwnMemes = () => {
     const username = localStorage.getItem('memeGen_username');
-    const endpointWithParam = `${MEMES_ENDPOINT}/${username}`;
+    const endpointWithParam = `${MEMES_ENDPOINT}${username}`;
     authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownMemes: json.data.memes }))
       .catch((e) => console.log(e));
@@ -84,7 +84,7 @@ class AccountHistory extends Component {
     let newMemes = this.state.ownMemes.map(img => { 
         if(img._id === id) {
             if (img.likes && img.likes.includes(username)) {
-                // Do nothing. User alredy likes meme.
+                // Do nothing. User already likes meme.
             } else if (img.likes) {
                 img.likes.push(username)
             } else {

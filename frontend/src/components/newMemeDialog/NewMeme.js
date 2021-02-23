@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControl, Select } from '@material-ui/core';
+import { dialogStyle } from '../../constants'
+import ShareDialog from '../shareDialog/Share';
+import ShareIcon from '@material-ui/icons/Share';
 export default class NewMeme extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      privacyLabel: 'private'
+      privacyLabel: 'private',
+      openShare: false
     }
   }
+
+  setOpenShare = (isOpen) => this.setState({ openShare: isOpen })
 
   uploadMeme = () => {
     this.props.uploadMeme(this.state.privacyLabel)
@@ -18,7 +23,7 @@ export default class NewMeme extends Component {
 
   downloadMeme = () => {
     var downloadLink = document.createElement("a")
-    downloadLink.href = this.props.canvasImage
+    downloadLink.href = this.props.dataUrl
     downloadLink.download = "MyMeme.jpg"
     downloadLink.click()
   }
@@ -33,54 +38,57 @@ export default class NewMeme extends Component {
 
   render() {
     return (
-      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={dialogStyle}>
-        <DialogTitle>Generated Meme</DialogTitle>
-        <DialogContent dividers={true}>
-          <img src={this.props.canvasImage} alt="canvasImage" style={{ width: '100%' }} />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            size="small"
-            color="primary"
-            onClick={this.downloadMeme}
-            style={{ marginRight: '70px' }}>
-            Download
-          </Button>
-          <FormControl color="primary" style={{ width: '150px' }}>
-            <Select native value={this.state.privacyLabel} onChange={this.handleChange}>
-              <option value={'private'}>Private</option>
-              <option value={'unlisted'}>Unlisted</option>
-              <option value={'public'}>Public</option>
-            </Select>
-          </FormControl>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={this.uploadMeme}
-            color="secondary"
-            style={{ marginRight: '70px' }}>
-            Upload
-          </Button>
-          <Button variant="contained" size="small" onClick={this.props.handleClose}>
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <div>
+        <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={dialogStyle}>
+          <DialogTitle>Generated Meme</DialogTitle>
+          <DialogContent dividers={true}>
+            <img src={this.props.dataUrl} alt="canvasImage" style={{ width: '100%' }} />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={this.downloadMeme}
+              style={{ marginRight: '60px' }}>
+              Download
+            </Button>
+            <FormControl color="primary" style={{ width: '150px' }}>
+              <Select native value={this.state.privacyLabel} onChange={this.handleChange}>
+                <option value={'private'}>Private</option>
+                <option value={'unlisted'}>Unlisted</option>
+                <option value={'public'}>Public</option>
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={this.uploadMeme}
+              color="secondary"
+              style={{ marginRight: '20px' }}>
+              Upload
+            </Button>
+            <Fab size="small" onClick={() => this.setOpenShare(true)} style={{ marginRight: '60px' }}>
+              <ShareIcon />
+            </Fab>
+            <Button variant="contained" size="small" onClick={this.props.handleClose}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <ShareDialog
+          open={this.state.openShare}
+          handleClose={() => this.setOpenShare(false)}
+          isGallery={false}
+        />
+      </div>
     );
   }
-}
-
-// TODO: get this from constants once branch 36 is in master
-const dialogStyle =  {
-  padding: '2px 4px',
-  display: 'flex',
-  alignItems: 'center'
 }
 
 NewMeme.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  canvasImage: PropTypes.object.isRequired,
+  dataUrl: PropTypes.object.isRequired,
   uploadMeme: PropTypes.func.isRequired
 }

@@ -8,8 +8,8 @@ var db = require('monk')('mongo:27017/ommOfficialDB');
 const jwt = require('njwt');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var memesRouter = require('./routes/memes');
+var singleMemeRouter = require('./routes/meme');
+var { templatesRouter } = require('./routes/templates');
 var loginRouter = require('./routes/login');
 var { signupRouter } = require('./routes/signup')
 var screenshotRouter = require('./routes/screenshot')
@@ -36,6 +36,7 @@ app.use(cookieParser());
 // Routes that can be reached unauthenticated
 app.use('/login', loginRouter);
 app.use('/signup', signupRouter);
+app.use('/meme', singleMemeRouter);
 
 // Authentication middleware: Verify jwt token
 app.use((req,res,next) => {
@@ -54,10 +55,9 @@ app.use((req,res,next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/memes', memesRouter);
+app.use('/templates', templatesRouter);
 app.use('/screenshot', screenshotRouter);
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
