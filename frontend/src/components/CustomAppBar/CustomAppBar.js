@@ -12,6 +12,7 @@ export default class CustomAppBar extends React.Component {
         <AppBar position="static">
           <Toolbar>
             {this.props.name}
+            {this.props.children}
             </Toolbar>
       </AppBar>
       </div>
