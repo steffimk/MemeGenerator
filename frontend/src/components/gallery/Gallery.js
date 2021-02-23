@@ -8,7 +8,7 @@ import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../
 import { AppBar, Badge, ButtonGroup, Fab, Toolbar } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { LS_USERNAME } from '../../constants'
-import AudioDescription from '../textToSpeech/AudioDescription';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import CommentIcon from '@material-ui/icons/Comment';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ShareIcon from '@material-ui/icons/Share';
@@ -164,7 +164,7 @@ class Gallery extends React.Component {
         let favIconColor = "primary"
         const likeCount = image.likes ? image.likes.length : 0
         const commentCount = image.comments ? image.comments.length : 0
-
+        const viewCount = image.views ? image.views : 0
         if (this.state.likedMemeIds.includes(image._id)) favIconColor = "secondary"
         return (
           <div className="image-container" id={image._id}>
@@ -174,6 +174,15 @@ class Gallery extends React.Component {
             <div className="image-title">
               &nbsp;&nbsp;{image.name}
               <ButtonGroup style={{ marginTop: '10px' }}>
+                <Badge
+                    badgeContent={viewCount}
+                    max={999}
+                    color="primary"
+                    style={{ marginRight: '20px' }}>
+                  <Fab size="small">
+                    <VisibilityIcon />
+                  </Fab>
+                </Badge>
                 <Badge
                   badgeContent={likeCount}
                   max={999}
