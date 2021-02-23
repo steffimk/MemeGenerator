@@ -29,7 +29,7 @@ class AccountHistory extends Component {
   }
 
   getOwnMemes = () => {
-    const username = localStorage.getItem('memeGen_username');
+    const username = localStorage.getItem(LS_USERNAME);
     const endpointWithParam = `${MEMES_ENDPOINT}${username}`;
     authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownMemes: json.data.memes }))
@@ -37,7 +37,7 @@ class AccountHistory extends Component {
   };
 
   getOwnTemplates = () => {
-    const username = localStorage.getItem('memeGen_username');
+    const username = localStorage.getItem(LS_USERNAME);
     const endpointWithParam = `${TEMPLATE_ENDPOINT}/${username}`;
     authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownTemplates: json.data.templates }))
@@ -77,20 +77,20 @@ class AccountHistory extends Component {
     );
   };
 
-  likeMeme = (id) => {
+  likeMeme = (id, isDislike) => {
     const username = localStorage.getItem(LS_USERNAME)
-    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
+    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username, isDislike: isDislike}), this.isNotAuthenticated)
     .catch((error) => { console.error('Error:', error) });
     let newMemes = this.state.ownMemes.map(img => { 
         if(img._id === id) {
-            if (img.likes && img.likes.includes(username)) {
-                // Do nothing. User already likes meme.
-            } else if (img.likes) {
+            if (img.likes && img.likes.includes(username) && isDislike) {
+              img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes
+            } else if (img.likes && !isDislike) {
                 img.likes.push(username)
-            } else {
+            } else if (!isDislike) {
                 img.likes = [username]
             }
-        }
+          }
         return img
     })
     this.setState({ ownMemes: newMemes })
