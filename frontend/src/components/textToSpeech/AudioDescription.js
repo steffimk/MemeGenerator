@@ -49,8 +49,9 @@ export default class AudioDescription extends Component {
   } 
 
   render() {
+    const iconClass = this.props.isEditor ? "fas fa-audio-description" : "fas fa-audio-description fa-2x"
     return (
-      <i class="fas fa-audio-description" onClick={this.read}/>
+      <i class={iconClass} onClick={this.read}/>
     )
   }
 }

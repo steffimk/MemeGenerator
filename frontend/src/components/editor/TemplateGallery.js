@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import './TemplateGallery.css';
 import {Button} from "@material-ui/core";
 import NewTemplateDialog from "../newTemplateDialog/NewTemplateDialog"
+import { authorizedFetch } from '../../communication/requests';
 export default class TemplateGallery extends React.Component {
 
     constructor(props){
@@ -21,15 +22,20 @@ export default class TemplateGallery extends React.Component {
     }
 
     get_memeTemplates() {
-        fetch(this.props.templateEndpoint)
-            .then(response => response.json())
-            .then(json => {
+        authorizedFetch( this.props.templateEndpoint, 'GET', {}, () => this.props.setIsAuthenticated(false))
+        .then(json => {
                 console.log(json.data);
                 this.setState({
                     'templates': json.data.templates
                 });
-                this.props.changeCurrentImage(json.data.templates[0]);
-            });
+                let selectedTemplate = json.data.templates[0]
+                if(this.props.queryId) {
+                    const queryTemplate = json.data.templates.find(template => template._id === this.props.queryId)
+                    if(queryTemplate) selectedTemplate = queryTemplate
+                }
+                this.props.changeCurrentImage(selectedTemplate);
+
+            }).catch(e => console.log(e))
     }
 
     addTemplate(template) {
@@ -94,5 +100,7 @@ TemplateGallery.propTypes = {
     images: PropTypes.array.isRequired,
     changeCurrentImage: PropTypes.func.isRequired,
     isInAddImageMode: PropTypes.bool.isRequired,
+    setIsAuthenticated: PropTypes.func.isRequired,
     apiEndpoint: PropTypes.string.isRequired,
+    queryId: PropTypes.string.isRequired
 }

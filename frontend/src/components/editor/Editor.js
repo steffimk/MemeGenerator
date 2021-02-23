@@ -1,22 +1,24 @@
 import React from 'react';
-import './App.css';
-
-import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
-import ImageCarousel from "./components/editor/ImageCarousel";
-import TemplateGallery from "./components/editor/TemplateGallery";
-import EditorControl from "./components/editor/EditorControl";
-import AudioDescription from "./components/textToSpeech/AudioDescription"
-import { Button } from '@material-ui/core';
-
-const API_ENDPOINT = "http://localhost:3030/"
-const TEMPLATE_ENDPOINT = API_ENDPOINT+"memes/templates";
-const MEMES_ENDPOINT = API_ENDPOINT+"memes/memes";
+import { Redirect, withRouter } from 'react-router-dom';
+import './Editor.css';
+import CustomAppBar from "../CustomAppBar/CustomAppBar";
+import ImageCarousel from "./ImageCarousel";
+import TemplateGallery from "./TemplateGallery";
+import EditorControl from "./EditorControl";
+import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT  } from '../../communication/requests';
+import AudioDescription from "../textToSpeech/AudioDescription"
+import { Button, Paper } from '@material-ui/core';
+import NewMeme from '../newMemeDialog/NewMeme';
 
 class App extends React.Component {
 
   constructor() {
     super();
     this.state = {
+      isAuthenticated: true,
+      newMemeDialogIsOpen: false,
+      canvasImage: undefined,
+
       currentImage: {},
       isInAddImageMode: false,
       // Following properties belong to current image
@@ -40,6 +42,10 @@ class App extends React.Component {
     this.imageCarousel = React.createRef();
   }
 
+  isNotAuthenticated = () => {
+    this.setState({ isAuthenticated: false})
+  }
+
   /**
    * Saves a template to the database
    */
@@ -47,6 +53,7 @@ class App extends React.Component {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
+      username: localStorage.getItem('memeGen_username'),
       imageInfo: this.state.imageInfo,
       name: this.state.title,
       box_count: this.state.captions.length,
@@ -66,23 +73,11 @@ class App extends React.Component {
       imageDescription: this.state.imageDescription
     }
     console.log(memeTemplateToSave)
-    fetch(TEMPLATE_ENDPOINT, {
-      method: 'POST',
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(memeTemplateToSave),
-    }).then(response => {
-            if(response.ok) {
-                return true;
-            }else{
-                return Promise.reject(
-                    "API Responded with an error: "+response.status+" "+response.statusText
-                )
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            return false;
-        })
+    authorizedFetch(TEMPLATE_ENDPOINT, 'POST', JSON.stringify(memeTemplateToSave), this.isNotAuthenticated)
+      .catch((error) => {
+        console.error('Error:', error);
+        return false;
+      });
   }
 
   newDictatedCaption = (result, count) => {
@@ -90,17 +85,22 @@ class App extends React.Component {
      var newCaptions = this.state.captions;
      newCaptions[count] = result;
      this.setState({ captions: newCaptions });
-   }
+  }
 
-  handleSaveAsMeme = async () => {
+  generateMeme = () => {
     const carouselCanvas = this.imageCarousel.current.canvasRef.current;
-    const dataURL = carouselCanvas.toDataURL();
+    const dataURL = carouselCanvas.toDataURL()
+    this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
+  }
 
+  handleSaveAsMeme = async (privacyLabel) => {
     const memeToSave = {
-      template_id : this.state.currentImage._id,
-      img: dataURL,
+      username: localStorage.getItem('memeGen_username'),
+      template_id: this.state.currentImage._id,
+      img: this.state.canvasImage,
       template_url: this.state.currentImage.url,
       name: this.state.title,
+      imageDescription: this.state.imageDescription,
       box_count: this.state.captions.length,
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
@@ -108,28 +108,17 @@ class App extends React.Component {
       fontSize: this.state.fontSize,
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
-      fontColor: this.state.fontColor
+      fontColor: this.state.fontColor,
+      privacyLabel: privacyLabel
     }
 
     console.log("meme to save ", memeToSave)
 
-    fetch(MEMES_ENDPOINT, {
-      method: 'POST',
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(memeToSave),
-    }).then(response => {
-      if(response.ok) {
-        return true;
-      }else{
-        return Promise.reject(
-            "API Responded with an error: "+response.status+" "+response.statusText
-        )
-      }
-    })
-        .catch((error) => {
-          console.error('Error:', error);
-          return false;
-        })
+    authorizedFetch(MEMES_ENDPOINT, 'POST', JSON.stringify(memeToSave), this.isNotAuthenticated)
+    .catch((error) => {
+      console.error('Error:', error);
+      return false;
+    });
   }
 
   /**
@@ -151,7 +140,7 @@ class App extends React.Component {
 
   /**
    * Handles the most user inputs
-   * @param {object} event 
+   * @param {React.ChangeEvent} event 
    * @param {number} index 
    */
   handleChange = (event, index) => {
@@ -245,6 +234,7 @@ class App extends React.Component {
     const imageDescription = newCurrentImage.hasOwnProperty("imageDescription") ? newCurrentImage.imageDescription : "";
 
     this.setState({
+      canvasImage: undefined,
       currentImage: newCurrentImage,
       imageInfo: imageInfo,
       captionPositions_X: captionPositions.map(x => x[0]),
@@ -303,98 +293,117 @@ class App extends React.Component {
     this.setState({ drawingCoordinates: [...this.state.drawingCoordinates, newCoordinate] })
   }
 
+  setIsAuthenticated = (isAuthenticated) => this.setState({ isAuthenticated: isAuthenticated })
+
   render () {
+    // If not logged in: Redirect to login page
+    if (!this.state.isAuthenticated) return <Redirect to='/login'/>
+    const { id } = this.props.match.params;
     return (
-    <div>
-      <CustomAppBar></CustomAppBar>
-      <div className="App">
-        <div className="left">
-          <TemplateGallery
-            currentImage={this.state.currentImage}
-            changeCurrentImage={this.onClickedOnImageInGallery}
-            templateEndpoint={TEMPLATE_ENDPOINT}
-            apiEndpoint={API_ENDPOINT}
-            isInAddImageMode={this.state.isInAddImageMode}
-        />
-      </div>
-      <div className="middle">
-        <ImageCarousel
-            ref = {this.imageCarousel}
-            image={this.state.currentImage}
-            imageInfo={this.state.imageInfo}
-            captions={this.state.captions}
-            title={this.state.title}
-            fontSize={this.state.fontSize}
-            isItalic={this.state.isItalic}
-            isBold={this.state.isBold}
-            fontColor={this.state.fontColor}
-            captionPositions_X={this.state.captionPositions_X}
-            captionPositions_Y={this.state.captionPositions_Y}
-            addedImages={this.state.addedImages}
-            addedImgSizes={this.state.addedImgSizes}
-            addedImgPositions_X={this.state.addedImgPositions_X}
-            addedImgPositions_Y={this.state.addedImgPositions_Y}
-            canvasSize={this.state.canvasSize}
-            setCanvasSize={this.setCanvasSize.bind(this)}
-            coordinates={this.state.drawingCoordinates}
-            addCoordinate={this.addDrawingCoordinate}
-        />
-      </div>
-      <div className="control right">
-        <h3 style={{fontWeight: 'bold'}}>Editor&nbsp;
-          <AudioDescription 
-            isEditor={true}
-            captions={this.state.captions}
-            imageDescription={this.state.imageDescription}
-            imageName={this.state.currentImage.name}
-          />
-        </h3>
-        <EditorControl
-          captions={this.state.captions}
-          captionPositions_X={this.state.captionPositions_X}
-          captionPositions_Y={this.state.captionPositions_Y}
-          changeListener={this.handleChange}
-          title={this.state.title}
-          fontSize={this.state.fontSize}
-          isItalic={this.state.isItalic}
-          isBold={this.state.isBold}
-          fontColor={this.state.fontColor}
-          newDictatedCaption={this.newDictatedCaption}
-          isInAddImageMode={this.state.isInAddImageMode}
-          switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
-          addedImages={this.state.addedImages}
-          addedImgSizes={this.state.addedImgSizes}
-          addedImgPositions_X={this.state.addedImgPositions_X}
-          addedImgPositions_Y={this.state.addedImgPositions_Y}
-          canvasSize={this.state.canvasSize}
-          setCanvasSize={this.setCanvasSize.bind(this)}
-          imageInfo={this.state.imageInfo}
-          imageDescription={this.state.imageDescription}
-          handleAddCaption={this.handleAddCaption}
-        />
-        <Button 
-          name="saveTemplateButton"
-          variant="contained"
-          size="small"
-          color="primary"
-          onClick={this.handleSaveAsTemplate}
-          style= {{ marginTop: '10px' }}>
-          Save as template
-        </Button>
-        <Button 
-          name="saveTemsaveButtonplateButton"
-          variant="contained"
-          size="small"
-          color="secondary"
-          onClick={this.handleSaveAsMeme}
-          style= {{ marginTop: '10px', display: 'block' }}>
-          Generate meme
-        </Button>
+      <div>
+        <CustomAppBar></CustomAppBar>
+        <div className="App">
+          <Paper className="templates left"
+            style={{ marginTop: '5px', height: window.innerHeight * 0.95, overflow: 'scroll' }}
+            elevation={2}>
+            <TemplateGallery
+              currentImage={this.state.currentImage}
+              changeCurrentImage={this.onClickedOnImageInGallery}
+              templateEndpoint={TEMPLATE_ENDPOINT}
+              apiEndpoint={API_ENDPOINT}
+              isInAddImageMode={this.state.isInAddImageMode}
+              setIsAuthenticated={this.setIsAuthenticated}
+              queryId={id}
+            />
+          </Paper>
+          <div className="middle">
+            <ImageCarousel
+              ref={this.imageCarousel}
+              image={this.state.currentImage}
+              imageInfo={this.state.imageInfo}
+              captions={this.state.captions}
+              title={this.state.title}
+              fontSize={this.state.fontSize}
+              isItalic={this.state.isItalic}
+              isBold={this.state.isBold}
+              fontColor={this.state.fontColor}
+              captionPositions_X={this.state.captionPositions_X}
+              captionPositions_Y={this.state.captionPositions_Y}
+              addedImages={this.state.addedImages}
+              addedImgSizes={this.state.addedImgSizes}
+              addedImgPositions_X={this.state.addedImgPositions_X}
+              addedImgPositions_Y={this.state.addedImgPositions_Y}
+              canvasSize={this.state.canvasSize}
+              setCanvasSize={this.setCanvasSize.bind(this)}
+              coordinates={this.state.drawingCoordinates}
+              addCoordinate={this.addDrawingCoordinate}
+            />
+          </div>
+          <Paper
+            className="control right"
+            style={{ marginTop: '5px', height: window.innerHeight * 0.9, overflow: 'scroll' }}
+            elevation={2}>
+            <h3 style={{ fontWeight: 'bold' }}>
+              Editor&nbsp;
+              <AudioDescription
+                isEditor={true}
+                captions={this.state.captions}
+                imageDescription={this.state.imageDescription}
+                imageName={this.state.currentImage.name}
+              />
+            </h3>
+            <EditorControl
+              captions={this.state.captions}
+              captionPositions_X={this.state.captionPositions_X}
+              captionPositions_Y={this.state.captionPositions_Y}
+              changeListener={this.handleChange}
+              title={this.state.title}
+              fontSize={this.state.fontSize}
+              isItalic={this.state.isItalic}
+              isBold={this.state.isBold}
+              fontColor={this.state.fontColor}
+              newDictatedCaption={this.newDictatedCaption}
+              isInAddImageMode={this.state.isInAddImageMode}
+              switchToAddImageMode={this.onSwitchToAddImageMode.bind(this)}
+              addedImages={this.state.addedImages}
+              addedImgSizes={this.state.addedImgSizes}
+              addedImgPositions_X={this.state.addedImgPositions_X}
+              addedImgPositions_Y={this.state.addedImgPositions_Y}
+              canvasSize={this.state.canvasSize}
+              setCanvasSize={this.setCanvasSize.bind(this)}
+              imageInfo={this.state.imageInfo}
+              imageDescription={this.state.imageDescription}
+              handleAddCaption={this.handleAddCaption}
+            />
+            <Button
+              name="saveTemplateButton"
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={this.handleSaveAsTemplate}
+              style={{ marginTop: '10px' }}>
+              Save as template
+            </Button>
+            <Button
+              name="saveTemsaveButtonplateButton"
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={this.generateMeme}
+              style={{ marginTop: '10px', display: 'block' }}>
+              Generate meme
+            </Button>
+            <NewMeme
+              open={this.state.newMemeDialogIsOpen}
+              handleClose={() => this.setState({ newMemeDialogIsOpen: false })}
+              dataUrl={this.state.canvasImage}
+              uploadMeme={this.handleSaveAsMeme}
+            />
+          </Paper>
         </div>
       </div>
-
-    </div>)
+    );
   }
 }
 
-export default App;
+export default withRouter(App);
