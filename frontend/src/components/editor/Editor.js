@@ -1,17 +1,13 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import './Editor.css';
 import CustomAppBar from "../CustomAppBar/CustomAppBar";
 import ImageCarousel from "./ImageCarousel";
 import TemplateGallery from "./TemplateGallery";
 import EditorControl from "./EditorControl";
-import { authorizedFetch } from '../../communication/requests';
+import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT  } from '../../communication/requests';
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button } from '@material-ui/core';
-
-const API_ENDPOINT = "http://localhost:3030/"
-const TEMPLATE_ENDPOINT = API_ENDPOINT+"memes/templates";
-const MEMES_ENDPOINT = API_ENDPOINT+"memes/memes";
 
 class App extends React.Component {
 
@@ -54,6 +50,7 @@ class App extends React.Component {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
+      username: localStorage.getItem('memeGen_username'),
       imageInfo: this.state.imageInfo,
       name: this.state.title,
       box_count: this.state.captions.length,
@@ -92,7 +89,8 @@ class App extends React.Component {
     const dataURL = carouselCanvas.toDataURL();
 
     const memeToSave = {
-      template_id : this.state.currentImage._id,
+      username: localStorage.getItem('memeGen_username'),
+      template_id: this.state.currentImage._id,
       img: dataURL,
       template_url: this.state.currentImage.url,
       name: this.state.title,
@@ -292,7 +290,7 @@ class App extends React.Component {
   render () {
     // If not logged in: Redirect to login page
     if (!this.state.isAuthenticated) return <Redirect to='/login'/>
-    
+    const { id } = this.props.match.params;
     return (
       <div>
         <CustomAppBar></CustomAppBar>
@@ -305,6 +303,7 @@ class App extends React.Component {
               apiEndpoint={API_ENDPOINT}
               isInAddImageMode={this.state.isInAddImageMode}
               setIsAuthenticated={this.setIsAuthenticated}
+              queryId={id}
             />
           </div>
           <div className="middle">
@@ -387,4 +386,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);

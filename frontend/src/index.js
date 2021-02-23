@@ -6,40 +6,50 @@ import Editor from './components/editor/Editor';
 import NewTemplateDialog from './components/newTemplateDialog/NewTemplateDialog';
 import Login from './components/login/Login';
 
-import {
-    BrowserRouter,
-    Switch,
-    Route
-} from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+import AccountHistory from './components/accountHistory/AccountHistory';
 
 
 
 function Router() {
-    return (
+  return (
     <Switch>
-        <Route path="/login">
-            <Login />
-        </Route>
 
-        <Route path="/editor">
-            <Editor />
-        </Route>
+      <Route path="/login">
+        <Login />
+      </Route>
 
-        <Route path="/newtemplate">
-            <NewTemplateDialog />
-        </Route>
+      <Route path="/editor/:id">
+        <Editor />
+      </Route>
 
-        <Route path="/:id">
-            <Gallery />
-        </Route>
+      <Route path="/editor">
+        <Editor />
+      </Route>
 
-        <Route path="/">
-            <Gallery />
-        </Route>
+      <Route path="/history/:id">
+        <AccountHistory />
+      </Route>
+
+      <Route path="/history">
+        <AccountHistory />
+      </Route>
+
+      <Route path="/newtemplate">
+        <NewTemplateDialog />
+      </Route>
+
+      <Route path="/:id">
+        <Gallery />
+      </Route>
+
+      <Route path="/">
+        <Gallery />
+      </Route>
+
     </Switch>
-
-    );
+  );
 }
 
 ReactDOM.render(

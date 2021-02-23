@@ -14,7 +14,7 @@ router.post('/', function(req, res, next) {
     console.log(user)
     if(user === null) {
       if (username.length < 1 || /\s/.test(username) || password.length < 7) {
-        responseTemplates.negativeResponse(res, "Invalid inputs: Name contains whitespaces or the password is too short.")
+        responseTemplates.successBoundResponse(res, false, {"message": "Invalid inputs: Name contains whitespaces or the password is too short."})
         return
       }
       const salt = crypto.randomBytes(16).toString('hex')
@@ -23,7 +23,7 @@ router.post('/', function(req, res, next) {
       // New user created.
       console.log("New user created.")
       responseTemplates.sendJWT(res, username)
-    } else responseTemplates.negativeResponse(res, "This username exists already.")
+    } else responseTemplates.successBoundResponse(res, false, {"message": "This username exists already."})
   })
 });
 

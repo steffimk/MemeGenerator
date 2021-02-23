@@ -31,6 +31,11 @@ module.exports = {
     this.addToDB(db, USER_COLLECTION, userData);
   },
 
+  findAllOfUser(db, collection, username) {
+    collection = db.get(collection);
+    return collection.find({ username: username });
+  },
+
   likeMeme(db, memeId, username) {
     const collection = db.get(MEME_COLLECTION);
     collection.update({ _id: memeId}, {$addToSet: {likes: username} }).then((promise) => console.log(promise))

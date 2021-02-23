@@ -1,0 +1,12 @@
+.grid-root {
+  padding: 0 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
+.grid-list {
+  flex-wrap: nowrap;
+  transform: translateZ(0);
+}

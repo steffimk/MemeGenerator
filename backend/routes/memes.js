@@ -3,16 +3,26 @@ const fetch = require('node-fetch');
 const URL = require('url').URL;
 const dbOp = require('../databaseOperations')
 var router = express.Router();
+const responseTemplates = require('../responseTemplates')
 
 const templateCollection = 'templates';
 const memeCollection = 'memes';
-
 
 function getTemplatesFromImgFlip(){
     return fetch("https://api.imgflip.com/get_memes")
         .then(response => response.json())
         .then(json => json.data.memes)
 }
+
+router.get('/templates/:username', function(req, res, next){
+    let db = req.db;
+    const username = req.params.username
+    if (username) {
+        dbOp.findAllOfUser(db, templateCollection, username).then((docs) => {
+            responseTemplates.successBoundResponse(res, true, {"templates": docs})
+        })
+    }
+});
 
 router.get('/templates', function (req, res, next) {
     let db = req.db;
@@ -23,22 +33,24 @@ router.get('/templates', function (req, res, next) {
             return (docs.concat(imgflip));
         } )
         .then((docs) => {
-        res.json({
-            "success": true,
-            "data": {"templates": docs}
-        })
+            responseTemplates.successBoundResponse(res, true, {"templates": docs})
     });
 });
 
-router.get('/', function (req, res, next) {
-    let db = req.db;
-    dbOp.findAllFromDB(db, memeCollection).then((docs) => {
-        res.json({
-            "success": true,
-            "data": {"memes": docs}
-        })
-    });
-});
+// router.get('/', function (req, res, next) {
+//     let db = req.db;
+//     const username = req.query.username
+//     // if username is defined: only get memes of user
+//     if (username) {
+//         dbOp.findAllOfUser(db, memeCollection, username).then((docs) => {
+//             responseTemplates.successBoundResponse(res, true, {"memes": docs})
+//         })
+//     } else { // get all memes
+//         dbOp.findAllFromDB(db, memeCollection).then((docs) => {
+//         responseTemplates.successBoundResponse(res, true, {"memes": docs})
+//         });
+//     }
+// });
 
 
 const isValidUrl = (s) => {
@@ -64,7 +76,7 @@ router.post('/templates', function(req, res){
     const memeTemplate = req.body;
     // console.log("memeTemplate ", req.body)
     const {
-        name, url, width, height, box_count, captions,
+        name, url, username, width, height, box_count, captions,
         captionPositions, fontColor, fontSize, isItalic, isBold,
         imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates,
         imageDescription
@@ -81,7 +93,7 @@ router.post('/templates', function(req, res){
 
         // ignore any unknown values in the input data
         const normalizedTemplate = {
-            name, url, width, height, box_count, captions,
+            name, url, username, width, height, box_count, captions,
             captionPositions, fontColor, fontSize, isItalic, isBold,
             imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates,
             imageDescription
@@ -97,26 +109,34 @@ router.post('/templates', function(req, res){
     }
 });
 
+router.get('/memes/:username', function(req,res) {
+    let db = req.db;
+    const username = req.params.username
+    if (username) {
+        dbOp.findAllOfUser(db, memeCollection, username).then((docs) => {
+            responseTemplates.successBoundResponse(res, true, {"memes": docs})
+        })
+    }
+});
+
 router.get('/memes', function (req, res) {
     let db = req.db;
     // console.log("in memes", db)
     Promise.all([dbOp.findAllFromDB(db,memeCollection)])
-        .then(([docs]) => {
-            docs.forEach((template) => template.id = template._id)
-            return (docs);
-        } )
-        .then((docs) => {
-            res.json({
-                "success": true,
-                "data": {"memes": docs}
-            })
-        });
+    .then(([docs]) => {
+        docs.forEach((template) => template.id = template._id)
+        return (docs);
+    } )
+    .then((docs) => {
+        responseTemplates.successBoundResponse(res, true, {"memes": docs})
+    });
 });
+
 router.post("/memes", function (req, res){
     const meme = req.body;
 
     const {
-        template_id, img, template_url, name, box_count,
+        template_id, img, template_url, name, box_count, username,
         captions, captionPositions, fontSize, isItalic, isBold, fontColor
     } = meme;
     // validate input
@@ -128,7 +148,7 @@ router.post("/memes", function (req, res){
 
         // ignore any unknown values in the input data
         const normalizedMeme = {
-            template_id, img, template_url, name, box_count, captions,
+            template_id, img, template_url, name, box_count, username, captions,
             captionPositions, fontColor, fontSize, isItalic, isBold,
         }
 

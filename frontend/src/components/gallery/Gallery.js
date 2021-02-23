@@ -129,6 +129,7 @@ class Gallery extends React.Component {
                 id={id}
                 isNotAuthenticated={this.isNotAuthenticated}
                 likeImage={this.likeImage}
+                parentRoute=""
                 isPlaying={this.state.isPlaying}
                 playIcon={this.state.playIcon}
                 isRandom={this.state.isRandom}
@@ -145,9 +146,9 @@ class Gallery extends React.Component {
     renderImage(image, currentRoute) {
         let imageRoute;
         if(currentRoute.slice(-1) === '/'){
-            imageRoute = currentRoute+image.id;
+            imageRoute = currentRoute+image._id;
         }else{
-            imageRoute = currentRoute+"/"+image.id;
+            imageRoute = currentRoute+"/"+image._id;
         }
         let favIconColor = "primary"
         const likeCount = image.likes ? image.likes.length : 0
