@@ -49,7 +49,7 @@ export default class Login extends Component {
 
   render() {
     if (this.state.isLoggedIn) {
-      return <Redirect to='/gallery'/>
+      return <Redirect to='/'/>
     }
     return (
       <div>
