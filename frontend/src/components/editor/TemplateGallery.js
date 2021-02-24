@@ -5,7 +5,6 @@ import './TemplateGallery.css';
 import {Button} from "@material-ui/core";
 import NewTemplateDialog from "../newTemplateDialog/NewTemplateDialog"
 import { authorizedFetch } from '../../communication/requests';
-import { FormatColorResetSharp } from '@material-ui/icons';
 export default class TemplateGallery extends React.Component {
 
     constructor(props){
@@ -29,8 +28,14 @@ export default class TemplateGallery extends React.Component {
                 this.setState({
                     'templates': json.data.templates
                 });
-                this.props.changeCurrentImage(json.data.templates[0]);
-        }).catch(e => console.log(e))
+                let selectedTemplate = json.data.templates[0]
+                if(this.props.queryId) {
+                    const queryTemplate = json.data.templates.find(template => template._id === this.props.queryId)
+                    if(queryTemplate) selectedTemplate = queryTemplate
+                }
+                this.props.changeCurrentImage(selectedTemplate);
+
+            }).catch(e => console.log(e))
     }
 
     addTemplate(template) {
@@ -96,5 +101,6 @@ TemplateGallery.propTypes = {
     changeCurrentImage: PropTypes.func.isRequired,
     isInAddImageMode: PropTypes.bool.isRequired,
     setIsAuthenticated: PropTypes.func.isRequired,
-    apiEndpoint: PropTypes.string.isRequired
+    apiEndpoint: PropTypes.string.isRequired,
+    queryId: PropTypes.string.isRequired
 }

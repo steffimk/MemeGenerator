@@ -1,19 +1,14 @@
 import React from 'react';
-import './App.css';
-import { Redirect } from 'react-router-dom'
-
-import CustomAppBar from "./components/CustomAppBar/CustomAppBar";
-import ImageCarousel from "./components/editor/ImageCarousel";
-import TemplateGallery from "./components/editor/TemplateGallery";
-import EditorControl from "./components/editor/EditorControl";
-import { authorizedFetch } from './communication/requests';
-
-import AudioDescription from "./components/textToSpeech/AudioDescription"
-import { Button } from '@material-ui/core';
-
-const API_ENDPOINT = "http://localhost:3030/"
-const TEMPLATE_ENDPOINT = API_ENDPOINT+"memes/templates";
-const MEMES_ENDPOINT = API_ENDPOINT+"memes/memes";
+import { Redirect, withRouter } from 'react-router-dom';
+import './Editor.css';
+import CustomAppBar from "../CustomAppBar/CustomAppBar";
+import ImageCarousel from "./ImageCarousel";
+import TemplateGallery from "./TemplateGallery";
+import EditorControl from "./EditorControl";
+import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT  } from '../../communication/requests';
+import AudioDescription from "../textToSpeech/AudioDescription"
+import { Button, Paper } from '@material-ui/core';
+import NewMeme from '../newMemeDialog/NewMeme';
 
 class App extends React.Component {
 
@@ -21,6 +16,8 @@ class App extends React.Component {
     super();
     this.state = {
       isAuthenticated: true,
+      newMemeDialogIsOpen: false,
+      canvasImage: undefined,
 
       currentImage: {},
       isInAddImageMode: false,
@@ -56,6 +53,7 @@ class App extends React.Component {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
+      username: localStorage.getItem('memeGen_username'),
       imageInfo: this.state.imageInfo,
       name: this.state.title,
       box_count: this.state.captions.length,
@@ -87,17 +85,22 @@ class App extends React.Component {
      var newCaptions = this.state.captions;
      newCaptions[count] = result;
      this.setState({ captions: newCaptions });
-   }
+  }
 
-  handleSaveAsMeme = async () => {
+  generateMeme = () => {
     const carouselCanvas = this.imageCarousel.current.canvasRef.current;
-    const dataURL = carouselCanvas.toDataURL();
+    const dataURL = carouselCanvas.toDataURL()
+    this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
+  }
 
+  handleSaveAsMeme = async (privacyLabel) => {
     const memeToSave = {
-      template_id : this.state.currentImage._id,
-      img: dataURL,
+      username: localStorage.getItem('memeGen_username'),
+      template_id: this.state.currentImage._id,
+      img: this.state.canvasImage,
       template_url: this.state.currentImage.url,
       name: this.state.title,
+      imageDescription: this.state.imageDescription,
       box_count: this.state.captions.length,
       captions: this.state.captions,
       captionPositions: this.state.captionPositions_X
@@ -105,7 +108,8 @@ class App extends React.Component {
       fontSize: this.state.fontSize,
       isItalic: this.state.isItalic,
       isBold: this.state.isBold,
-      fontColor: this.state.fontColor
+      fontColor: this.state.fontColor,
+      privacyLabel: privacyLabel
     }
 
     console.log("meme to save ", memeToSave)
@@ -230,6 +234,7 @@ class App extends React.Component {
     const imageDescription = newCurrentImage.hasOwnProperty("imageDescription") ? newCurrentImage.imageDescription : "";
 
     this.setState({
+      canvasImage: undefined,
       currentImage: newCurrentImage,
       imageInfo: imageInfo,
       captionPositions_X: captionPositions.map(x => x[0]),
@@ -293,12 +298,14 @@ class App extends React.Component {
   render () {
     // If not logged in: Redirect to login page
     if (!this.state.isAuthenticated) return <Redirect to='/login'/>
-    
+    const { id } = this.props.match.params;
     return (
       <div>
         <CustomAppBar></CustomAppBar>
         <div className="App">
-          <div className="left">
+          <Paper className="templates left"
+            style={{ marginTop: '5px', height: window.innerHeight * 0.95, overflow: 'scroll' }}
+            elevation={2}>
             <TemplateGallery
               currentImage={this.state.currentImage}
               changeCurrentImage={this.onClickedOnImageInGallery}
@@ -306,11 +313,12 @@ class App extends React.Component {
               apiEndpoint={API_ENDPOINT}
               isInAddImageMode={this.state.isInAddImageMode}
               setIsAuthenticated={this.setIsAuthenticated}
+              queryId={id}
             />
-          </div>
+          </Paper>
           <div className="middle">
             <ImageCarousel
-              ref = {this.imageCarousel}
+              ref={this.imageCarousel}
               image={this.state.currentImage}
               imageInfo={this.state.imageInfo}
               captions={this.state.captions}
@@ -331,9 +339,13 @@ class App extends React.Component {
               addCoordinate={this.addDrawingCoordinate}
             />
           </div>
-          <div className="control right">
-              <h3 style={{fontWeight: 'bold'}}>Editor&nbsp;
-              <AudioDescription 
+          <Paper
+            className="control right"
+            style={{ marginTop: '5px', height: window.innerHeight * 0.9, overflow: 'scroll' }}
+            elevation={2}>
+            <h3 style={{ fontWeight: 'bold' }}>
+              Editor&nbsp;
+              <AudioDescription
                 isEditor={true}
                 captions={this.state.captions}
                 imageDescription={this.state.imageDescription}
@@ -363,29 +375,35 @@ class App extends React.Component {
               imageDescription={this.state.imageDescription}
               handleAddCaption={this.handleAddCaption}
             />
-            <Button 
+            <Button
               name="saveTemplateButton"
               variant="contained"
               size="small"
               color="primary"
               onClick={this.handleSaveAsTemplate}
-              style= {{ marginTop: '10px' }}>
+              style={{ marginTop: '10px' }}>
               Save as template
             </Button>
-            <Button 
+            <Button
               name="saveTemsaveButtonplateButton"
               variant="contained"
               size="small"
               color="secondary"
-              onClick={this.handleSaveAsMeme}
-              style= {{ marginTop: '10px', display: 'block' }}>
+              onClick={this.generateMeme}
+              style={{ marginTop: '10px', display: 'block' }}>
               Generate meme
             </Button>
-          </div>
+            <NewMeme
+              open={this.state.newMemeDialogIsOpen}
+              handleClose={() => this.setState({ newMemeDialogIsOpen: false })}
+              dataUrl={this.state.canvasImage}
+              uploadMeme={this.handleSaveAsMeme}
+            />
+          </Paper>
         </div>
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

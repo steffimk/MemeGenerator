@@ -2,10 +2,10 @@ const jwt = require('njwt')
 
 module.exports = {
 
-  negativeResponse(res, message) {
+  successBoundResponse(res, isSuccessful, data) {
     res.json({
-      "success": false,
-      "data": {"message": message}
+      "success": isSuccessful,
+      "data": data
     })
   },
 
@@ -14,10 +14,8 @@ module.exports = {
     const token = jwt.create(claims, process.env.SIGNING_KEY)
     token.setExpiration(new Date().getTime() + 60*60*5000) // token expires after five hours
     const jwtTokenString = token.compact()
-    res.json({
-      "success": true,
-      "data": {"token": jwtTokenString}
-    })
+    // send response
+    this.successBoundResponse(res, true, {"token": jwtTokenString})
   }
 
 }

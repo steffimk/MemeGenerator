@@ -57,11 +57,21 @@
     right: 6vh;
 }
 
-.modal-control {
-    position: fixed;
-    top: 90%;
-    left: 65%;
+.modal-shuffle {
     text-decoration: none;
+}
+
+.modal-esc {
+    color: white;
+    position: fixed;
+    top: 4%;
+    left: 96%;
+}
+
+.fa-fw {
+    margin-top: 10px;
+    margin-left: 10px;
+    font-size: 2em;
 }
 
 /* Add Animation */

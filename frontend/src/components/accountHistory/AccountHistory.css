@@ -1,0 +1,24 @@
+.grid-root {
+  padding: 0 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
+.grid-list {
+  flex-wrap: nowrap;
+  transform: translateZ(0);
+}
+
+.grid-image-container {
+  position: relative;
+  text-align: center;
+  color: red;
+}
+
+.privacy-label {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}

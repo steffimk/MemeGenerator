@@ -30,11 +30,13 @@ body {
     width: 52%;
 }
 
+.templates {
+    margin-right: 30px;
+}
+
 .control {
     border: 15px solid rgba(255, 0, 0, 0);
-    padding-bottom: 20px;
     padding-left: 5px;
-    margin-right: 5px;
 }
 
 /* Responsive layout - makes a one column layout instead of a two-column layout */

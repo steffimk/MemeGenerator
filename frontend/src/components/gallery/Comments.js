@@ -48,7 +48,7 @@ export default class Comments extends Component {
   render() {
     const renderedComments = this.state.comments.map(this.renderComment);
     return (
-      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={{...dialogStyle, marginLeft: window.innerWidth * 0.7 }}>
+      <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={{...dialogStyle, marginLeft: window.innerWidth * 0.6 }}>
         <DialogTitle>Comments</DialogTitle>
         <DialogContent dividers={true}>{renderedComments}</DialogContent>
         <DialogActions>

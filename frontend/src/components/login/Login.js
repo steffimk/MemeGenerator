@@ -5,8 +5,7 @@ import Button from '@material-ui/core/Button'
 import CustomAppBar from '../CustomAppBar/CustomAppBar'
 import { LS_JWT, LS_USERNAME } from '../../constants'
 
-const LOGIN_ENDPOINT = 'http://localhost:3030/login';
-const SIGNUP_ENDPOINT= 'http://localhost:3030/signup';
+import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from '../../communication/requests'
 
 export default class Login extends Component {
 
