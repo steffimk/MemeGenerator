@@ -389,6 +389,7 @@ class App extends React.Component {
               imageInfo={this.state.imageInfo}
               imageDescription={this.state.imageDescription}
               handleAddCaption={this.handleAddCaption}
+              isGif={this.state.isGif}
             />
             <Button
               name="saveTemplateButton"
@@ -405,7 +406,9 @@ class App extends React.Component {
               size="small"
               color="secondary"
               onClick={this.generateMeme}
-              style={{ marginTop: '10px', display: 'block' }}>
+              style={{ marginTop: '10px', display: 'block' }}
+              disabled={this.state.isGif}
+              >
               Generate meme
             </Button>
             <NewMeme
