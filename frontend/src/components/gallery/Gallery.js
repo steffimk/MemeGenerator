@@ -13,6 +13,10 @@ import CommentIcon from '@material-ui/icons/Comment';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ShareIcon from '@material-ui/icons/Share';
 import ShareDialog from '../shareDialog/Share';
+import SearchDialog from "../search/SearchDialog";
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+
 
 class Gallery extends React.Component {
 
@@ -20,7 +24,15 @@ class Gallery extends React.Component {
         super();
         this.state = {
             isAuthenticated: true,
+            // contains all images without filters
+            all_images: [],
+            // contains the creation_time of the most current image
+            all_images_max_creation_time: Date.now(),
+            // contains the creation_time of the oldest image
+            all_images_min_creation_time: 0,
+            // contains images filtered/ordered as defined in search
             images: [],
+            searchOpen: false,
             likedMemeIds: [],
             isPlaying: false,
             playIcon: "fas fa-fw fa-play",
@@ -35,7 +47,7 @@ class Gallery extends React.Component {
     }
 
     isNotAuthenticated = () => this.setState({ isAuthenticated: false})
-    
+
     openShare = (id) => this.setState({ openShare: true, currentShareId: id })
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -56,9 +68,18 @@ class Gallery extends React.Component {
     get_memes() {
         authorizedFetch(MEMES_ENDPOINT, 'GET', {}, this.isNotAuthenticated)
         .then(json => {
-            console.log(json.data);
+            let times = json.data.memes
+                .map((meme) => meme.creation_time)
+                .filter(Boolean);	// this filters undefined values as undefined is falsy
+
+            let max = Math.max(...times);
+            let min = Math.min(...times);
+
             this.setState({
-                'images': json.data.memes
+                'all_images_max_creation_time': max,
+                'all_images_min_creation_time': min,
+                'all_images': json.data.memes,
+                'images': json.data.memes,
             })
             this.getLikedMemeIds(json.data.memes, localStorage.getItem(LS_USERNAME))
         });
@@ -110,7 +131,15 @@ class Gallery extends React.Component {
 
         return (
           <div>
-            <CustomAppBar></CustomAppBar>
+            <CustomAppBar>
+            	<IconButton
+            		color="inherit"
+            		aria-label="Search, sort and Filter"
+            		onClick={() => this.setState({'searchOpen': true})}
+            	>
+  					<SearchIcon />
+				</IconButton>
+        	</CustomAppBar>
             <div className="gallery-container">
               <div className="image-gallery" style={gallery_style}>
                 <div className="column">
@@ -149,7 +178,14 @@ class Gallery extends React.Component {
                 isGallery={true}
               />
             </div>
-          </div>
+          <SearchDialog
+                open={this.state.searchOpen}
+                onClose={() => {this.setState({searchOpen: false})}}
+                onChange={(searchParams) => {this.onSearchChange(searchParams)}}
+                max={this.state.all_images_max_creation_time}
+                min={this.state.all_images_min_creation_time}
+            />
+        </div>
         );
     }
 
@@ -194,7 +230,7 @@ class Gallery extends React.Component {
                     <FavoriteIcon color={favIconColor} />
                   </Fab>
                 </Badge>
-                <Badge 
+                <Badge
                     badgeContent={commentCount}
                     max={99}
                     color="primary"
@@ -235,6 +271,26 @@ class Gallery extends React.Component {
         })
         const newLikedMemeIds = this.state.likedMemeIds.includes(id) ? this.state.likedMemeIds : [...this.state.likedMemeIds, id]
         this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
+    }
+
+    onSearchChange(searchParams) {
+        let filteredImages = this.state.all_images.filter((value, index, list) => {
+            return !value.hasOwnProperty("creation_time") || (value.hasOwnProperty("creation_time") &&
+                value.creation_time < Math.max(...searchParams.timeRange) &&
+                value.creation_time > Math.min(...searchParams.timeRange))
+        })
+
+		filteredImages.sort((a, b) => {
+			let order = 1;
+			if(a._id < b._id){
+				order = -1;
+			}else{
+				order = 1;
+			}
+			return order * (searchParams.order ? 1 : -1);
+		});
+
+        this.setState({'images': filteredImages})
     }
 }
 

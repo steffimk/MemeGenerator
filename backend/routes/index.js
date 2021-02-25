@@ -39,9 +39,11 @@ router.post("/", function (req, res){
       isValidUrl(template_url) &&
       isPositiveInteger(box_count)
   ){
+      let creation_time = Date.now();
+
       // ignore any unknown values in the input data
       const normalizedMeme = {
-          template_id, img, template_url, name, box_count, username, imageDescription,
+          template_id, creation_time, img, template_url, name, box_count, username, imageDescription,
           captions, captionPositions, fontColor, fontSize, isItalic, isBold, privacyLabel
       }
       normalizedMeme.views = 0              // set views to 0

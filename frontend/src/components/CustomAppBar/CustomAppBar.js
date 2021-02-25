@@ -14,7 +14,7 @@ export default class CustomAppBar extends React.Component {
     localStorage.removeItem(LS_USERNAME)
     window.location.reload() // Reload page to check whether still authenticated to see this page
   }
-  
+
   render () {
     const screenWidth = window.innerWidth
     return (
@@ -24,17 +24,18 @@ export default class CustomAppBar extends React.Component {
             <Link to='/' style={{ color: 'white', textDecoration: 'none' }}>
               {this.props.name}
             </Link>
-            <Button style={{ marginLeft: screenWidth/5 }}>
+            <Button>
               <Link to='/editor' style={{ color: 'white', textDecoration: 'none' }}>
                 Editor
               </Link>
             </Button>
-            <Button style={{ marginLeft: screenWidth/5 }}>
+            <Button>
               <Link to='/history' style={{ color: 'white', textDecoration: 'none' }}>
                 My Memes
               </Link>
             </Button>
-            <Button color='inherit' style={{ marginLeft: screenWidth/5 }} onClick={this.logout}>
+              {this.props.children}
+            <Button color='inherit' onClick={this.logout}>
               Logout
             </Button>
           </Toolbar>
