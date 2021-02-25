@@ -78,8 +78,9 @@ class AccountHistory extends Component {
   };
 
   likeMeme = (id) => {
-    const username = localStorage.getItem(LS_USERNAME)
-    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
+    const username = localStorage.getItem(LS_USERNAME);
+    let like = {username: username, date: Date.now()}
+    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, like: like}), this.isNotAuthenticated)
     .catch((error) => { console.error('Error:', error) });
     let newMemes = this.state.ownMemes.map(img => { 
         if(img._id === id) {

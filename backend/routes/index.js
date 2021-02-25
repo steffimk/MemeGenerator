@@ -60,10 +60,10 @@ router.post("/", function (req, res){
 router.post("/like", function(req, res) {
   let db = req.db;
   const memeId = req.body.memeId;
-  const username = req.body.username;
-  console.log(memeId + " " + username)
-  if (memeId && username) {
-      dbOp.likeMeme(db, memeId, username)
+  const like = req.body.like;
+  console.log(memeId + " " + like)
+  if (memeId && like) {
+      dbOp.likeMeme(db, memeId, like)
       res.status(200);
       res.send();
   } else {

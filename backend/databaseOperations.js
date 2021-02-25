@@ -43,9 +43,9 @@ module.exports = {
     return collection.find({ privacyLabel: privacyLabel });
   },
 
-  likeMeme(db, memeId, username) {
+  likeMeme(db, memeId, like) {
     const collection = db.get(this.MEME_COLLECTION);
-    collection.update({ _id: memeId}, {$addToSet: {likes: username} }).then((promise) => console.log(promise))
+    collection.update({ _id: memeId}, {$addToSet: {likes: like}}).then((promise) => console.log(promise))
   },
 
   viewMeme(db, memeId) {

@@ -5,7 +5,7 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage, { downloadImage } from "./SingleImage";
 import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../communication/requests';
-import { AppBar, Badge, ButtonGroup, Fab, Toolbar, Tooltip } from '@material-ui/core';
+import { Badge, ButtonGroup, Fab, Tooltip } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { LS_USERNAME } from '../../constants'
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -255,7 +255,8 @@ class Gallery extends React.Component {
 
     likeImage = (id) => {
         const username = localStorage.getItem(LS_USERNAME)
-        authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
+        const like = {username: username, date: Date.now()}
+        authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, like: like}), this.isNotAuthenticated)
         .catch((error) => { console.error('Error:', error) });
         let newImages = this.state.images.map(img => {
             if(img._id === id) {
