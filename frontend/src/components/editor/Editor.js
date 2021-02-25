@@ -10,6 +10,9 @@ import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button, Paper } from '@material-ui/core';
 import NewMeme from '../newMemeDialog/NewMeme';
 
+import testGif from '../../gifExample.gif';
+import MyGifWrapper from '../../MyGifWrapper';
+
 class App extends React.Component {
 
   constructor() {
@@ -90,6 +93,13 @@ class App extends React.Component {
   generateMeme = () => {
     const carouselCanvas = this.imageCarousel.current.canvasRef.current;
     const dataURL = carouselCanvas.toDataURL()
+    this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
+  }
+
+  generateGif = () => {
+    const x = document.getElementById('test').src;
+    console.log("hallo"+x)
+    const dataURL = x.toDataURL();
     this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
   }
 
@@ -251,7 +261,8 @@ class App extends React.Component {
       addedImgPositions_Y: addedImgInfo.map(y => y[2]),
       canvasSize: canvasSize,
       drawingCoordinates: drawingCoordinates,
-      imageDescription: imageDescription
+      imageDescription: imageDescription,
+      isMeme: true
     });
   }
 
@@ -316,6 +327,7 @@ class App extends React.Component {
               queryId={id}
             />
           </Paper>
+          //Hier anpassen wenn Gif
           <div className="middle">
             <ImageCarousel
               ref={this.imageCarousel}
@@ -337,7 +349,9 @@ class App extends React.Component {
               setCanvasSize={this.setCanvasSize.bind(this)}
               coordinates={this.state.drawingCoordinates}
               addCoordinate={this.addDrawingCoordinate}
+              isMeme={this.state.isMeme}
             />
+            <img src={this.state.currentImage.url}></img>
           </div>
           <Paper
             className="control right"
@@ -392,6 +406,15 @@ class App extends React.Component {
               onClick={this.generateMeme}
               style={{ marginTop: '10px', display: 'block' }}>
               Generate meme
+            </Button>
+            <Button
+              name="saveTemsaveButtonplateButton"
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={this.generateGif}
+              style={{ marginTop: '10px', display: 'block' }}>
+              Generate gif
             </Button>
             <NewMeme
               open={this.state.newMemeDialogIsOpen}

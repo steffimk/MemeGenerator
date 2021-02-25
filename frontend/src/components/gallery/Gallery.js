@@ -13,6 +13,10 @@ import CommentIcon from '@material-ui/icons/Comment';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ShareIcon from '@material-ui/icons/Share';
 import ShareDialog from '../shareDialog/Share';
+import MyGifWrapper from '../../MyGifWrapper';
+import GifPlayer from 'react-gif-player/dist/gifplayer';
+import teste from '../../gifExample.PNG';
+import testGif from '../../gifExample.gif';
 
 class Gallery extends React.Component {
 
@@ -118,6 +122,9 @@ class Gallery extends React.Component {
                     <h1>+</h1>
                     <p>Create new Meme</p>
                   </Link>
+                  <img id="test" src={testGif}></img>
+                  <GifPlayer gif={testGif} still={teste}></GifPlayer>
+                  <MyGifWrapper src={testGif} still={teste}></MyGifWrapper>
                   {slices[0]}
                 </div>
                 <div>

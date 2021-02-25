@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './ImageCarousel.css'
+import GifReader from '../../GifReader';
 /**
  * View of the meme template being edited. Part of the editor.
  */
@@ -206,9 +207,12 @@ export default class ImageCarousel extends React.Component {
         return (
             <div ref={this.containerRef} className="flex-container" >
                 <h1>{this.props.title}</h1>
-                <canvas ref={this.canvasRef} onMouseDown={this.setIsDrawing} onMouseUp={this.setIsDrawing} onMouseLeave={this.setIsDrawing} onMouseMove={this.drawWithMouse}
+                {this.props.isMeme && (
+                    <canvas ref={this.canvasRef} onMouseDown={this.setIsDrawing} onMouseUp={this.setIsDrawing} onMouseLeave={this.setIsDrawing} onMouseMove={this.drawWithMouse}
                     style={{width:this.props.canvasSize.width, height:this.props.canvasSize.height, resize:"true"}} />
+                )}
                 <img ref={this.imgRef} alt="" src={this.props.image.url} crossOrigin={"anonymous"} style={{display: "none"}}/>
+                <GifReader gif={this.props.image.url}></GifReader>
                 {addedImages}
             </div>
         )

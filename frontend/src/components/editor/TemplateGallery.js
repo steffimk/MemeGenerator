@@ -39,7 +39,8 @@ export default class TemplateGallery extends React.Component {
     }
 
     addTemplate(template) {
-        console.log(template)
+        console.log(template);
+        console.log("hier");
         template.id = "local_" + template.url.substr(0, 10)
         this.setState({"templates": [template, ...this.state.templates], "modalOpen": false})
     }

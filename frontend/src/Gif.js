@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Gifshot from 'gifshot/dist/gifshot';
-import { Button } from '@material-ui/core'; 
+import { Button } from '@material-ui/core';
+import logo from './gifExample.jpg'
 
 export default class Gif extends React.Component {
     
@@ -32,6 +33,7 @@ export default class Gif extends React.Component {
     render() {
         return (
             <div>
+            <img id="test" src={logo} ></img>
             <Button onClick={this.createGif.bind(this)} >Generate</Button>
             <img style={{margin: '100px'}} id="gifImg"></img>
             </div>

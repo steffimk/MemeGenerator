@@ -10,6 +10,8 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import AccountHistory from './components/accountHistory/AccountHistory';
 import Meme from './components/Meme';
+import GifReader from './GifReader';
+import Stackover from './Stackover';
 
 
 
@@ -17,6 +19,10 @@ function Router() {
   return (
     <Switch>
 
+     <Route path="/gif">
+          {/* <GifReader></GifReader> */}
+          <Stackover></Stackover>
+      </Route>
       <Route path="/login">
         <Login />
       </Route>
@@ -52,6 +58,8 @@ function Router() {
       <Route path="/">
         <Gallery />
       </Route>
+
+    
 
     </Switch>
   );
