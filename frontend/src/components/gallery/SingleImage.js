@@ -17,7 +17,6 @@ import ClearIcon from '@material-ui/icons/Clear';
 import Comments from './Comments';
 import Likes from './Likes';
 import ShareDialog from '../shareDialog/Share';
-import { authorizedFetch, viewMeme, VIEW_ENDPOINT } from '../../communication/requests';
 export default class SingleImage extends React.Component {
   constructor(props) {
     super(props);
@@ -80,7 +79,7 @@ export default class SingleImage extends React.Component {
               <Toolbar>
                 <h1 className="modal-title">{image.name}</h1>
                 <Link to=".">
-                  <Fab size="small" color="white" style={{ marginRight: '30px' }} onClick={this.props.stopPlaying}>
+                  <Fab size="small" color="white" style={{ marginRight: '30px' }} onClick={() => this.props.stopPlaying}>
                     <ClearIcon />
                   </Fab>
                 </Link>
@@ -89,7 +88,7 @@ export default class SingleImage extends React.Component {
             <Link
               className="modal-nav modal-left"
               to={parentRoute + prev_image._id}
-              onClick={() => viewMeme(prev_image._id, this.props.isNotAuthenticated)}
+              onClick={() => this.props.viewMeme(prev_image._id)}
             />
             <img
               src={imageSrc}
@@ -100,7 +99,7 @@ export default class SingleImage extends React.Component {
               id="nextLink"
               className="modal-nav modal-right"
               to={parentRoute + next_image._id}
-              onClick={() => viewMeme(next_image._id, this.props.isNotAuthenticated)}
+              onClick={() => this.props.viewMeme(next_image._id)}
             />
             <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
               <Toolbar>
