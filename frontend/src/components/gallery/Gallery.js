@@ -13,7 +13,6 @@ import CommentIcon from '@material-ui/icons/Comment';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ShareIcon from '@material-ui/icons/Share';
 import ShareDialog from '../shareDialog/Share';
-import SingleImage from "./SingleImage";
 import SearchDialog from "../search/SearchDialog";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
@@ -134,7 +133,7 @@ class Gallery extends React.Component {
           <div>
             <CustomAppBar>
             	<IconButton
-            		color="secondary"
+            		color="inherit"
             		aria-label="Search, sort and Filter"
             		onClick={() => this.setState({'searchOpen': true})}
             	>

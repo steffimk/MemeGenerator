@@ -24,18 +24,18 @@ export default class CustomAppBar extends React.Component {
             <Link to='/' style={{ color: 'white', textDecoration: 'none' }}>
               {this.props.name}
             </Link>
-            <Button style={{ marginLeft: screenWidth/5 }}>
+            <Button>
               <Link to='/editor' style={{ color: 'white', textDecoration: 'none' }}>
                 Editor
               </Link>
             </Button>
-            <Button style={{ marginLeft: screenWidth/5 }}>
+            <Button>
               <Link to='/history' style={{ color: 'white', textDecoration: 'none' }}>
                 My Memes
               </Link>
             </Button>
               {this.props.children}
-            <Button color='inherit' style={{ marginLeft: screenWidth/5 }} onClick={this.logout}>
+            <Button color='inherit' onClick={this.logout}>
               Logout
             </Button>
           </Toolbar>
