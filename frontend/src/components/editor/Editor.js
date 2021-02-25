@@ -9,6 +9,7 @@ import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT  } fro
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button, Paper } from '@material-ui/core';
 import NewMeme from '../newMemeDialog/NewMeme';
+import Gif from '../Gif';
 
 class App extends React.Component {
 
@@ -338,6 +339,7 @@ class App extends React.Component {
               coordinates={this.state.drawingCoordinates}
               addCoordinate={this.addDrawingCoordinate}
             />
+            <Gif src={this.state.currentImage.url} height={this.state.canvasSize.height} width={this.state.canvasSize.width}></Gif>
           </div>
           <Paper
             className="control right"
