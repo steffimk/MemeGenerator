@@ -52,4 +52,22 @@ module.exports = {
     const collection = db.get(this.MEME_COLLECTION);
     collection.update({ _id: memeId}, {$addToSet: {comments: comment} }).then((promise) => console.log(promise))
   },
+
+  findMostLikes(db, collection) {
+    collection = db.get(collection);
+    return collection.aggregate( [
+      { $addFields: { likesCount: { $size: "$likes" } } },
+      { $out: "memes"}] )
+  },
+
+  findMostViews(db, collection) {
+    collection = db.get(collection);
+    return collection.find({}, { limit: 5, sort: {views: -1} })
+  },
+
+  findWithName(db, collection, name) {
+    collection = db.get(collection);
+    return collection.find({name: name}, { limit: 5 })
+  }
+
 };
