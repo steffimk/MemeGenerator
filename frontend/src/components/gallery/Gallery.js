@@ -166,9 +166,6 @@ class Gallery extends React.Component {
                 open={this.state.searchOpen}
                 onClose={() => {this.setState({searchOpen: false})}}
                 onChange={(searchParams) => {this.onSearchChange(searchParams)}}
-                max={this.state.all_images_max_creation_time}
-                min={this.state.all_images_min_creation_time}
-                maxLikes={this.state.all_images_max_likes}
                 all_images={this.state.all_images}
             />
         </div>

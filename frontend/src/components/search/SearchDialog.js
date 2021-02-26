@@ -19,6 +19,7 @@ export default class SearchDialog extends React.Component{
             "orderKey": "creation_time",
             "timeRange": [0, 1],
             "likesRange": [0, 1],
+            "viewsRange": [0, 1],
         };
     }
 
@@ -34,6 +35,12 @@ export default class SearchDialog extends React.Component{
                         value.likes.length <= Math.max(...this.state.likesRange) &&
                         value.likes.length >= Math.min(...this.state.likesRange))
                     || (!value.hasOwnProperty("likes") && Math.min(...this.state.likesRange) === 0)
+                ) &&
+                (
+                    (value.hasOwnProperty("views") &&
+                        value.views <= Math.max(...this.state.viewsRange) &&
+                        value.views >= Math.min(...this.state.viewsRange))
+                    || (!value.hasOwnProperty("views") && Math.min(...this.state.viewsRange) === 0)
                 )
         })
 
@@ -50,6 +57,17 @@ export default class SearchDialog extends React.Component{
                     cnt_b = b.likes.length
                 }
                 order = cnt_a - cnt_b;
+            }else if(this.state.orderKey === 'views'){
+                let cnt_a = 0;
+                let cnt_b = 0
+
+                if(a.hasOwnProperty("views")){
+                    cnt_a = a.views
+                }
+                if(b.hasOwnProperty("views")){
+                    cnt_b = b.views
+                }
+                order = cnt_a - cnt_b;
             }else{
                 if (a._id < b._id) {
                     order = -1;
@@ -62,13 +80,10 @@ export default class SearchDialog extends React.Component{
         this.props.onChange(filteredImages)
     }
 
-    handleTimeRangeChange(value) {
-        this.setState({timeRange: value});
-        this.filterImages();
-    }
-
-    handleLikesRangeChange(value) {
-        this.setState({likesRange: value});
+    handleRangeChange(key, value) {
+        console.log(this.state)
+        this.setState({[key]: value});
+        console.log(this.state)
         this.filterImages();
     }
 
@@ -101,18 +116,25 @@ export default class SearchDialog extends React.Component{
                 .filter(Boolean)	// this filters undefined values as undefined is falsy
                 .map((likes) => likes.length);
 
-
             let max_likes = Math.max(...likes);
+
+            let views = all_images
+                .map((meme) => meme.views)
+                .filter(Boolean)
+
+            let max_views = Math.max(...views)
+
             this.setState({
                 "timeRange": [min_times, max_times],
                 "likesRange": [0, max_likes],
+                "viewsRange": [0, max_views],
             })
-            return [max_times, min_times, max_likes]
+            return [max_times, min_times, max_likes, max_views]
         }
     );
 
     render(){
-        let [max_times, min_times, max_likes] = this.getLimits(this.props.all_images);
+        let [max_times, min_times, max_likes, max_views] = this.getLimits(this.props.all_images);
 
         return (
             <Dialog open={this.props.open} onClose={() => (this.props.onClose())} aria-labelledby="form-dialog-title">
@@ -122,7 +144,9 @@ export default class SearchDialog extends React.Component{
                         {/*https://github.com/mui-org/material-ui/issues/20896*/}
                         <Slider
                             value={ this.state.timeRange }
-                            onChange={(e, value) => this.handleTimeRangeChange(value)}
+                            onChange={
+                                (e, value) => this.handleRangeChange('timeRange',value)
+                            }
                             valueLabelDisplay="auto"
                             id="time-range-slider"
                             aria-labelledby="time-range-slider"
@@ -135,12 +159,27 @@ export default class SearchDialog extends React.Component{
                     <label>Likes range
                         <Slider
                             value={ this.state.likesRange }
-                            onChange={(e, value) => this.handleLikesRangeChange(value)}
+                            onChange={
+                                (e, value) => this.handleRangeChange('likesRange',value)
+                            }
                             valueLabelDisplay="auto"
                             id="like-range-slider"
                             aria-labelledby="like-range-slider"
                             min={0}
                             max={max_likes}
+                        />
+                    </label>
+                    <label>Views range
+                        <Slider
+                            value={ this.state.viewsRange }
+                            onChange={
+                                (e, value) => this.handleRangeChange('viewsRange',value)
+                            }
+                            valueLabelDisplay="auto"
+                            id="view-range-slider"
+                            aria-labelledby="view-range-slider"
+                            min={0}
+                            max={max_views}
                         />
                     </label>
                     <label>
@@ -156,6 +195,7 @@ export default class SearchDialog extends React.Component{
                         >
                             <option value={"creation_time"}>Creation Time</option>
                             <option value={"likes"}>Likes</option>
+                            <option value={"views"}>Views</option>
                         </Select>
                     </label>
                     <label>
