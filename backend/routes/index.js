@@ -61,6 +61,7 @@ router.post("/create", function (req, res) {
 
     const meme = req.body;
 
+
     const {
         currentImage, imageInfo, captions, captionPositions_X, captionPositions_Y, fontSize, isItalic,
         isBold, fontColor, addedImages, addedImgPositions_X, addedImgPositions_Y, addedImgSizes, canvasSize,
@@ -69,8 +70,6 @@ router.post("/create", function (req, res) {
 
     const canvas = createCanvas(canvasSize.width, canvasSize.height);
     const context = canvas.getContext('2d');
-
-    context.clearRect(0, 0, canvasSize.width, canvasSize.height);
 
     // Load main image
     loadImage(currentImage.url).then((image) => {
@@ -116,12 +115,11 @@ drawImage = (imageInfo, currentImage, context, image, canvasSize, addedImages, a
         context.drawImage(
             image,
             imageInfo.x * ((canvasSize.width - imgWidth) / 100),
-            imageInfo.y * ((canvasSize.width - imgHeight) / 100),
+            imageInfo.y * ((canvasSize.height - imgHeight) / 100),
             imgWidth, imgHeight
         );
     } else {
-        const imgRatio = canvasSize.width / canvasSize.height;
-        context.drawImage(image, 0, 0, canvasSize.width, (canvasSize.height) / imgRatio);
+        context.drawImage(image, 0, 0, canvasSize.width, canvasSize.height);
     }
 
     addedImages.forEach((imgRef, i) => {
