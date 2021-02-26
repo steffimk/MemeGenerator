@@ -45,7 +45,12 @@ module.exports = {
 
   likeMeme(db, memeId, username) {
     const collection = db.get(this.MEME_COLLECTION);
-    collection.update({ _id: memeId}, {$addToSet: {likes: username} }).then((promise) => console.log(promise))
+    collection.update({ _id: memeId}, {$addToSet: {likes: username}, $inc: {likeCount: 1 } }).then((promise) => console.log(promise))
+  },
+
+  dislikeMeme(db, memeId, username) {
+    const collection = db.get(this.MEME_COLLECTION);
+    collection.update({ _id: memeId}, {$pull: {likes: username}, $inc: {likeCount: -1 } }).then((promise) => console.log(promise))
   },
 
   addCommentToMeme(db, memeId, comment) {
@@ -55,9 +60,7 @@ module.exports = {
 
   findMostLikes(db, collection) {
     collection = db.get(collection);
-    return collection.aggregate( [
-      { $addFields: { likesCount: { $size: "$likes" } } },
-      { $out: "memes"}] )
+    return collection.find({}, { limit: 5, sort: {likeCount: -1} })
   },
 
   findMostViews(db, collection) {
@@ -68,6 +71,11 @@ module.exports = {
   findWithName(db, collection, name) {
     collection = db.get(collection);
     return collection.find({name: name}, { limit: 5 })
+  },
+
+  getCaptions(db) {
+    const collection = db.get(this.MEME_COLLECTION);
+    return collection.find({}, 'captions', { limit: 15 })
   }
 
 };
