@@ -5,6 +5,7 @@ export const TEMPLATE_ENDPOINT = API_ENDPOINT + 'templates'
 export const LOGIN_ENDPOINT = API_ENDPOINT + 'login'
 export const SIGNUP_ENDPOINT= API_ENDPOINT + 'signup'
 export const MEMES_ENDPOINT = API_ENDPOINT
+export const CREATE_ENDPOINT = API_ENDPOINT + 'create'
 export const LIKE_ENDPOINT = API_ENDPOINT + 'like'
 export const COMMENT_ENDPOINT = API_ENDPOINT + 'comment'
 export const SINGLE_MEME_ENDPOINT = API_ENDPOINT + 'meme'
