@@ -13,15 +13,7 @@ router.get("/create", function (req, res) {
 
   if(imageUrl && captionTop && captionBottom) {
     loadImage(imageUrl).then((img) => {
-      const canvas = createCanvas(img.width, img.height);
-      const context = canvas.getContext('2d')
-      context.drawImage(img, 0, 0, img.width, img.height);
-      context.font = '50px sans-serif';
-      context.fillText(captionTop, img.width*0.2, img.height*0.3)
-      context.fillText(captionBottom, img.width*0.2, img.height*0.6)
-      const dataUrl = canvas.toDataURL();
-      res.setHeader("Content-Disposition", "attachment; filename=\"" + "memes.zip" + "\"");
-      res.setHeader("Content-Type", "application/zip");
+      const dataUrl = generateDataUrl(img, captionTop, captionBottom);
       zipImages([dataUrl], res)
     }).catch((e) => {
       console.log(e)
@@ -47,17 +39,10 @@ router.get('/createrandom', function (req, res) {
             var captions = []
             docs.forEach((meme) => captions.push(...meme.captions))
             captions = captions.filter(c => c !== '' && c !== null && c !== undefined)
-            for (i = 0; i < captions.length-1 && i < 10; i = i+2) { // Maximal 5 Bilder
-              const canvas = createCanvas(img.width, img.height);
-              const context = canvas.getContext('2d');
-              context.drawImage(img, 0, 0, img.width, img.height);
-              context.font = '50px sans-serif';
-              context.fillText(captions[i], img.width * 0.2, img.height * 0.3);
-              context.fillText(captions[i + 1], img.width * 0.2, img.height * 0.6);
-              dataUrls.push(canvas.toDataURL());
+            for (i = 0; i < captions.length-1 && i < dbOp.MAX_FILES_IN_ZIP*2; i = i+2) { // Don't go over max-files-limit.
+              const dataUrl = generateDataUrl(img, captions[i], captions[i+1])
+              dataUrls.push(dataUrl);
             }
-            res.setHeader('Content-Disposition', 'attachment; filename="' + 'memes.zip' + '"');
-            res.setHeader('Content-Type', 'application/zip');
             zipImages(dataUrls, res);
           })
           .catch((e) => {console.log(e); res.status(500), res.send()});
@@ -76,8 +61,6 @@ router.get('/mostviews', function(req,res){
   let db = req.db;
   dbOp.findMostViews(db, dbOp.MEME_COLLECTION).then((memes) => {
     const dataUrls = memes.map(meme => meme.img)
-    res.setHeader('Content-Disposition', 'attachment; filename="' + 'memes.zip' + '"');
-    res.setHeader('Content-Type', 'application/zip');
     zipImages(dataUrls, res);
   }).catch((e) => {
     console.log(e);
@@ -86,26 +69,22 @@ router.get('/mostviews', function(req,res){
   })
 })
 
-// router.get('/newest', function(req,res){
-//   let db = req.db;
-//   dbOp.findNewest(db, dbOp.MEME_COLLECTION).then((memes) => {
-//     const dataUrls = memes.map(meme => meme.img)
-//     res.setHeader('Content-Disposition', 'attachment; filename="' + 'memes.zip' + '"');
-//     res.setHeader('Content-Type', 'application/zip');
-//     zipImages(dataUrls, res);
-//   }).catch((e) => {
-//     console.log(e);
-//     res.status(500);
-//     res.send();
-//   })
-// })
+router.get('/newest', function(req,res){
+  let db = req.db;
+  dbOp.findNewest(db, dbOp.MEME_COLLECTION).then((memes) => {
+    const dataUrls = memes.map(meme => meme.img)
+    zipImages(dataUrls, res);
+  }).catch((e) => {
+    console.log(e);
+    res.status(500);
+    res.send();
+  })
+})
 
 router.get('/mostlikes', function(req,res){
   let db = req.db;
   dbOp.findMostLikes(db, dbOp.MEME_COLLECTION).then((memes) => {
     const dataUrls = memes.map(meme => meme.img)
-    res.setHeader('Content-Disposition', 'attachment; filename="' + 'memes.zip' + '"');
-    res.setHeader('Content-Type', 'application/zip');
     zipImages(dataUrls, res);
   }).catch((e) => {
     console.log(e);
@@ -123,8 +102,6 @@ router.get('/name/:name', function(req,res){
   if (name) {
     dbOp.findWithName(db, dbOp.MEME_COLLECTION, name).then((memes) => {
       const dataUrls = memes.map(meme => meme.img)
-      res.setHeader('Content-Disposition', 'attachment; filename="' + 'memes.zip' + '"');
-      res.setHeader('Content-Type', 'application/zip');
       zipImages(dataUrls, res);
     }).catch((e) => {
       console.log(e);
@@ -172,10 +149,23 @@ function zipImages(dataUrls, response) {
     memesFolder.file(`meme${index}.png`, uint8, {base64: true})
   })
 
+  response.setHeader('Content-Disposition', 'attachment; filename="' + 'memes.zip' + '"');
+  response.setHeader('Content-Type', 'application/zip');
+
   zip
     .generateNodeStream({ type: 'nodebuffer', streamFiles: true })
     .pipe(response)
     .on('finish', () => console.log('memes.zip written.'));
+}
+
+function generateDataUrl(img, captionTop, captionBottom){
+  const canvas = createCanvas(img.width, img.height);
+  const context = canvas.getContext('2d');
+  context.drawImage(img, 0, 0, img.width, img.height);
+  context.font = '50px sans-serif';
+  context.fillText(captionTop, img.width * 0.2, img.height * 0.3);
+  context.fillText(captionBottom, img.width * 0.2, img.height * 0.6);
+  return canvas.toDataURL()
 }
 
 module.exports = router;
