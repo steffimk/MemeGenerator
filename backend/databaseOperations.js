@@ -55,6 +55,6 @@ module.exports = {
 
   getCaptions(db) {
     const collection = db.get(this.MEME_COLLECTION);
-    return collection.find({captions: 1},{limit: 20})
+    return collection.find({}, 'captions', { limit: 15 })
   }
 };
