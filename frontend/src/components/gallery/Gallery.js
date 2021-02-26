@@ -26,10 +26,6 @@ class Gallery extends React.Component {
             isAuthenticated: true,
             // contains all images without filters
             all_images: [],
-            // contains the creation_time of the most current image
-            all_images_max_creation_time: Date.now(),
-            // contains the creation_time of the oldest image
-            all_images_min_creation_time: 0,
             // contains images filtered/ordered as defined in search
             images: [],
             searchOpen: false,
@@ -68,16 +64,8 @@ class Gallery extends React.Component {
     get_memes() {
         authorizedFetch(MEMES_ENDPOINT, 'GET', {}, this.isNotAuthenticated)
         .then(json => {
-            let times = json.data.memes
-                .map((meme) => meme.creation_time)
-                .filter(Boolean);	// this filters undefined values as undefined is falsy
-
-            let max = Math.max(...times);
-            let min = Math.min(...times);
 
             this.setState({
-                'all_images_max_creation_time': max,
-                'all_images_min_creation_time': min,
                 'all_images': json.data.memes,
                 'images': json.data.memes,
             })
@@ -184,6 +172,8 @@ class Gallery extends React.Component {
                 onChange={(searchParams) => {this.onSearchChange(searchParams)}}
                 max={this.state.all_images_max_creation_time}
                 min={this.state.all_images_min_creation_time}
+                maxLikes={this.state.all_images_max_likes}
+                all_images={this.state.all_images}
             />
         </div>
         );
@@ -262,23 +252,7 @@ class Gallery extends React.Component {
         this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
     }
 
-    onSearchChange(searchParams) {
-        let filteredImages = this.state.all_images.filter((value, index, list) => {
-            return !value.hasOwnProperty("creation_time") || (value.hasOwnProperty("creation_time") &&
-                value.creation_time < Math.max(...searchParams.timeRange) &&
-                value.creation_time > Math.min(...searchParams.timeRange))
-        })
-
-		filteredImages.sort((a, b) => {
-			let order = 1;
-			if(a._id < b._id){
-				order = -1;
-			}else{
-				order = 1;
-			}
-			return order * (searchParams.order ? 1 : -1);
-		});
-
+    onSearchChange(filteredImages) {
         this.setState({'images': filteredImages})
     }
 }
