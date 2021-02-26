@@ -47,7 +47,7 @@ router.get('/createrandom', function (req, res) {
             var captions = []
             docs.forEach((meme) => captions.push(...meme.captions))
             captions = captions.filter(c => c !== '' && c !== null && c !== undefined)
-            for (i = 0; i < captions.length-1 && i < 10; i = i+2) { // Maximal 10 Bilder
+            for (i = 0; i < captions.length-1 && i < 10; i = i+2) { // Maximal 5 Bilder
               const canvas = createCanvas(img.width, img.height);
               const context = canvas.getContext('2d');
               context.drawImage(img, 0, 0, img.width, img.height);
@@ -110,7 +110,7 @@ function zipImages(dataUrls, response) {
   zip
     .generateNodeStream({ type: 'nodebuffer', streamFiles: true })
     .pipe(response)
-    .on('finish', () => console.log('out.zip written.'));
+    .on('finish', () => console.log('memes.zip written.'));
 }
 
 module.exports = router;
