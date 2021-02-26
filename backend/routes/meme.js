@@ -1,5 +1,7 @@
 const express = require('express');
 var router = express.Router();
+var JSZip = require('jszip');
+var atob = require('atob');
 
 const responseTemplates = require('../responseTemplates')
 /* Database Operations */
@@ -11,7 +13,6 @@ router.get("/create", function (req, res) {
 
   if(imageUrl && captionTop && captionBottom) {
     loadImage(imageUrl).then((img) => {
-      console.log(img.width + ' ' + img.height)
       const canvas = createCanvas(img.width, img.height);
       const context = canvas.getContext('2d')
       context.drawImage(img, 0, 0, img.width, img.height);
@@ -19,9 +20,10 @@ router.get("/create", function (req, res) {
       context.fillText(captionTop, img.width*0.2, img.height*0.3)
       context.fillText(captionBottom, img.width*0.2, img.height*0.6)
       const dataUrl = canvas.toDataURL();
-      res.status(200);
-      res.json({dataUrl: dataUrl});
-      res.send();
+      zipImages([dataUrl]).then((zip) => {
+        res.status(200);
+        res.send(zip)
+      });
     }).catch((e) => {
       console.log(e)
       res.status(406)
@@ -51,5 +53,24 @@ router.get('/:id', function(req, res){
       })
   }
 });
+
+function zipImages(dataUrls) {
+  var zip = new JSZip();
+  var memesFolder = zip.folder("memes");
+
+  dataUrls.forEach((dataUrl,i) => {
+    var contentIndex = dataUrl.indexOf('base64,') + 'base64,'.length
+    var imageContent = dataUrl.substring(contentIndex)
+    var byteString = atob(imageContent)   // decode dataUrl
+    var bStrLength = byteString.length
+    var uint8 = new Uint8Array(new ArrayBuffer(bStrLength))
+    for(i = 0; i < bStrLength; i++) {
+      uint8[i] = byteString.charCodeAt(i)
+    }
+    memesFolder.file(`meme${i}.png`, uint8, {base64: true})
+  })
+
+  return zip.generateAsync({type:"uint8array"})
+}
 
 module.exports = router;
