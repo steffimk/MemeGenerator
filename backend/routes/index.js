@@ -3,6 +3,7 @@ const dbOp = require('../databaseOperations')
 var router = express.Router();
 const responseTemplates = require('../responseTemplates')
 const { isValidUrl, isPositiveInteger } = require('./templates')
+const {createCanvas, loadImage} = require('canvas')
 
 router.get('/:username', function(req,res) {
   let db = req.db;
@@ -46,7 +47,7 @@ router.post("/", function (req, res){
           template_id, creation_time, img, template_url, name, box_count, username, imageDescription,
           captions, captionPositions, fontColor, fontSize, isItalic, isBold, privacyLabel
       }
-
+      normalizedMeme.views = 0              // set views to 0
       dbOp.addToDB(req.db, dbOp.MEME_COLLECTION, normalizedMeme);
 
       res.status(200);
@@ -57,13 +58,146 @@ router.post("/", function (req, res){
   }
 });
 
+
+router.post("/create", function (req, res) {
+
+    const meme = req.body;
+
+
+    const {
+        currentImage, imageInfo, captions, captionPositions_X, captionPositions_Y, fontSize, isItalic,
+        isBold, fontColor, addedImages, addedImgPositions_X, addedImgPositions_Y, addedImgSizes, canvasSize,
+        drawingCoordinates
+    } = meme;
+
+    const canvas = createCanvas(canvasSize.width, canvasSize.height);
+    const context = canvas.getContext('2d');
+
+    // Load main image
+    loadImage(currentImage.url).then((image) => {
+        let promises = [];
+        addedImages.forEach( (element) => {
+            promises.push(loadImage(element.url));
+            }
+        )
+        //load all other images
+        Promise.all(promises).then((erg) => {
+            drawImage(imageInfo, currentImage, context, image, canvasSize, erg, addedImgSizes, addedImgPositions_X,
+                addedImgPositions_Y);
+            drawCaptions(captions, captionPositions_X, captionPositions_Y, isItalic, isBold, context, fontSize, fontColor,
+                canvasSize);
+            drawCoordinates(drawingCoordinates, context);
+            const dataUrl = canvas.toDataURL();
+            res.status(200);
+            res.json({dataUrl: dataUrl});
+            res.send();
+        })
+    });
+
+});
+
+/**
+ * Draw image on Canvas
+ * @param imageInfo
+ * @param currentImage
+ * @param context
+ * @param image
+ * @param canvasSize
+ * @param addedImages
+ * @param addedImgSizes
+ * @param addedImgPositions_X
+ * @param addedImgPositions_Y
+ */
+drawImage = (imageInfo, currentImage, context, image, canvasSize, addedImages, addedImgSizes, addedImgPositions_X,
+             addedImgPositions_Y) => {
+
+    if (imageInfo.size != null) {
+        const imgWidth = currentImage.width * imageInfo.size / 100;
+        const imgHeight = currentImage.height * imageInfo.size / 100;
+        context.drawImage(
+            image,
+            imageInfo.x * ((canvasSize.width - imgWidth) / 100),
+            imageInfo.y * ((canvasSize.height - imgHeight) / 100),
+            imgWidth, imgHeight
+        );
+    } else {
+        context.drawImage(image, 0, 0, canvasSize.width, canvasSize.height);
+    }
+
+    addedImages.forEach((imgRef, i) => {
+        if(imgRef) {
+            const imgWidth = imgRef.width* addedImgSizes[i]/100
+            const imgHeight = imgRef.height* addedImgSizes[i]/100
+            context.drawImage(
+                imgRef,
+                addedImgPositions_X[i] * ((canvasSize.width - imgWidth)/100),
+                addedImgPositions_Y[i] * ((canvasSize.height - imgHeight)/100),
+                imgWidth, imgHeight)
+        }
+    })
+}
+/**
+ * Draw Captions
+ * @param captions
+ * @param captionsPositions_X
+ * @param captionsPositions_Y
+ * @param isItalic
+ * @param isBold
+ * @param context
+ * @param fontSize
+ * @param fontColor
+ * @param canvasSize
+ */
+drawCaptions = (captions, captionsPositions_X, captionsPositions_Y, isItalic, isBold, context, fontSize, fontColor,
+                canvasSize) => {
+
+    captions.forEach((captionText, index) => {
+        let captionPosition_X = captionsPositions_X[index];
+        let captionPosition_Y = captionsPositions_Y[index];
+
+        if(captionPosition_X !== undefined && captionPosition_Y !== undefined) {
+            const italic = isItalic === true ? 'italic' : 'normal';
+            const bold = isBold === true ? 'bold' : 'normal';
+            context.font = italic + ' ' + bold + ' ' + fontSize + 'px sans-serif';
+            context.fillStyle = fontColor;
+            context.fillText(captionText, captionPosition_X * canvasSize.width/100,
+                captionPosition_Y * canvasSize.height/100)
+        }
+    })
+}
+
+/**
+ * Draw hand drawing
+ * @param drawingCoordinates
+ * @param context
+ */
+drawCoordinates = (drawingCoordinates, context) => {
+
+    if (drawingCoordinates.length > 0) {
+        drawingCoordinates.forEach((coordinate, index) => {
+            const {x, y, isNewStroke} = coordinate;
+            if (isNewStroke) {
+                if (index > 0) context.stroke();
+                context.beginPath();
+                context.moveTo(x, y);
+            } else {
+                context.lineTo(x, y);
+            }
+        });
+        context.stroke();
+    }
+}
+
 router.post("/like", function(req, res) {
   let db = req.db;
-  const memeId = req.body.memeId;
-  const username = req.body.username;
-  console.log(memeId + " " + username)
-  if (memeId && username) {
-      dbOp.likeMeme(db, memeId, username)
+  const { memeId, username, isDislike } = req.body;
+  console.log(memeId + " " + username + " " + isDislike)
+  if (memeId && username && isDislike !== undefined) {
+      if (isDislike === true) {
+        dbOp.dislikeMeme(db, memeId, username)
+      } else {
+        dbOp.likeMeme(db, memeId, username)
+      }
       res.status(200);
       res.send();
   } else {
@@ -84,6 +218,19 @@ router.post("/comment", function(req, res) {
       res.status(406);
       res.send();
   }
+});
+
+router.post("/view", function(req, res) {
+    let db = req.db;
+    const memeId = req.body.memeId;
+    if (memeId) {
+        dbOp.viewMeme(db, memeId)
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
 });
 
 module.exports = router;

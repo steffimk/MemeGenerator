@@ -5,10 +5,17 @@ import CustomAppBar from "../CustomAppBar/CustomAppBar";
 import ImageCarousel from "./ImageCarousel";
 import TemplateGallery from "./TemplateGallery";
 import EditorControl from "./EditorControl";
-import { authorizedFetch, API_ENDPOINT, TEMPLATE_ENDPOINT, MEMES_ENDPOINT  } from '../../communication/requests';
+import {
+  authorizedFetch,
+  API_ENDPOINT,
+  TEMPLATE_ENDPOINT,
+  MEMES_ENDPOINT,
+  CREATE_ENDPOINT
+} from '../../communication/requests';
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button, Paper } from '@material-ui/core';
 import NewMeme from '../newMemeDialog/NewMeme';
+import { LS_USERNAME } from '../../constants';
 
 class App extends React.Component {
 
@@ -53,7 +60,7 @@ class App extends React.Component {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
-      username: localStorage.getItem('memeGen_username'),
+      username: localStorage.getItem(LS_USERNAME),
       imageInfo: this.state.imageInfo,
       name: this.state.title,
       box_count: this.state.captions.length,
@@ -93,9 +100,43 @@ class App extends React.Component {
     this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
   }
 
+  /**
+   * Send information for Meme to backend to create it
+   * @returns {Promise<void>}
+   */
+  generateMemeBackend = async () => {
+    const memeToGenerate = {
+      currentImage: this.state.currentImage,
+      imageInfo: this.state.imageInfo,
+      captions: this.state.captions,
+      captionPositions_X: this.state.captionPositions_X,
+      captionPositions_Y: this.state.captionPositions_Y,
+      fontSize: this.state.fontSize,
+      isItalic: this.state.isItalic,
+      isBold: this.state.isBold,
+      fontColor:  this.state.fontColor,
+      addedImages: this.state.addedImages,
+      addedImgPositions_X: this.state.addedImgPositions_X,
+      addedImgPositions_Y: this.state.addedImgPositions_Y,
+      addedImgSizes: this.state.addedImgSizes,
+      canvasSize: this.state.canvasSize,
+      drawingCoordinates: this.state.drawingCoordinates,
+    }
+
+    let promise = authorizedFetch(CREATE_ENDPOINT, 'POST', JSON.stringify(memeToGenerate), this.isNotAuthenticated)
+        .catch((error) => {
+          console.error('Error:', error);
+          return false;
+        });
+
+    promise.then((res) => {
+      this.setState({ canvasImage: res.dataUrl, newMemeDialogIsOpen: true });
+    });
+  }
+
   handleSaveAsMeme = async (privacyLabel) => {
     const memeToSave = {
-      username: localStorage.getItem('memeGen_username'),
+      username: localStorage.getItem(LS_USERNAME),
       template_id: this.state.currentImage._id,
       img: this.state.canvasImage,
       template_url: this.state.currentImage.url,
@@ -391,7 +432,16 @@ class App extends React.Component {
               color="secondary"
               onClick={this.generateMeme}
               style={{ marginTop: '10px', display: 'block' }}>
-              Generate meme
+              Generate meme local
+            </Button>
+            <Button
+              name="generateAPIButton"
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={this.generateMemeBackend}
+              style={{ marginTop: '10px', display: 'block' }}>
+              Generate meme in backend
             </Button>
             <NewMeme
               open={this.state.newMemeDialogIsOpen}
