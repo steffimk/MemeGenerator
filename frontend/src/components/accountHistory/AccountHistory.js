@@ -1,7 +1,7 @@
 import { Button, GridList, GridListTile, GridListTileBar, IconButton } from '@material-ui/core'
 import React, { Component } from 'react'
 import { Link, Redirect, withRouter } from 'react-router-dom'
-import { authorizedFetch, LIKE_ENDPOINT, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
+import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
 import CustomAppBar from '../CustomAppBar/CustomAppBar'
 import SingleImage from '../gallery/SingleImage'
 import './AccountHistory.css'
@@ -63,7 +63,7 @@ class AccountHistory extends Component {
             </Button>
           </div>}
         </div>
-        <Link to={linkRoute} key={image._id}>
+        <Link to={linkRoute} key={image._id} onClick={() => this.clickOnImageAction(isMeme, image._id)}>
           <GridListTileBar
             title={image.name}
             actionIcon={
@@ -94,7 +94,14 @@ class AccountHistory extends Component {
         return img
     })
     this.setState({ ownMemes: newMemes })
-}
+  }
+
+  viewMeme = (id) => viewMeme(id, this.isNotAuthenticated)
+
+  clickOnImageAction = (isMeme, id) => {
+      if (!isMeme) return
+      else viewMeme(id, this.isNotAuthenticated)
+  }
 
   render() {
     // If not logged in: Redirect to login page
@@ -123,7 +130,15 @@ class AccountHistory extends Component {
             {renderedTemplates}
           </GridList>
         </div>
-        {isMeme && <SingleImage images={this.state.ownMemes} id={id} parentRoute="/history/" likeImage={this.likeMeme}/>}
+        {isMeme && (
+          <SingleImage
+            images={this.state.ownMemes}
+            id={id}
+            parentRoute="/history/"
+            likeImage={this.likeMeme}
+            viewMeme={this.viewMeme}
+          />
+        )}
         {/* {!isMeme && <SingleImage images={this.state.ownTemplates} id={id} parentRoute="/history/"/>} */}
       </div>
     );
