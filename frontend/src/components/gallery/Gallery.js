@@ -5,10 +5,9 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage, { downloadImage } from "./SingleImage";
 import { authorizedFetch, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../communication/requests';
-import { AppBar, Badge, ButtonGroup, Fab, Toolbar } from '@material-ui/core';
+import { Badge, ButtonGroup, Fab } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { LS_USERNAME } from '../../constants'
-import AudioDescription from '../textToSpeech/AudioDescription';
+import { LS_USERNAME } from '../../constants';
 import CommentIcon from '@material-ui/icons/Comment';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ShareIcon from '@material-ui/icons/Share';
@@ -179,7 +178,7 @@ class Gallery extends React.Component {
                   max={999}
                   color={favIconColor}
                   style={{ marginRight: '20px' }}>
-                  <Fab size="small" color="white" aria-label="like" onClick={() => this.likeImage(image._id)}>
+                  <Fab size="small" color="white" aria-label="like" onClick={() => this.likeImage(image._id, (favIconColor === "secondary"))}>
                     <FavoriteIcon color={favIconColor} />
                   </Fab>
                 </Badge>
@@ -206,23 +205,28 @@ class Gallery extends React.Component {
         );
     }
 
-    likeImage = (id) => {
+    likeImage = (id, isDislike) => {
         const username = localStorage.getItem(LS_USERNAME)
-        authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username}), this.isNotAuthenticated)
+        authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username, isDislike: isDislike}), this.isNotAuthenticated)
         .catch((error) => { console.error('Error:', error) });
         let newImages = this.state.images.map(img => {
             if(img._id === id) {
-                if (img.likes && img.likes.includes(username)) {
-                    // Do nothing. User alredy likes meme.
-                } else if (img.likes) {
+                if (img.likes && img.likes.includes(username) && isDislike) {
+                  img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes
+                } else if (img.likes && !isDislike) {
                     img.likes.push(username)
-                } else {
+                } else if (!isDislike) {
                     img.likes = [username]
                 }
             }
             return img
         })
-        const newLikedMemeIds = this.state.likedMemeIds.includes(id) ? this.state.likedMemeIds : [...this.state.likedMemeIds, id]
+        var newLikedMemeIds = this.state.likedMemeIds
+        if (isDislike && newLikedMemeIds.includes(id)) {
+          newLikedMemeIds.splice(newLikedMemeIds.indexOf(id),1)
+        } else if (!isDislike && !newLikedMemeIds.includes(id)) {
+          newLikedMemeIds.push(id)
+        }
         this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
     }
 }
