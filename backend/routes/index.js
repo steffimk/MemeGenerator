@@ -188,11 +188,14 @@ drawCoordinates = (drawingCoordinates, context) => {
 
 router.post("/like", function(req, res) {
   let db = req.db;
-  const memeId = req.body.memeId;
-  const username = req.body.username;
-  console.log(memeId + " " + username)
-  if (memeId && username) {
-      dbOp.likeMeme(db, memeId, username)
+  const { memeId, username, isDislike } = req.body;
+  console.log(memeId + " " + username + " " + isDislike)
+  if (memeId && username && isDislike !== undefined) {
+      if (isDislike === true) {
+        dbOp.dislikeMeme(db, memeId, username)
+      } else {
+        dbOp.likeMeme(db, memeId, username)
+      }
       res.status(200);
       res.send();
   } else {

@@ -15,6 +15,7 @@ import {
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button, Paper } from '@material-ui/core';
 import NewMeme from '../newMemeDialog/NewMeme';
+import { LS_USERNAME } from '../../constants';
 
 class App extends React.Component {
 
@@ -59,7 +60,7 @@ class App extends React.Component {
 
     const memeTemplateToSave = {
       ...this.state.currentImage,
-      username: localStorage.getItem('memeGen_username'),
+      username: localStorage.getItem(LS_USERNAME),
       imageInfo: this.state.imageInfo,
       name: this.state.title,
       box_count: this.state.captions.length,
@@ -135,7 +136,7 @@ class App extends React.Component {
 
   handleSaveAsMeme = async (privacyLabel) => {
     const memeToSave = {
-      username: localStorage.getItem('memeGen_username'),
+      username: localStorage.getItem(LS_USERNAME),
       template_id: this.state.currentImage._id,
       img: this.state.canvasImage,
       template_url: this.state.currentImage.url,
