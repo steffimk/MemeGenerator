@@ -37,6 +37,7 @@ router.get('/:id', function(req, res){
   let db = req.db;
   const id = req.params.id
   if (id) {
+      dbOp.viewMeme(db, id);
       dbOp.findOneFromDB(db, 'memes', id).then((meme) => {
         if(meme !== null && meme.img){
           const privacyLabel = meme.privacyLabel
