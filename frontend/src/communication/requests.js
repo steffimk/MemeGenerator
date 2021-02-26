@@ -40,5 +40,5 @@ function handleResponse(response, isNotAuthenticatedCallback) {
     if (response.status === 401) isNotAuthenticatedCallback();
     return Promise.reject('Server responded with ' + response.status + ' ' + response.statusText);
   }
-  return response.json();
+  return response.json().catch(()=>{});
 }

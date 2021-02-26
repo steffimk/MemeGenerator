@@ -96,6 +96,8 @@ class AccountHistory extends Component {
     this.setState({ ownMemes: newMemes })
   }
 
+  viewMeme = (id) => viewMeme(id, this.isNotAuthenticated)
+
   clickOnImageAction = (isMeme, id) => {
       if (!isMeme) return
       else viewMeme(id, this.isNotAuthenticated)
@@ -128,7 +130,15 @@ class AccountHistory extends Component {
             {renderedTemplates}
           </GridList>
         </div>
-        {isMeme && <SingleImage images={this.state.ownMemes} id={id} parentRoute="/history/" likeImage={this.likeMeme}/>}
+        {isMeme && (
+          <SingleImage
+            images={this.state.ownMemes}
+            id={id}
+            parentRoute="/history/"
+            likeImage={this.likeMeme}
+            viewMeme={this.viewMeme}
+          />
+        )}
         {/* {!isMeme && <SingleImage images={this.state.ownTemplates} id={id} parentRoute="/history/"/>} */}
       </div>
     );

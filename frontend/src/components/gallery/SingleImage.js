@@ -201,6 +201,7 @@ export const downloadImage = (imageSrc) => {
 
 SingleImage.propTypes = {
     images: PropTypes.array.isRequired,
+    viewMeme: PropTypes.func.isRequired,
     id: PropTypes.string.isRequired,
     isNotAuthenticated: PropTypes.func.isRequired,
     likeImage: PropTypes.func.isRequired,
