@@ -6,7 +6,7 @@ var atob = require('atob');
 const responseTemplates = require('../responseTemplates')
 /* Database Operations */
 const dbOp = require('../databaseOperations');
-const {createCanvas, loadImage} = require('canvas')
+const {createCanvas, loadImage} = require('canvas');
 
 router.get("/create", function (req, res) {
   const { imageUrl, captionTop, captionBottom } = req.query;
@@ -20,10 +20,9 @@ router.get("/create", function (req, res) {
       context.fillText(captionTop, img.width*0.2, img.height*0.3)
       context.fillText(captionBottom, img.width*0.2, img.height*0.6)
       const dataUrl = canvas.toDataURL();
-      zipImages([dataUrl]).then((zip) => {
-        res.status(200);
-        res.send(zip)
-      });
+      res.setHeader("Content-Disposition", "attachment; filename=\"" + "memes.zip" + "\"");
+      res.setHeader("Content-Type", "application/zip");
+      zipImages([dataUrl], res)
     }).catch((e) => {
       console.log(e)
       res.status(406)
@@ -54,11 +53,11 @@ router.get('/:id', function(req, res){
   }
 });
 
-function zipImages(dataUrls) {
+function zipImages(dataUrls, response) {
   var zip = new JSZip();
   var memesFolder = zip.folder("memes");
 
-  dataUrls.forEach((dataUrl,i) => {
+  dataUrls.forEach((dataUrl,index) => {
     var contentIndex = dataUrl.indexOf('base64,') + 'base64,'.length
     var imageContent = dataUrl.substring(contentIndex)
     var byteString = atob(imageContent)   // decode dataUrl
@@ -67,10 +66,13 @@ function zipImages(dataUrls) {
     for(i = 0; i < bStrLength; i++) {
       uint8[i] = byteString.charCodeAt(i)
     }
-    memesFolder.file(`meme${i}.png`, uint8, {base64: true})
+    memesFolder.file(`meme${index}.png`, uint8, {base64: true})
   })
 
-  return zip.generateAsync({type:"uint8array"})
+  zip
+    .generateNodeStream({ type: 'nodebuffer', streamFiles: true })
+    .pipe(response)
+    .on('finish', () => console.log('out.zip written.'));
 }
 
 module.exports = router;
