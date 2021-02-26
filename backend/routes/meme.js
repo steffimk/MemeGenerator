@@ -25,12 +25,48 @@ router.get("/create", function (req, res) {
       zipImages([dataUrl], res)
     }).catch((e) => {
       console.log(e)
-      res.status(406)
+      res.status(500)
       res.send()
     })
   } else {
       res.status(406)
       res.send()
+  }
+});
+
+router.get('/createrandom', function (req, res) {
+  const db = req.db;
+  const { imageUrl } = req.query;
+
+  if (imageUrl) {
+    const dataUrls = [];
+    loadImage(imageUrl)
+      .then((img) => {
+        dbOp.getCaptions(db)
+          .then((captions) => {
+            console.log(captions)
+            for (i = 0; i < (captions.length / 2)-1; i++) {
+              const canvas = createCanvas(img.width, img.height);
+              const context = canvas.getContext('2d');
+              context.drawImage(img, 0, 0, img.width, img.height);
+              context.font = '50px sans-serif';
+              context.fillText(captions[2 * i], img.width * 0.2, img.height * 0.3);
+              context.fillText(captions[2 * i + 1], img.width * 0.2, img.height * 0.6);
+              dataUrls.push(canvas.toDataURL());
+            }
+            res.setHeader('Content-Disposition', 'attachment; filename="' + 'memes.zip' + '"');
+            res.setHeader('Content-Type', 'application/zip');
+            zipImages([dataUrl], res);
+          })
+          .catch((e) => {console.log(e); res.status(500), res.send()});
+      }).catch((e) => {
+        console.log(e);
+        res.status(500);
+        res.send();
+      });
+  } else {
+    res.status(406);
+    res.send();
   }
 });
 
