@@ -48,7 +48,7 @@ router.post("/", function (req, res){
           template_id, img, template_url, name, box_count, username, imageDescription,
           captions, captionPositions, fontColor, fontSize, isItalic, isBold, privacyLabel
       }
-
+      normalizedMeme.views = 0              // set views to 0
       dbOp.addToDB(req.db, dbOp.MEME_COLLECTION, normalizedMeme);
 
       res.status(200);
@@ -219,6 +219,19 @@ router.post("/comment", function(req, res) {
       res.status(406);
       res.send();
   }
+});
+
+router.post("/view", function(req, res) {
+    let db = req.db;
+    const memeId = req.body.memeId;
+    if (memeId) {
+        dbOp.viewMeme(db, memeId)
+        res.status(200);
+        res.send();
+    } else {
+        res.status(406);
+        res.send();
+    }
 });
 
 module.exports = router;

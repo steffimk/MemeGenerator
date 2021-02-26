@@ -53,6 +53,11 @@ module.exports = {
     collection.update({ _id: memeId}, {$pull: {likes: username}, $inc: {likeCount: -1 } }).then((promise) => console.log(promise))
   },
 
+  viewMeme(db, memeId) {
+    const collection = db.get(this.MEME_COLLECTION);
+    collection.update({ _id: memeId}, {$inc: {views: 1} }).then((promise) => console.log(promise))
+  },
+
   addCommentToMeme(db, memeId, comment) {
     const collection = db.get(this.MEME_COLLECTION);
     collection.update({ _id: memeId}, {$addToSet: {comments: comment} }).then((promise) => console.log(promise))
