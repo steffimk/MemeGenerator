@@ -5,10 +5,10 @@ import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage, { downloadImage } from "./SingleImage";
 import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../communication/requests';
-import { AppBar, Badge, ButtonGroup, Fab, Toolbar, Tooltip } from '@material-ui/core';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import { LS_USERNAME } from '../../constants'
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import { Badge, ButtonGroup, Fab, Tooltip } from '@material-ui/core';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import CommentIcon from '@material-ui/icons/Comment';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ShareIcon from '@material-ui/icons/Share';
@@ -178,7 +178,7 @@ class Gallery extends React.Component {
               </Badge>
             </Tooltip>
             <Badge badgeContent={likeCount} max={999} color={favIconColor} style={{ marginRight: '20px' }}>
-              <Fab size="small" color="white" aria-label="like" onClick={() => this.likeImage(image._id)}>
+              <Fab size="small" color="white" aria-label="like" onClick={() => this.likeImage(image._id, (favIconColor === "secondary"))}>
                 <FavoriteIcon color={favIconColor} />
               </Fab>
             </Badge>
@@ -220,29 +220,31 @@ class Gallery extends React.Component {
     this.setState({ images: newImages });
   };
 
-  likeImage = (id) => {
-    const username = localStorage.getItem(LS_USERNAME);
-    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({ memeId: id, username: username }), this.isNotAuthenticated)
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-    let newImages = this.state.images.map((img) => {
-      if (img._id === id) {
-        if (img.likes && img.likes.includes(username)) {
-          // Do nothing. User alredy likes meme.
-        } else if (img.likes) {
-          img.likes.push(username);
-        } else {
-          img.likes = [username];
+  likeImage = (id, isDislike) => {
+    const username = localStorage.getItem(LS_USERNAME)
+    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username, isDislike: isDislike}), this.isNotAuthenticated)
+    .catch((error) => { console.error('Error:', error) });
+    let newImages = this.state.images.map(img => {
+        if(img._id === id) {
+            if (img.likes && img.likes.includes(username) && isDislike) {
+              img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes
+            } else if (img.likes && !isDislike) {
+                img.likes.push(username)
+            } else if (!isDislike) {
+                img.likes = [username]
+            }
         }
-      }
-      return img;
-    });
-    const newLikedMemeIds = this.state.likedMemeIds.includes(id)
-      ? this.state.likedMemeIds
-      : [...this.state.likedMemeIds, id];
-    this.setState({ images: newImages, likedMemeIds: newLikedMemeIds });
-  };
+        return img
+    })
+    var newLikedMemeIds = this.state.likedMemeIds
+    if (isDislike && newLikedMemeIds.includes(id)) {
+      newLikedMemeIds.splice(newLikedMemeIds.indexOf(id),1)
+    } else if (!isDislike && !newLikedMemeIds.includes(id)) {
+      newLikedMemeIds.push(id)
+    }
+    this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
+  }
+
 }
 
 /*

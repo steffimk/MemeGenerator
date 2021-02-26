@@ -137,7 +137,7 @@ export default class SingleImage extends React.Component {
                   }}
                 />
                 <Badge badgeContent={likeCount} max={999} color={favIconColor} style={{ marginRight: '20px' }}>
-                  <Fab size="small" color="white" onClick={() => this.props.likeImage(image._id)}>
+                  <Fab size="small" color="white" onClick={() => this.props.likeImage(image._id, (favIconColor==="secondary"))}>
                     <FavoriteIcon color={favIconColor} />
                   </Fab>
                 </Badge>
