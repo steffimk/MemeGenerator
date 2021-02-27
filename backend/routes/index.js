@@ -12,6 +12,9 @@ router.get('/:username', function(req,res) {
       dbOp.findAllOfUser(db, dbOp.MEME_COLLECTION, username).then((docs) => {
           responseTemplates.successBoundResponse(res, true, {"memes": docs})
       })
+  } else {
+    res.status(406);
+    res.send();
   }
 });
 

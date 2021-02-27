@@ -1,10 +1,10 @@
-const { id } = require("monk");
-
 module.exports = {
 
   USER_COLLECTION: 'users',
   MEME_COLLECTION: 'memes',
   TEMPLATE_COLLECTION: 'templates',
+
+  MAX_FILES_IN_ZIP: 5,
 
   addToDB(db, collection, data) {
     // Delete id so that db generates new unique one (prevents duplicate error)
@@ -45,12 +45,12 @@ module.exports = {
 
   likeMeme(db, memeId, username) {
     const collection = db.get(this.MEME_COLLECTION);
-    collection.update({ _id: memeId}, {$addToSet: {likes: username} }).then((promise) => console.log(promise))
+    collection.update({ _id: memeId}, {$addToSet: {likes: username}, $inc: {likeCount: 1 } }).then((promise) => console.log(promise))
   },
 
   dislikeMeme(db, memeId, username) {
     const collection = db.get(this.MEME_COLLECTION);
-    collection.update({ _id: memeId}, {$pull: {likes: username} }).then((promise) => console.log(promise))
+    collection.update({ _id: memeId}, {$pull: {likes: username}, $inc: {likeCount: -1 } }).then((promise) => console.log(promise))
   },
 
   viewMeme(db, memeId) {
@@ -63,8 +63,29 @@ module.exports = {
     collection.update({ _id: memeId}, {$addToSet: {comments: comment} }).then((promise) => console.log(promise))
   },
 
+  findMostLikes(db, collection) {
+    collection = db.get(collection);
+    return collection.find({}, { limit: this.MAX_FILES_IN_ZIP, sort: {likeCount: -1} })
+  },
+
+  findMostViews(db, collection) {
+    collection = db.get(collection);
+    return collection.find({}, { limit: this.MAX_FILES_IN_ZIP, sort: {views: -1} })
+  },
+
+  findNewest(db, collection) {
+    collection = db.get(collection)
+    return collection.find({}, { limit: this.MAX_FILES_IN_ZIP, sort: {creation_time: -1} })
+  },
+
+  findWithName(db, collection, name) {
+    collection = db.get(collection);
+    return collection.find({name: name}, { limit: this.MAX_FILES_IN_ZIP })
+  },
+
   getCaptions(db) {
     const collection = db.get(this.MEME_COLLECTION);
-    return collection.find({}, 'captions', { limit: 15 })
+    return collection.find({}, 'captions', { limit: this.MAX_FILES_IN_ZIP*3 }) // Should get at least 10 captions
   }
+
 };

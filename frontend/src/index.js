@@ -10,9 +10,6 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import AccountHistory from './components/accountHistory/AccountHistory';
 import Meme from './components/Meme';
-import ZipDownload from './components/ZipDownload';
-
-
 
 function Router() {
   return (
