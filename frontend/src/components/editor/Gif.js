@@ -50,8 +50,8 @@ export default class Gif extends React.Component {
             <div>
                 <h1>{this.props.title}</h1>
                 {/* <img src={this.state.genGif}  crossOrigin={"anonymous"} style={{width: this.props.width, height: this.props.height}} ></img> */}
-                <Button onClick={this.renderGif}>TEST</Button>
                 <canvas id="canvas" style={{width: this.props.width, height: this.props.height}}></canvas>
+                <Button  variant="contained" size="small" color="primary"onClick={this.renderGif}>Update Gif</Button>
             </div>
         );
     }
