@@ -62,4 +62,9 @@ module.exports = {
     const collection = db.get(this.MEME_COLLECTION);
     collection.update({ _id: memeId}, {$addToSet: {comments: comment} }).then((promise) => console.log(promise))
   },
+
+  getCaptions(db) {
+    const collection = db.get(this.MEME_COLLECTION);
+    return collection.find({}, 'captions', { limit: 15 })
+  }
 };
