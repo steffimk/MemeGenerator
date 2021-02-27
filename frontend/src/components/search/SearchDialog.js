@@ -48,9 +48,10 @@ export default class SearchDialog extends React.Component{
 
         const options = {
             includeScore: true,
-            keys: ['name', 'captions', 'imageDescription', 'comments'],
+            keys: ['name', 'captions', 'imageDescription', 'comments.comment'],
             shouldSort: false,
         }
+        console.log(filteredImages)
 
         if (this.state.search.length > 0) {
 
