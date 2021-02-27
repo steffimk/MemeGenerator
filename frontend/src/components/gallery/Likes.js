@@ -21,7 +21,8 @@ export default class Likes extends Component {
   };
 
   render() {
-    const renderedLikes = this.props.likes.map(this.renderLike)
+    const likeUsername = this.props.likes.map((like) => like.username)
+    const renderedLikes = likeUsername.map(this.renderLike)
     return (
       <Dialog open={this.props.open} onClose={this.props.handleClose} scroll="paper" style={dialogStyle}>
         <DialogTitle>Likes</DialogTitle>
@@ -37,7 +38,7 @@ export default class Likes extends Component {
 }
 
 Likes.propTypes = {
-  likes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  likes: PropTypes.arrayOf(PropTypes.object).isRequired,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired
 } 

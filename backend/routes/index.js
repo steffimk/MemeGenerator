@@ -46,7 +46,7 @@ router.post("/", function (req, res){
           template_id, creation_time, img, template_url, name, box_count, username, imageDescription,
           captions, captionPositions, fontColor, fontSize, isItalic, isBold, privacyLabel
       }
-      normalizedMeme.views = 0              // set views to 0
+      normalizedMeme.views = []             // set views to 0
       dbOp.addToDB(req.db, dbOp.MEME_COLLECTION, normalizedMeme);
 
       res.status(200);
@@ -72,6 +72,14 @@ router.post("/like", function(req, res) {
   }
 });
 
+router.get("/like/:id", function (req, res) {
+    let db = req.db;
+    const memeId = req.params.id
+    dbOp.findOneFromDB(db, dbOp.MEME_COLLECTION, memeId).then((docs) => {
+        responseTemplates.successBoundResponse(res, true, {"likes": docs.likes});
+    });
+});
+
 router.post("/comment", function(req, res) {
   let db = req.db;
   const memeId = req.body.memeId;
@@ -89,8 +97,9 @@ router.post("/comment", function(req, res) {
 router.post("/view", function(req, res) {
     let db = req.db;
     const memeId = req.body.memeId;
+    const date = req.body.date;
     if (memeId) {
-        dbOp.viewMeme(db, memeId)
+        dbOp.viewMeme(db, memeId, date)
         res.status(200);
         res.send();
     } else {
