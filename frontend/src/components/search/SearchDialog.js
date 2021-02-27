@@ -1,5 +1,6 @@
 import React from 'react';
 import memoize from "memoize-one";
+import Fuse from 'fuse.js'
 
 import {
     Button,
@@ -7,7 +8,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle, Select,
-    Slider, Switch,
+    Slider, Switch, TextField,
 } from "@material-ui/core";
 
 export default class SearchDialog extends React.Component{
@@ -20,10 +21,11 @@ export default class SearchDialog extends React.Component{
             "timeRange": [0, 1],
             "likesRange": [0, 1],
             "viewsRange": [0, 1],
+            "search": "",
         };
     }
 
-    filterImages(){
+    filterImages() {
         let filteredImages = this.props.all_images.filter((value, index, list) => {
             return (
                     !value.hasOwnProperty("creation_time") || (value.hasOwnProperty("creation_time") &&
@@ -43,6 +45,20 @@ export default class SearchDialog extends React.Component{
                     || (!value.hasOwnProperty("views") && Math.min(...this.state.viewsRange) === 0)
                 )
         })
+
+        const options = {
+            includeScore: true,
+            keys: ['name', 'captions', 'imageDescription', 'comments'],
+            shouldSort: false,
+        }
+
+        if (this.state.search.length > 0) {
+
+            const fuse = new Fuse(filteredImages, options)
+
+            filteredImages = fuse.search(this.state.search).map((result) => result.item)
+        }
+
 
         filteredImages.sort((a, b) => {
             let order = 1;
@@ -97,6 +113,12 @@ export default class SearchDialog extends React.Component{
         this.filterImages();
     }
 
+
+    handleSearchChange(e) {
+        this.setState({"search": e.target.value});
+        this.filterImages();
+    }
+
     valueLabelFormat(value) {
         let date = new Date(value);
         return date.toLocaleDateString();
@@ -132,7 +154,6 @@ export default class SearchDialog extends React.Component{
             return [max_times, min_times, max_likes, max_views]
         }
     );
-
     render(){
         let [max_times, min_times, max_likes, max_views] = this.getLimits(this.props.all_images);
 
@@ -208,6 +229,13 @@ export default class SearchDialog extends React.Component{
                         />
                         Desc
                     </label>
+                    <TextField
+                        id="search-box"
+                        label="Search"
+                        placeholder="titles, captions, comments, template id, ..."
+                        fullWidth
+                        onChange={(e) => this.handleSearchChange(e)}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => this.props.onClose()} color="primary">
