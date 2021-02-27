@@ -29,7 +29,7 @@ class AccountHistory extends Component {
   }
 
   getOwnMemes = () => {
-    const username = localStorage.getItem('memeGen_username');
+    const username = localStorage.getItem(LS_USERNAME);
     const endpointWithParam = `${MEMES_ENDPOINT}${username}`;
     authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownMemes: json.data.memes }))
@@ -37,7 +37,7 @@ class AccountHistory extends Component {
   };
 
   getOwnTemplates = () => {
-    const username = localStorage.getItem('memeGen_username');
+    const username = localStorage.getItem(LS_USERNAME);
     const endpointWithParam = `${TEMPLATE_ENDPOINT}/${username}`;
     authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
       .then((json) => this.setState({ ownTemplates: json.data.templates }))
@@ -77,36 +77,27 @@ class AccountHistory extends Component {
     );
   };
 
-  likeMeme = (id) => {
+  likeMeme = (id, isDislike) => {
     const username = localStorage.getItem(LS_USERNAME);
-    let like = {username: username, date: Date.now()};
-    const endpointWithParam = `${LIKE_ENDPOINT}/${id}`;
-
-    authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated).then((docs) => {
-        let usernames = docs.data.likes.map((like) => like.username);
-        if(!usernames.includes(username)) {
-            authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, like: like}), this.isNotAuthenticated)
-                .catch((error) => {
-                    console.error('Error:', error)
-                });
-        }
-    });
-
+    let like= {username: username, date: Date.now(), isDislike: isDislike};
+    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, like: like}), this.isNotAuthenticated)
+    .catch((error) => { console.error('Error:', error) });
     let newMemes = this.state.ownMemes.map(img => { 
         if(img._id === id) {
-            let usernames = img.likes.map((like) => like.username)
-            if (img.likes && usernames.includes(username)) {
-                // Do nothing. User already likes meme.
-            } else if (img.likes) {
-                img.likes.push(like)
-            } else {
-                img.likes = [like]
+            if (img.likes && img.likes.users && img.likes.users.includes(username) && isDislike) {
+                img.likes.users.splice(img.likes.users.indexOf(username),1) // Remove username from likes
+            } else if (img.likes.users && !isDislike) {
+                img.likes.users.push(username)
+            } else if (!isDislike) {
+                img.likes.users = [username]
             }
-        }
+          }
         return img
     })
     this.setState({ ownMemes: newMemes })
   }
+
+  viewMeme = (id) => viewMeme(id, this.isNotAuthenticated)
 
   clickOnImageAction = (isMeme, id) => {
       if (!isMeme) return
@@ -140,7 +131,15 @@ class AccountHistory extends Component {
             {renderedTemplates}
           </GridList>
         </div>
-        {isMeme && <SingleImage images={this.state.ownMemes} id={id} parentRoute="/history/" likeImage={this.likeMeme}/>}
+        {isMeme && (
+          <SingleImage
+            images={this.state.ownMemes}
+            id={id}
+            parentRoute="/history/"
+            likeImage={this.likeMeme}
+            viewMeme={this.viewMeme}
+          />
+        )}
         {/* {!isMeme && <SingleImage images={this.state.ownTemplates} id={id} parentRoute="/history/"/>} */}
       </div>
     );

@@ -90,7 +90,7 @@ export default class SingleImage extends React.Component {
               <Toolbar>
                 <h1 className="modal-title">{image.name}</h1>
                 <Link to=".">
-                  <Fab size="small" color="white" style={{ marginRight: '30px' }} onClick={this.props.stopPlaying}>
+                  <Fab size="small" color="white" style={{ marginRight: '30px' }} onClick={() => this.props.stopPlaying}>
                     <ClearIcon />
                   </Fab>
                 </Link>
@@ -99,7 +99,7 @@ export default class SingleImage extends React.Component {
             <Link
               className="modal-nav modal-left"
               to={parentRoute + prev_image._id}
-              onClick={() => viewMeme(prev_image._id, Date.now(), this.props.isNotAuthenticated)}
+              onClick={() => this.props.viewMeme(prev_image._id, Date.now())}
             />
             <img
               src={imageSrc}
@@ -110,7 +110,7 @@ export default class SingleImage extends React.Component {
               id="nextLink"
               className="modal-nav modal-right"
               to={parentRoute + next_image._id}
-              onClick={() => viewMeme(next_image._id, Date.now(), this.props.isNotAuthenticated)}
+              onClick={() => this.props.viewMeme(next_image._id, Date.now())}
             />
             <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
               <Toolbar>
@@ -148,7 +148,7 @@ export default class SingleImage extends React.Component {
                   }}
                 />
                 <Badge badgeContent={likeCount} max={999} color={favIconColor} style={{ marginRight: '20px' }}>
-                  <Fab size="small" color="white" onClick={() => this.props.likeImage(image._id)}>
+                  <Fab size="small" color="white" onClick={() => this.props.likeImage(image._id, (favIconColor==="secondary"))}>
                     <FavoriteIcon color={favIconColor} />
                   </Fab>
                 </Badge>
@@ -222,6 +222,7 @@ export const downloadImage = (imageSrc) => {
 
 SingleImage.propTypes = {
     images: PropTypes.array.isRequired,
+    viewMeme: PropTypes.func.isRequired,
     id: PropTypes.string.isRequired,
     isNotAuthenticated: PropTypes.func.isRequired,
     likeImage: PropTypes.func.isRequired,
