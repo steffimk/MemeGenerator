@@ -4,6 +4,7 @@ import { gifToSprite } from "./gifToSprite";
 const [PLAY, PAUSE, STOP] = [0, 1, 2];
 
 /**
+ * Quelle: https://stackoverflow.com/questions/28056636/animated-gif-on-fabric-js-canvas
  * fabricGif "async"
  * Mainly a wrapper for gifToSprite
  * @param {string|File} gif can be a URL, dataURL or an "input File"

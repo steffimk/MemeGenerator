@@ -1,6 +1,7 @@
 import { parseGIF, decompressFrames } from "gifuct-js";
 
 /**
+ * Quelle: https://stackoverflow.com/questions/28056636/animated-gif-on-fabric-js-canvas
  * gifToSprite "async"
  * @param {string|input File} gif can be a URL, dataURL or an "input File"
  * @param {number} maxWidth Optional, scale to maximum width
