@@ -50,7 +50,8 @@ router.post("/", function (req, res){
           template_id, creation_time, img, template_url, name, box_count, username, imageDescription,
           captions, captionPositions, fontColor, fontSize, isItalic, isBold, privacyLabel
       }
-      normalizedMeme.views = []             // set views to 0
+      normalizedMeme.views = []
+      normalizedMeme.viewCout = 0 // set views to 0
       dbOp.addToDB(req.db, dbOp.MEME_COLLECTION, normalizedMeme);
 
       res.status(200);
@@ -193,14 +194,13 @@ drawCoordinates = (drawingCoordinates, context) => {
 
 router.post("/like", function(req, res) {
   let db = req.db;
-  const { memeId, like } = req.body;
-  console.log(memeId + " " + like)
-  if (memeId && like.username && like.isDislike && like.date !== undefined) {
-      dbOp.likeLogMeme(db, memeId, like)
+  const { memeId, username, date, isDislike } = req.body;
+  console.log(memeId + " " + username + " " + date + " " + isDislike)
+  if (memeId && username && date && isDislike !== undefined) {
       if (isDislike === true) {
-        dbOp.dislikeMeme(db, memeId, like.username)
+        dbOp.dislikeMeme(db, memeId, username, date)
       } else {
-        dbOp.likeMeme(db, memeId, like.username)
+        dbOp.likeMeme(db, memeId, username, date)
       }
       res.status(200);
       res.send();
@@ -208,14 +208,6 @@ router.post("/like", function(req, res) {
       res.status(406);
       res.send();
   }
-});
-
-router.get("/like/:id", function (req, res) {
-    let db = req.db;
-    const memeId = req.params.id
-    dbOp.findOneFromDB(db, dbOp.MEME_COLLECTION, memeId).then((docs) => {
-        responseTemplates.successBoundResponse(res, true, {"likes": docs.likeLogs});
-    });
 });
 
 router.post("/comment", function(req, res) {

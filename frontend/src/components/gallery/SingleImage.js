@@ -19,7 +19,6 @@ import Comments from './Comments';
 import Likes from './Likes';
 import ShareDialog from '../shareDialog/Share';
 import ChartsDialog from "../chartsDialog/ChartsDialog";
-import { authorizedFetch, viewMeme, VIEW_ENDPOINT } from '../../communication/requests';
 
 export default class SingleImage extends React.Component {
   constructor(props) {
@@ -77,13 +76,13 @@ export default class SingleImage extends React.Component {
         if (image.likes) {
           likes = image.likes;
           likeCount = image.likes.length;
-          if (image.likes.map((like) => like.username).includes(localStorage.getItem(LS_USERNAME))) favIconColor = 'secondary';
+          if (image.likes.includes(localStorage.getItem(LS_USERNAME))) favIconColor = 'secondary';
         }
+        let likeLogs = image.likeLogs ? image.likeLogs : [];
         let creation_time = image.creation_time;
         let views = image.views;
-        console.log("creation time", image.creation_time);
-        console.log("Likes ", likes);
-        console.log(views)
+
+        let nextRandom = this.getRandomId();
         return (
           <div className="modal">
             <AppBar position="fixed" style={{ top: '0', bottom: 'auto', backgroundColor: 'rgba(0,0,0,0.9)' }}>
@@ -129,11 +128,18 @@ export default class SingleImage extends React.Component {
                   </div>
                 )}
                 <Link
-                  id="randomButton"
                   className="modal-shuffle"
                   style={{ marginRight: '200px', marginLeft: isGallery ? '' : window.innerWidth * 0.2 }}
-                  to={parentRoute + this.getRandomId()}>
-                  <Button name="random" variant="contained" size="small" color="primary">
+                  to={parentRoute + nextRandom}>
+                  <Button name="random"
+                          variant="contained"
+                          size="small"
+                          color="primary"
+                          id="randomButton"
+                          onClick={() => {
+                              console.log("next random ", nextRandom);
+                              this.props.viewMeme(nextRandom, Date.now())
+                          }}>
                     Shuffle
                   </Button>
                 </Link>
@@ -190,7 +196,7 @@ export default class SingleImage extends React.Component {
             <ChartsDialog
                 open={this.state.openCharts}
                 handleClose={() => this.setOpenCharts(false)}
-                likes={likes}
+                likes={likeLogs}
                 creation_time={creation_time}
                 views={views}
             />

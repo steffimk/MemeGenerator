@@ -88,7 +88,7 @@ class Gallery extends React.Component {
     getLikedMemeIds(memes, username) {
         if (username && memes.length > 0){
             const likedMemeIds = memes
-              .filter((meme) => meme.likes && meme.likes.map((like) => like.username).includes(username)) // meme has likes and they include this user
+              .filter((meme) => meme.likes && meme.likes.includes(username)) // meme has likes and they include this user
               .map((meme) => meme._id);
             this.setState({ likedMemeIds: likedMemeIds })
             console.log("likedMemeIds: " + likedMemeIds)
@@ -198,11 +198,11 @@ class Gallery extends React.Component {
     let favIconColor = 'primary';
     const likeCount = image.likes ? image.likes.length : 0;
     const commentCount = image.comments ? image.comments.length : 0;
-    const viewCount = image.views ? image.views : 0;
+    const viewCount = image.viewCount ? image.viewCount : 0;
     if (this.state.likedMemeIds.includes(image._id)) favIconColor = 'secondary';
     return (
       <div className="image-container" id={image._id}>
-        <Link to={imageRoute} key={image._id} onClick={() => this.viewMeme(image._id)}>
+        <Link to={imageRoute} key={image._id} onClick={() => this.viewMeme(image._id, Date.now())}>
           <img src={image.img} alt={image.name} />
         </Link>
         <div className="image-title">
@@ -243,8 +243,8 @@ class Gallery extends React.Component {
     );
   }
 
-    viewMeme = (id) => {
-        viewMeme(id, Date.now(), this.isNotAuthenticated);
+    viewMeme = (id, date) => {
+        viewMeme(id, date, this.isNotAuthenticated);
         let newImages = this.state.images.map((img) => {
             if (img._id === id) {
                 if (img.views) {
@@ -261,17 +261,25 @@ class Gallery extends React.Component {
     likeImage = (id, isDislike) => {
         const username = localStorage.getItem(LS_USERNAME)
         const like = {username: username, date: Date.now(), isDislike: isDislike}
-        authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, like: like}), this.isNotAuthenticated)
+        authorizedFetch(LIKE_ENDPOINT,
+            'POST',
+            JSON.stringify({memeId: id, username: username, date: Date.now(), isDislike: isDislike}),
+            this.isNotAuthenticated)
         .catch((error) => { console.error('Error:', error) });
         let newImages = this.state.images.map(img => {
             if(img._id === id) {
-                if (img.likes && img.likes.users && img.likes.users.includes(username) && isDislike) {
-                    img.likes.users.splice(img.likes.users.indexOf(username),1) // Remove username from likes
+                if(img.likeLogs) {
+                    img.likeLogs.push(like);
+                } else {
+                    img.likeLogs = like;
+                }
+                if (img.likes && img.likes.includes(username) && isDislike) {
+                    img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes
                     // Do nothing. User alredy likes meme.
-                } else if (img.likes.users && !isDislike) {
-                    img.likes.users.push(username)
+                } else if (img.likes && !isDislike) {
+                    img.likes.push(username)
                 } else if (!isDislike) {
-                    img.likes.users = [username]
+                    img.likes = [username]
                 }
             }
             return img

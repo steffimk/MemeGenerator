@@ -80,16 +80,25 @@ class AccountHistory extends Component {
   likeMeme = (id, isDislike) => {
     const username = localStorage.getItem(LS_USERNAME);
     let like= {username: username, date: Date.now(), isDislike: isDislike};
-    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, like: like}), this.isNotAuthenticated)
+    authorizedFetch(LIKE_ENDPOINT,
+        'POST',
+        JSON.stringify({memeId: id, username: username, date: Date.now(), isDislike: isDislike}),
+        this.isNotAuthenticated)
     .catch((error) => { console.error('Error:', error) });
-    let newMemes = this.state.ownMemes.map(img => { 
+    let newMemes = this.state.ownMemes.map(img => {
         if(img._id === id) {
-            if (img.likes && img.likes.users && img.likes.users.includes(username) && isDislike) {
-                img.likes.users.splice(img.likes.users.indexOf(username),1) // Remove username from likes
-            } else if (img.likes.users && !isDislike) {
-                img.likes.users.push(username)
+            if(img.likeLogs) {
+                img.likeLogs.push(like);
+            } else {
+                img.likeLogs = like;
+            }
+            if (img.likes && img.likes.includes(username) && isDislike) {
+                img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes
+                // Do nothing. User alredy likes meme.
+            } else if (img.likes && !isDislike) {
+                img.likes.push(username)
             } else if (!isDislike) {
-                img.likes.users = [username]
+                img.likes = [username]
             }
           }
         return img
@@ -97,7 +106,7 @@ class AccountHistory extends Component {
     this.setState({ ownMemes: newMemes })
   }
 
-  viewMeme = (id) => viewMeme(id, this.isNotAuthenticated)
+  viewMeme = (id, date) => viewMeme(id, date, this.isNotAuthenticated)
 
   clickOnImageAction = (isMeme, id) => {
       if (!isMeme) return

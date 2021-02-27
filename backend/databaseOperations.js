@@ -43,21 +43,28 @@ module.exports = {
     return collection.find({ privacyLabel: privacyLabel });
   },
 
-  likeMeme(db, memeId, like) {
+  likeMeme(db, memeId, username, date) {
     const collection = db.get(this.MEME_COLLECTION);
-    collection.update({ _id: memeId}, {$addToSet: {likes: like.username}, $addToSet: {likeLogs: like},
-            $inc: {likeCount: 1 }}).then((promise) => console.log(promise))
+    collection.update({ _id: memeId},
+        {
+          $addToSet: {likes: username, likeLogs: {username: username, date: date, isDislike: false}},
+          $inc: {likeCount: 1 }
+        }).then((promise) => console.log(promise))
   },
 
-  dislikeMeme(db, memeId, username) {
+  dislikeMeme(db, memeId, username, date) {
     const collection = db.get(this.MEME_COLLECTION);
-    collection.update({ _id: memeId}, {$pull: {likes: like.username}, $addToSet: {likeLogs: like},
-        $inc: {likeCount: -1 } }).then((promise) => console.log(promise))
+    collection.update({ _id: memeId},
+        {
+          $pull: {likes: username},
+          $addToSet: {likeLogs: {username: username, date: date, isDislike: true}},
+          $inc: {likeCount: -1 }
+        }).then((promise) => console.log(promise))
   },
 
   viewMeme(db, memeId, date) {
     const collection = db.get(this.MEME_COLLECTION);
-    collection.update({ _id: memeId}, {$addToSet: {views: date} }).then((promise) => console.log(promise))
+    collection.update({ _id: memeId}, {$addToSet: {views: date}, $inc: {viewCount: 1}}).then((promise) => console.log(promise))
   },
 
   addCommentToMeme(db, memeId, comment) {
@@ -72,7 +79,7 @@ module.exports = {
 
   findMostViews(db, collection) {
     collection = db.get(collection);
-    return collection.find({}, { limit: this.MAX_FILES_IN_ZIP, sort: {views: -1} })
+    return collection.find({}, { limit: this.MAX_FILES_IN_ZIP, sort: {viewCount: -1} })
   },
 
   findNewest(db, collection) {

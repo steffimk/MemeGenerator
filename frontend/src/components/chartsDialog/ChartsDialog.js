@@ -17,10 +17,12 @@ export default class ChartsDialog extends Component {
     getDataArray = () => {
 
         let data_array = [[{type: 'date', label: 'Day'}, {type: 'number', label:'Likes'}]];
-        data_array.push([new Date(this.props.creation_time), 0]);
+        let likesCount = 0;
+        data_array.push([new Date(this.props.creation_time), likesCount]);
 
-        this.props.likes.forEach((like, index) => {
-            data_array.push([new Date(like.date), index+1]);
+        this.props.likes.forEach(like => {
+            likesCount = like.isDislike ? likesCount - 1 : likesCount + 1;
+            data_array.push([new Date(like.date), likesCount]);
         });
 
         return  data_array;
