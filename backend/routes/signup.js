@@ -6,7 +6,7 @@ const responseTemplates = require('../responseTemplates')
 /* Database Operations */
 const dbOp = require('../databaseOperations')
 
-/* POST login listing. */
+/* POST signup listing. */
 router.post('/', function(req, res, next) {
   const db = req.db
   const { username, password } = req.body
@@ -19,7 +19,7 @@ router.post('/', function(req, res, next) {
       }
       const salt = crypto.randomBytes(16).toString('hex')
       const hash = encryptPassword(password, salt)
-      dbOp.createNewUser(db, username, salt, hash) // TODO: Check whether successful or not
+      dbOp.createNewUser(db, username, salt, hash)
       // New user created.
       console.log("New user created.")
       responseTemplates.sendJWT(res, username)
@@ -27,6 +27,12 @@ router.post('/', function(req, res, next) {
   })
 });
 
+/**
+ * Encryptes the password with the passed in salt.
+ * @param {*} password - password entered by the user
+ * @param {*} salt - randomly generated salt
+ * @returns the hash
+ */
 function encryptPassword(password, salt) {
   return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 }

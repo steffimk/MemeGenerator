@@ -16,8 +16,10 @@ var screenshotRouter = require('./routes/screenshot')
 
 var app = express();
 db.then(() => {
-  console.log('Connected correctly to server')
+  console.log('Database connected correctly to server')
 })
+
+// Add the database to all requests
 app.use(function(req,res,next){
   req.db = db;
   next();
@@ -36,6 +38,7 @@ app.use(cookieParser());
 // Routes that can be reached unauthenticated
 app.use('/login', loginRouter);
 app.use('/signup', signupRouter);
+// The route used for the API
 app.use('/meme', singleMemeRouter);
 
 // Authentication middleware: Verify jwt token
@@ -55,6 +58,7 @@ app.use((req,res,next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes that require authentication
 app.use('/templates', templatesRouter);
 app.use('/screenshot', screenshotRouter);
 app.use('/', indexRouter);

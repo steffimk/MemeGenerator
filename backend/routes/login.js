@@ -24,6 +24,12 @@ router.post('/', function(req, res, next) {
   })
 });
 
+/**
+ * Checks whether the entered password is correct
+ * @param {*} password - pw entered by the user
+ * @param {*} dbSalt - salt of user from database
+ * @param {*} dbHash - hash of password of user from database
+ */
 function passwordIsValid(password, dbSalt, dbHash){
   const hash = encryptPassword(password, dbSalt)
   return hash == dbHash

@@ -8,6 +8,12 @@ const responseTemplates = require('../responseTemplates')
 const dbOp = require('../databaseOperations');
 const {createCanvas, loadImage} = require('canvas');
 
+// ------------------------ This route acts as API ------------------------
+
+/**
+ * Creates a new meme from the imageUrl and two captions.
+ * Respondes with a zip
+ */
 router.get("/create", function (req, res) {
   const { imageUrl, captionTop, captionBottom } = req.query;
 
@@ -26,6 +32,9 @@ router.get("/create", function (req, res) {
   }
 });
 
+/**
+ * Creates up to five random memes with the imageURL and captions pulled from the database
+ */
 router.get('/createrandom', function (req, res) {
   const db = req.db;
   const { imageUrl } = req.query;
@@ -57,6 +66,9 @@ router.get('/createrandom', function (req, res) {
   }
 });
 
+/**
+ * Respondes with a zip containing the five most viewed memes
+ */
 router.get('/mostviews', function(req,res){
   let db = req.db;
   dbOp.findMostViews(db, dbOp.MEME_COLLECTION).then((memes) => {
@@ -69,6 +81,9 @@ router.get('/mostviews', function(req,res){
   })
 })
 
+/**
+ * Respondes with a zip containing the five newest memes
+ */
 router.get('/newest', function(req,res){
   let db = req.db;
   dbOp.findNewest(db, dbOp.MEME_COLLECTION).then((memes) => {
@@ -81,6 +96,9 @@ router.get('/newest', function(req,res){
   })
 })
 
+/**
+ * Respondes with a zip containing the five most liked memes
+ */
 router.get('/mostlikes', function(req,res){
   let db = req.db;
   dbOp.findMostLikes(db, dbOp.MEME_COLLECTION).then((memes) => {
@@ -94,7 +112,8 @@ router.get('/mostlikes', function(req,res){
 })
 
 /**
- * If name has blank spaces, fill them with %20
+ * Respondes with up to five memes with the exact name passed in the url.
+ * If name has blank spaces, fill them with %20.
  */
 router.get('/name/:name', function(req,res){
   let db = req.db;
@@ -114,6 +133,9 @@ router.get('/name/:name', function(req,res){
   }
 })
 
+/**
+ * Respondes with a json containing the dataURL of the meme with the id passed in the url
+ */
 router.get('/:id', function(req, res){
   let db = req.db;
   const id = req.params.id

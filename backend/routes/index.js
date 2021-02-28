@@ -5,6 +5,9 @@ const responseTemplates = require('../responseTemplates')
 const { isValidUrl, isPositiveInteger } = require('./templates')
 const {createCanvas, loadImage} = require('canvas')
 
+/**
+ * Sends all memes of user with the name in the url parameter
+ */
 router.get('/:username', function(req,res) {
   let db = req.db;
   const username = req.params.username
@@ -18,9 +21,11 @@ router.get('/:username', function(req,res) {
   }
 });
 
+/**
+ * Sends all memes marked as public 
+ */
 router.get('/', function (req, res) {
   let db = req.db;
-  // console.log("in memes", db)
   dbOp.findAllWithPrivacyLabel(db,dbOp.MEME_COLLECTION,'public')
   .then((docs) => {
       docs.forEach((template) => template.id = template._id)
@@ -31,6 +36,9 @@ router.get('/', function (req, res) {
   });
 });
 
+/**
+ * Saves the sent meme to the database
+ */
 router.post("/", function (req, res){
   const meme = req.body;
   const {
@@ -62,11 +70,12 @@ router.post("/", function (req, res){
   }
 });
 
-
+/**
+ * Generates a new meme with the help of the sent data
+ */
 router.post("/create", function (req, res) {
 
     const meme = req.body;
-
 
     const {
         currentImage, imageInfo, captions, captionPositions_X, captionPositions_Y, fontSize, isItalic,
@@ -192,6 +201,9 @@ drawCoordinates = (drawingCoordinates, context) => {
     }
 }
 
+/**
+ * Lets a user like or dislike a meme
+ */
 router.post("/like", function(req, res) {
   let db = req.db;
   const { memeId, username, date, isDislike } = req.body;
@@ -210,6 +222,9 @@ router.post("/like", function(req, res) {
   }
 });
 
+/**
+ * Saves a comment of a user to a meme
+ */
 router.post("/comment", function(req, res) {
   let db = req.db;
   const memeId = req.body.memeId;
@@ -224,6 +239,9 @@ router.post("/comment", function(req, res) {
   }
 });
 
+/**
+ * Call when a meme is viewed
+ */
 router.post("/view", function(req, res) {
     let db = req.db;
     const memeId = req.body.memeId;
@@ -238,7 +256,9 @@ router.post("/view", function(req, res) {
     }
 });
 
-
+/**
+ * Sends the memes generated with this template url
+ */
 router.get('/templateurl/:url', function (req, res){
     let db = req.db;
 
@@ -260,6 +280,9 @@ router.get('/templateurl/:url', function (req, res){
     }
 })
 
+/**
+ * Sends the memes generated with this template (identified with passed id)
+ */
 router.get('/templateid/:id', function (req, res){
     let db = req.db;
 
