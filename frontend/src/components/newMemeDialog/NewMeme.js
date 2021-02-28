@@ -4,6 +4,12 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormCon
 import { dialogStyle } from '../../constants'
 import ShareDialog from '../shareDialog/Share';
 import ShareIcon from '@material-ui/icons/Share';
+
+/**
+ * This component is a dialog that shows the user the freshly generated meme and gives him the
+ * options to download it or upload it to the server (marked as private, unlisted or public).
+ * It also gives informs the user on how to share the meme.
+ */
 export default class NewMeme extends Component {
 
   constructor(props) {
@@ -16,11 +22,17 @@ export default class NewMeme extends Component {
 
   setOpenShare = (isOpen) => this.setState({ openShare: isOpen })
 
+  /**
+   * Uploads the meme to the database.
+   */
   uploadMeme = () => {
     this.props.uploadMeme(this.state.privacyLabel)
     this.props.handleClose()
   }
 
+  /**
+   * Downloads the meme.
+   */
   downloadMeme = () => {
     var downloadLink = document.createElement("a")
     downloadLink.href = this.props.dataUrl

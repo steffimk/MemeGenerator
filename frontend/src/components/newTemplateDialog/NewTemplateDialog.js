@@ -4,6 +4,10 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import './NewTemplateDialog.css';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField} from "@material-ui/core";
 
+/**
+ * This dialog enables the user to generate a new template by uploading an image or gif,
+ * taking a photo with the webcam, passing an image url or taking a screenshot of a website.
+ */
 export default class NewTemplateDialog extends React.Component{
 
     constructor(props) {
@@ -18,7 +22,10 @@ export default class NewTemplateDialog extends React.Component{
     }
 
 
-    onSave(e){
+    /**
+     * Call when user clicks on the 'AddTemplate'-Button
+     */
+    onSave(){
         // TODO verify if some template was added
         let snapshot = this.getSnapshotFromStream();
         this.closeUserMediaStream();
@@ -38,6 +45,9 @@ export default class NewTemplateDialog extends React.Component{
         this.props.onSave(memeTemplateToSave);
     }
 
+    /**
+     * Call when user clicks on Cancel-Button
+     */
     onClose(){
         this.closeUserMediaStream();
         this.props.onClose();
@@ -165,10 +175,10 @@ export default class NewTemplateDialog extends React.Component{
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => (this.onClose())} color="primary">
+                    <Button onClick={this.onClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={(e) => this.onSave(e)} color="primary">
+                    <Button onClick={this.onSave} color="primary">
                         Add template
                     </Button>
                 </DialogActions>

@@ -6,38 +6,77 @@ module.exports = {
 
   MAX_FILES_IN_ZIP: 5,
 
+  /**
+   * Saves the data in the specified collection of the database
+   * @param {*} db - database reference
+   * @param {*} collection - name of a collection of the db 
+   * @param {*} data - data to be saved
+   */
   addToDB(db, collection, data) {
-    // Delete id so that db generates new unique one (prevents duplicate error)
-    //delete data._id;
     collection = db.get(collection);
-    collection.insert(data).then(); //(docs) => console.log(docs));
+    collection.insert(data).then();
   },
 
+  /**
+   * Returns all entries in the specified collection
+   * @param {*} db  - database reference
+   * @param {*} collection - name of a collection of the db
+   */
   findAllFromDB(db, collection) {
     collection = db.get(collection);
     return collection.find({});
   },
 
+  /**
+   * Returns the entry with the passed in id
+   * @param {*} db - database reference 
+   * @param {*} collection - name of a collection of the db
+   * @param {*} id - id of the searched entry
+   */
   findOneFromDB(db, collection, id) {
     collection = db.get(collection);
     return collection.findOne({ _id: id})
   },
 
+  /**
+   * Returns the user with the passed in name
+   * @param {*} db - database reference 
+   * @param {*} name - name of the searched user
+   */
   findUserWithName(db, name) {
     const collection = db.get(this.USER_COLLECTION);
     return collection.findOne({ name: name });
   },
 
+  /**
+   * Creates a new user
+   * @param {*} db - database reference 
+   * @param {*} name - username
+   * @param {*} salt - salt user to generate the hash
+   * @param {*} hash - hash generated from password and salt
+   */
   createNewUser(db, name, salt, hash) {
     const userData = { name: name, salt: salt, hash: hash };
     this.addToDB(db, this.USER_COLLECTION, userData);
   },
 
+  /**
+   * Returns all entries with this username
+   * @param {*} db - database reference 
+   * @param {*} collection - name of a collection of the db
+   * @param {*} username - the username the entries are searched with
+   */
   findAllOfUser(db, collection, username) {
     collection = db.get(collection);
     return collection.find({ username: username });
   },
 
+  /**
+   * Returns all entries with this privacy label
+   * @param {*} db - database reference 
+   * @param {*} collection - name of a collection of the db
+   * @param {*} privacyLabel - the privacy label the entries are searched with
+   */
   findAllWithPrivacyLabel(db, collection, privacyLabel) {
     collection = db.get(collection);
     return collection.find({ privacyLabel: privacyLabel });

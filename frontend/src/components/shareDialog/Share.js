@@ -19,6 +19,10 @@ import {
   WhatsappIcon
 } from "react-share";
 
+/**
+ * This component is a dialog that, once it is open, gives the user the option to share a meme with others through an Email,
+ * over Facebook, Reddit, Telegram, Twitter or Whatsapp.
+ */
 export default class ShareDialog extends Component {
 
   render() {

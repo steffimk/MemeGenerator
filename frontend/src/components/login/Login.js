@@ -7,6 +7,9 @@ import { LS_JWT, LS_USERNAME } from '../../constants'
 
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from '../../communication/requests'
 
+/**
+ * Component for logging in and signing up. User can enter a username and a password.
+ */
 export default class Login extends Component {
 
   constructor(props){
@@ -19,6 +22,11 @@ export default class Login extends Component {
     }
   }
 
+  /**
+   * Call when user tries to log in or sign up.
+   * Sends a POST-request to the backend.
+   * @param {Boolean} isLogIn - true when it is a log in, false when it is a sign up
+   */
   logIn = (isLogIn) => {
     const endpoint = isLogIn ? LOGIN_ENDPOINT : SIGNUP_ENDPOINT
     const userData = {username: this.state.username, password: this.state.password }

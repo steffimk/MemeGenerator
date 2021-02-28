@@ -11,6 +11,9 @@ function getTemplatesFromImgFlip(){
         .then(json => json.data.memes)
 }
 
+/**
+ * Repondes with all templates of the user
+ */
 router.get('/:username', function(req, res, next){
     let db = req.db;
     const username = req.params.username
@@ -21,6 +24,9 @@ router.get('/:username', function(req, res, next){
     }
 });
 
+/**
+ * Respondes with all templates from the database and templates from img flip
+ */
 router.get('/', function (req, res, next) {
     let db = req.db;
     Promise.all([dbOp.findAllFromDB(db,dbOp.TEMPLATE_COLLECTION), getTemplatesFromImgFlip()])
@@ -34,16 +40,17 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/**
+ * Saves the sent template to the database
+ */
 router.post('/', function(req, res){
     const memeTemplate = req.body;
-    // console.log("memeTemplate ", req.body)
     const {
         name, url, username, width, height, box_count, captions,
         captionPositions, fontColor, fontSize, isItalic, isBold,
         imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates,
         imageDescription
     } = memeTemplate;
-    // console.log(memeTemplate)
     // validate input
     if(
         typeof name === "string" && name.length > 0 &&

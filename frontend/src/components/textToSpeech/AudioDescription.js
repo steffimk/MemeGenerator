@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import Speech from 'speak-tts'
 import PropTypes from 'prop-types'
 
+/**
+ * This component contains the needed functions to read out a meme or a template.
+ * It is displayed as an icon saying AD for AudioDescription. Clicking on the icon results in 
+ * reading the description passed in the props.
+ */
 export default class AudioDescription extends Component {
 
   constructor(props) {
