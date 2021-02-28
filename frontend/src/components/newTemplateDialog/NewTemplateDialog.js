@@ -154,7 +154,7 @@ export default class NewTemplateDialog extends React.Component{
                                    onChange={(e) => this.onUrlChange(e)}
                         />
                         <p> - or -</p>
-                        <TextField id="template-file" label="Upload photo"
+                        <TextField id="template-file" label="Upload phoFeature/gif minimal to"
                                    type="file"
                                    accept="image/*"
                                    onChange={(e) => this.onFileChange(e)}

@@ -31,8 +31,8 @@ export function authorizedFetch(endpoint, method, bodyJson, isNotAuthenticatedCa
   }).then((response) => handleResponse(response, isNotAuthenticatedCallback));
 }
 
-export function viewMeme(id, isNotAuthenticatedCallback){
-  authorizedFetch(VIEW_ENDPOINT, 'POST', JSON.stringify({memeId: id}), isNotAuthenticatedCallback)
+export function viewMeme(id, date, isNotAuthenticatedCallback){
+  authorizedFetch(VIEW_ENDPOINT, 'POST', JSON.stringify({memeId: id, date: date}), isNotAuthenticatedCallback)
   .catch((error) => { console.error('Error:', error) });
 }
 

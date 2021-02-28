@@ -40,8 +40,8 @@ export default class SearchDialog extends React.Component{
                 ) &&
                 (
                     (value.hasOwnProperty("views") &&
-                        value.views <= Math.max(...this.state.viewsRange) &&
-                        value.views >= Math.min(...this.state.viewsRange))
+                        value.views.length <= Math.max(...this.state.viewsRange) &&
+                        value.views.length >= Math.min(...this.state.viewsRange))
                     || (!value.hasOwnProperty("views") && Math.min(...this.state.viewsRange) === 0)
                 )
         })
@@ -79,10 +79,10 @@ export default class SearchDialog extends React.Component{
                 let cnt_b = 0
 
                 if(a.hasOwnProperty("views")){
-                    cnt_a = a.views
+                    cnt_a = a.views.length
                 }
                 if(b.hasOwnProperty("views")){
-                    cnt_b = b.views
+                    cnt_b = b.views.length
                 }
                 order = cnt_a - cnt_b;
             }else{
@@ -144,6 +144,7 @@ export default class SearchDialog extends React.Component{
             let views = all_images
                 .map((meme) => meme.views)
                 .filter(Boolean)
+                .map((views) => views.length)
 
             let max_views = Math.max(...views)
 
