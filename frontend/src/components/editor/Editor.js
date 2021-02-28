@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import './Editor.css';
-import CustomAppBar from "../CustomAppBar/CustomAppBar";
+import CustomAppBar from "../customAppBar/CustomAppBar";
 import ImageCarousel from "./ImageCarousel";
 import TemplateGallery from "./TemplateGallery";
 import EditorControl from "./EditorControl";

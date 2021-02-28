@@ -50,5 +50,5 @@ CustomAppBar.propTypes = {
 };
 
 CustomAppBar.defaultProps = {
-   name: 'MemeGen',
+   name: 'Meme Generator',
 };
