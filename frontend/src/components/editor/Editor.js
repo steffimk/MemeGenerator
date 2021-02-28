@@ -10,7 +10,7 @@ import {
   API_ENDPOINT,
   TEMPLATE_ENDPOINT,
   MEMES_ENDPOINT,
-  CREATE_ENDPOINT, MEME_FROM_TEMPLATE_ENDPOINT
+  CREATE_ENDPOINT, MEME_FROM_TEMPLATE_ENDPOINT, MEME_FROM_TEMPLATE_ID_ENDPOINT
 } from '../../communication/requests';
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button, Paper } from '@material-ui/core';
@@ -159,21 +159,39 @@ class App extends React.Component {
     console.log("meme to save ", memeToSave)
 
     authorizedFetch(MEMES_ENDPOINT, 'POST', JSON.stringify(memeToSave), this.isNotAuthenticated)
-    .catch((error) => {
-      console.error('Error:', error);
-      return false;
-    });
-
-    const endpointWithParam = `${MEME_FROM_TEMPLATE_ENDPOINT}/${encodeURIComponent(this.state.currentImage.url)}`;
-
-    console.log("endpointWithParam ", endpointWithParam)
-
-    authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
-        .then((json) => this.setState({memesToTemplate: json.memes}))
         .catch((error) => {
           console.error('Error:', error);
           return false;
         });
+
+    if (this.state.currentImage._id) {
+      const endpointWithParam = `${MEME_FROM_TEMPLATE_ID_ENDPOINT}/${this.state.currentImage._id}`;
+
+      console.log("endpointWithParam ", endpointWithParam)
+
+      authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+          .then((json) => {
+            this.setState({memesToTemplate: json.memes})
+            console.log("json from fetch with id ", json.memes)
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            return false;
+          });
+    } else {
+
+      const endpointWithParam = `${MEME_FROM_TEMPLATE_ENDPOINT}/${encodeURIComponent(this.state.currentImage.url)}`;
+
+      console.log("endpointWithParam ", endpointWithParam)
+
+      authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+          .then((json) => this.setState({memesToTemplate: json.memes}))
+          .catch((error) => {
+            console.error('Error:', error);
+            return false;
+          });
+    }
+
   }
 
   /**
@@ -281,14 +299,33 @@ class App extends React.Component {
       } else return [];
     }
 
-    const endpointWithParam = `${MEME_FROM_TEMPLATE_ENDPOINT}/${encodeURIComponent(newCurrentImage.url)}`;
+    if (this.state.currentImage._id) {
+      const endpointWithParam = `${MEME_FROM_TEMPLATE_ID_ENDPOINT}/${this.state.currentImage._id}`;
 
-    authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
-        .then((json) => this.setState({memesToTemplate: json.memes}))
-        .catch((error) => {
-          console.error('Error:', error);
-          return false;
-        });
+      console.log("endpointWithParam ", endpointWithParam)
+
+      authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+          .then((json) => {
+            this.setState({memesToTemplate: json.memes})
+            console.log("json from fetch with id ", json.memes)
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            return false;
+          });
+    } else {
+
+      const endpointWithParam = `${MEME_FROM_TEMPLATE_ENDPOINT}/${encodeURIComponent(this.state.currentImage.url)}`;
+
+      console.log("endpointWithParam ", endpointWithParam)
+
+      authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+          .then((json) => this.setState({memesToTemplate: json.memes}))
+          .catch((error) => {
+            console.error('Error:', error);
+            return false;
+          });
+    }
 
     const imageInfo =  (newCurrentImage.hasOwnProperty("imageInfo") ? newCurrentImage.imageInfo : {size: null, x:0, y:0});
     const captionPositions = getCaptionPositions(newCurrentImage);

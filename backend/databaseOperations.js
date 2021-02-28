@@ -97,6 +97,11 @@ module.exports = {
     return collection.find({template_url: template_url})
   },
 
+  findWithTemplateId(db, collection, id) {
+    collection = db.get(collection);
+    return collection.find({template_id: id})
+  },
+
   getCaptions(db) {
     const collection = db.get(this.MEME_COLLECTION);
     return collection.find({}, 'captions', { limit: this.MAX_FILES_IN_ZIP*3 }) // Should get at least 10 captions

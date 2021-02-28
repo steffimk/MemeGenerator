@@ -260,4 +260,25 @@ router.get('/templateurl/:url', function (req, res){
     }
 })
 
+router.get('/templateid/:id', function (req, res){
+    let db = req.db;
+
+    let id = decodeURIComponent(req.params.id);
+    console.log("template id ", id)
+    if (id) {
+        dbOp.findWithTemplateId(db, dbOp.MEME_COLLECTION, id).then((memes) => {
+            res.status(200);
+            res.json({memes: memes});
+            res.send();
+        }).catch((e) => {
+            console.log(e);
+            res.status(500);
+            res.send();
+        })
+    } else {
+        res.status(406);
+        res.send();
+    }
+})
+
 module.exports = router;
