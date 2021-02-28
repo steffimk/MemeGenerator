@@ -333,15 +333,6 @@ class App extends React.Component {
                 ?<Gif
                     src={this.state.currentImage.url}
                     title={this.state.title}
-                    caption={this.state.captions[0]}
-                    posX={this.state.captionPositions_X[0]}
-                    posY={this.state.captionPositions_Y[0]}
-                    isItalic={this.state.isItalic}
-                    isBold={this.state.isBold} 
-                    fontSize={this.state.fontSize} 
-                    fontColor={this.state.fontColor}
-                    height={this.state.canvasSize.height}
-                    width={this.state.canvasSize.width}
                  />
 
                 :<ImageCarousel
