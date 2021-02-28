@@ -16,7 +16,6 @@ export default class CustomAppBar extends React.Component {
   }
 
   render () {
-    const screenWidth = window.innerWidth
     return (
       <div className="CustomAppBar">
         <AppBar position="static">
@@ -50,5 +49,5 @@ CustomAppBar.propTypes = {
 };
 
 CustomAppBar.defaultProps = {
-   name: 'MemeGen',
+   name: 'Meme Generator',
 };

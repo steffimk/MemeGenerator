@@ -10,7 +10,7 @@ export default class ChartsDialog extends Component {
         super(props);
 
         this.state = {
-            data : this.getDataArray()
+            showLikes: true
         }
     }
 
@@ -40,20 +40,20 @@ export default class ChartsDialog extends Component {
 
     handleChange = (event) => {
         if(event.target.value === 'like') {
-            this.setState({data: this.getDataArray()})
+            this.setState({showLikes: true})
         } else if(event.target.value === 'views') {
-            this.setState({data: this.getDataArrayView()})
+            this.setState({showLikes: false})
         }
     }
 
-    renderChart = () => {
-        console.log("render chart data ", this.state.data)
+    renderChart = (data) => {
+        console.log("render chart data ", data)
         return(
             <div>
             <Select
             labelId="select-label"
             id="select"
-            defaultValue="like"
+            value={this.state.showLikes ? "like" : "views"}
             onChange={this.handleChange}>
                 <MenuItem value="like">Likes</MenuItem>
                 <MenuItem value="views">Views</MenuItem>
@@ -63,7 +63,7 @@ export default class ChartsDialog extends Component {
                 height={'500px'}
                 chartType="Line"
                 loader={<div>Loading Chart</div>}
-                data={this.state.data}
+                data={data}
                 /*
                 options={{
                     width: '900',
@@ -87,8 +87,8 @@ export default class ChartsDialog extends Component {
     }
 
     render() {
-        const renderedCharts = this.renderChart();
-        console.log("data ", this.state.data)
+        const data = this.state.showLikes ? this.getDataArray() : this.getDataArrayView()
+        const renderedCharts = this.renderChart(data);
         return(
             <Dialog fullwidth={'xl'} maxWidth={'xl'} open={this.props.open} onClose={this.props.handleClose}>
                 <DialogTitle>Statistic of this Meme</DialogTitle>
