@@ -11,21 +11,33 @@ import {
     Slider, Switch, TextField,
 } from "@material-ui/core";
 
+// Search Dialog that allows to filter a list of Memes (prop all_images)
+// The filtered images are given to a callback prop 'on_change(filtered_images)'
 export default class SearchDialog extends React.Component{
 
     constructor(props) {
         super(props);
         this.state = {
+            // sort ascending or descending
             "order": false,
+            // default meme attribute used for sorting
             "orderKey": "creation_time",
+            // filter range for creation_time
             "timeRange": [0, 1],
+            // filter range for number of likes
             "likesRange": [0, 1],
+            // filter range for number of views
             "viewsRange": [0, 1],
+            // search terms
             "search": "",
         };
     }
 
+    // Filters the images from 'this.props.all_images' and passes the result
+    // to 'this.props.onChange(filtered_images)
     filterImages() {
+
+        // filter for ranges
         let filteredImages = this.props.all_images.filter((value, index, list) => {
             return (
                     !value.hasOwnProperty("creation_time") || (value.hasOwnProperty("creation_time") &&
@@ -51,16 +63,15 @@ export default class SearchDialog extends React.Component{
             keys: ['name', 'captions', 'imageDescription', 'comments.comment'],
             shouldSort: false,
         }
-        console.log(filteredImages)
 
         if (this.state.search.length > 0) {
-
+            // fuzzy search by search terms
             const fuse = new Fuse(filteredImages, options)
 
             filteredImages = fuse.search(this.state.search).map((result) => result.item)
         }
 
-
+        // sort by orderKey
         filteredImages.sort((a, b) => {
             let order = 1;
             if(this.state.orderKey === 'likes'){
@@ -92,15 +103,14 @@ export default class SearchDialog extends React.Component{
                     order = 1;
                 }
             }
+            // change sort order asc or descending
             return order * (this.state.order ? 1 : -1);
         });
         this.props.onChange(filteredImages)
     }
 
     handleRangeChange(key, value) {
-        console.log(this.state)
         this.setState({[key]: value});
-        console.log(this.state)
         this.filterImages();
     }
 
@@ -125,6 +135,8 @@ export default class SearchDialog extends React.Component{
         return date.toLocaleDateString();
     }
 
+    // get the limits for the filter ranges.
+    // memoize calls the function only if the parameter 'all_images' was change
     getLimits = memoize(
         (all_images) => {
             let times = all_images
