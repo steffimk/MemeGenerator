@@ -20,6 +20,9 @@ import Likes from './Likes';
 import ShareDialog from '../shareDialog/Share';
 import ChartsDialog from "../chartsDialog/ChartsDialog";
 
+/**
+ * Single image view in gallery of published memes
+ */
 export default class SingleImage extends React.Component {
   constructor(props) {
     super(props);
@@ -31,18 +34,24 @@ export default class SingleImage extends React.Component {
     };
   }
 
+  //Setting open states for Dialogs
   setOpenComments = (areOpen) => this.setState({ openComments: areOpen });
   setOpenLikes = (areOpen) => this.setState({ openLikes: areOpen });
   setOpenShare = (areOpen) => this.setState({ openShare: areOpen });
   setOpenCharts = (areOpen) => this.setState({openCharts: areOpen});
 
+  //Random id to get random next image (Shuffle button or play button with random choosen)
   getRandomId = () => {
     return this.props.images[Math.floor(Math.random() * this.props.images.length)]._id;
   };
 
   timer = null;
 
+  /**
+  * When component did update and in playing mode set new timer to four seconds and get next image after that
+  */
   componentDidUpdate() {
+    //For playing (play button)
     clearTimeout(this.timer);
     if (this.props.isPlaying) {
       this.timer = setTimeout(
@@ -78,6 +87,7 @@ export default class SingleImage extends React.Component {
           likeCount = image.likes.length;
           if (image.likes.includes(localStorage.getItem(LS_USERNAME))) favIconColor = 'secondary';
         }
+        //like logs, creation time and views for charts
         let likeLogs = image.likeLogs ? image.likeLogs : [];
         let creation_time = image.creation_time;
         let views = image.views;
@@ -85,6 +95,7 @@ export default class SingleImage extends React.Component {
         let nextRandom = this.getRandomId();
         return (
           <div className="modal">
+            {/*Upper toolbar with title and close button*/}
             <AppBar position="fixed" style={{ top: '0', bottom: 'auto', backgroundColor: 'rgba(0,0,0,0.9)' }}>
               <Toolbar>
                 <h1 className="modal-title">{image.name}</h1>
@@ -95,6 +106,7 @@ export default class SingleImage extends React.Component {
                 </Link>
               </Toolbar>
             </AppBar>
+            {/*Meme Image and Left and Right Button*/}
             <Link
               className="modal-nav modal-left"
               to={parentRoute + prev_image._id}
@@ -111,6 +123,8 @@ export default class SingleImage extends React.Component {
               to={parentRoute + next_image._id}
               onClick={() => this.props.viewMeme(next_image._id, Date.now())}
             />
+            {/*bottom toolbar with buttons for playing, random playing, shuffle, show username of likes, like, comment,
+            statistic charts, download, share, audio description*/}
             <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
               <Toolbar>
                 {isGallery && (
@@ -180,6 +194,7 @@ export default class SingleImage extends React.Component {
                 </Fab>
               </Toolbar>
             </AppBar>
+            {/*Dialogs*/}
             <Comments
               open={this.state.openComments}
               meme={image}
@@ -219,6 +234,10 @@ export default class SingleImage extends React.Component {
   }
 }
 
+/**
+ * Download shown image
+ * @param imageSrc source of image
+ */
 export const downloadImage = (imageSrc) => {
   var downloadLink = document.createElement('a');
   downloadLink.href = imageSrc;

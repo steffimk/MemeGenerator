@@ -3,6 +3,10 @@ import {FormControl, InputLabel, MenuItem, Select} from "@material-ui/core";
 import PropTypes from 'prop-types';
 import {Chart} from "react-google-charts";
 
+/**
+ * Statistical Charts for the Templates (Generations, Views and Likes of generated Memes with this Template)
+ * displayed in Editor
+ */
 export default class StatisticChart extends Component {
 
     constructor(props) {
@@ -13,11 +17,16 @@ export default class StatisticChart extends Component {
         }
     }
 
+    /**
+     * Change value for the Select (Like, View, Generated)
+     * @param event change of Select value
+     */
     handleChangeChart = (event) => {
         this.setState({value : event.target.value})
     }
 
     render() {
+        //Set right data for chart
         let data;
         switch (this.state.value) {
             case('like'):
