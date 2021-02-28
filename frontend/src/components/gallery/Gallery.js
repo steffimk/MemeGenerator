@@ -17,7 +17,10 @@ import SearchDialog from "../search/SearchDialog";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
-
+/**
+ * An overview over all created memes that are marked as public. Gives the user passive information about each meme,
+ * lets him like and share memes and enter a fullscreen which enables further interactions.
+ */
 class Gallery extends React.Component {
 
   constructor() {
@@ -45,7 +48,7 @@ class Gallery extends React.Component {
 
   openShare = (id) => this.setState({ openShare: true, currentShareId: id });
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps) {
     // after leaving single image view, scroll to the position of the last image in the gallery
     const { id } = this.props.match.params;
     const prevId = prevProps.match.params.id;
@@ -60,6 +63,9 @@ class Gallery extends React.Component {
     }
   }
 
+  /**
+   * Pulls the memes from the backend.
+   */
   get_memes() {
     authorizedFetch(MEMES_ENDPOINT, 'GET', {}, this.isNotAuthenticated).then((json) => {
 
@@ -71,6 +77,11 @@ class Gallery extends React.Component {
     });
   }
 
+  /**
+   * Checks which memes have been liked by the user that is currently logged in.
+   * @param {*} memes - all memes
+   * @param {*} username - name of the current user
+   */
     getLikedMemeIds(memes, username) {
         if (username && memes.length > 0){
             const likedMemeIds = memes
@@ -173,6 +184,11 @@ class Gallery extends React.Component {
         );
     }
 
+  /**
+   * Rendering of a single image.
+   * @param {*} image - the image
+   * @param {*} currentRoute - the current route
+   */
   renderImage(image, currentRoute) {
     let imageRoute;
     if (currentRoute.slice(-1) === '/') {
@@ -228,6 +244,11 @@ class Gallery extends React.Component {
         );
     }
 
+    /**
+     * Call when a user clicks on a meme to enter fullscreen
+     * @param {string} id - the id of the meme
+     * @param {Date} date - the current date
+     */
     viewMeme = (id, date) => {
         viewMeme(id, date, this.isNotAuthenticated);
         let newImages = this.state.images.map((img) => {
@@ -243,6 +264,11 @@ class Gallery extends React.Component {
         this.setState({ images: newImages });
     };
 
+    /**
+     * Call when a user likes a meme
+     * @param {string} id  - id of the liked meme
+     * @param {boolean} isDislike - false if it is a like, true if it is a dislike
+     */
     likeImage = (id, isDislike) => {
         const username = localStorage.getItem(LS_USERNAME)
         const like = {username: username, date: Date.now(), isDislike: isDislike}
@@ -282,9 +308,9 @@ class Gallery extends React.Component {
     }
 }
 
-/*
-    This distributes images to 4 equally sized slices
-     */
+/**
+ * This distributes images to 4 equally sized slices
+ */
 export function distributeImagesToColumns(images) {
 
     const n_columns = 4.0;
