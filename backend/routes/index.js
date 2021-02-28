@@ -238,4 +238,26 @@ router.post("/view", function(req, res) {
     }
 });
 
+
+router.get('/templateurl/:url', function (req, res){
+    let db = req.db;
+
+    let template_url = decodeURIComponent(req.params.url);
+    console.log("template url ", template_url)
+    if (template_url) {
+        dbOp.findWithTemplateUrl(db, dbOp.MEME_COLLECTION, template_url).then((memes) => {
+            res.status(200);
+            res.json({memes: memes});
+            res.send();
+        }).catch((e) => {
+            console.log(e);
+            res.status(500);
+            res.send();
+        })
+    } else {
+        res.status(406);
+        res.send();
+    }
+})
+
 module.exports = router;

@@ -10,12 +10,13 @@ import {
   API_ENDPOINT,
   TEMPLATE_ENDPOINT,
   MEMES_ENDPOINT,
-  CREATE_ENDPOINT
+  CREATE_ENDPOINT, MEME_FROM_TEMPLATE_ENDPOINT
 } from '../../communication/requests';
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button, Paper } from '@material-ui/core';
 import NewMeme from '../newMemeDialog/NewMeme';
 import { LS_USERNAME } from '../../constants';
+import StatisticChart from "./StatisticChart";
 
 class App extends React.Component {
 
@@ -44,7 +45,9 @@ class App extends React.Component {
       addedImgSizes: [],
       canvasSize: {width: "97%", height: "90%"},
       drawingCoordinates: [],
-      imageDescription: ""
+      imageDescription: "",
+
+      memesToTemplate: []
     }
     this.imageCarousel = React.createRef();
   }
@@ -160,6 +163,17 @@ class App extends React.Component {
       console.error('Error:', error);
       return false;
     });
+
+    const endpointWithParam = `${MEME_FROM_TEMPLATE_ENDPOINT}/${encodeURIComponent(this.state.currentImage.url)}`;
+
+    console.log("endpointWithParam ", endpointWithParam)
+
+    authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+        .then((json) => this.setState({memesToTemplate: json.memes}))
+        .catch((error) => {
+          console.error('Error:', error);
+          return false;
+        });
   }
 
   /**
@@ -266,6 +280,15 @@ class App extends React.Component {
         return newCurrentImage.addedImgInfo;
       } else return [];
     }
+
+    const endpointWithParam = `${MEME_FROM_TEMPLATE_ENDPOINT}/${encodeURIComponent(newCurrentImage.url)}`;
+
+    authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+        .then((json) => this.setState({memesToTemplate: json.memes}))
+        .catch((error) => {
+          console.error('Error:', error);
+          return false;
+        });
 
     const imageInfo =  (newCurrentImage.hasOwnProperty("imageInfo") ? newCurrentImage.imageInfo : {size: null, x:0, y:0});
     const captionPositions = getCaptionPositions(newCurrentImage);
@@ -378,6 +401,9 @@ class App extends React.Component {
               setCanvasSize={this.setCanvasSize.bind(this)}
               coordinates={this.state.drawingCoordinates}
               addCoordinate={this.addDrawingCoordinate}
+            />
+            <StatisticChart
+                memes={this.state.memesToTemplate}
             />
           </div>
           <Paper
