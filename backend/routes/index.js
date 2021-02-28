@@ -43,12 +43,15 @@ router.post("/", function (req, res){
       isValidUrl(template_url) &&
       isPositiveInteger(box_count)
   ){
+      let creation_time = Date.now();
+
       // ignore any unknown values in the input data
       const normalizedMeme = {
-          template_id, img, template_url, name, box_count, username, imageDescription,
+          template_id, creation_time, img, template_url, name, box_count, username, imageDescription,
           captions, captionPositions, fontColor, fontSize, isItalic, isBold, privacyLabel
       }
-      normalizedMeme.views = 0              // set views to 0
+      normalizedMeme.views = []
+      normalizedMeme.viewCount = 0 // set views to 0
       dbOp.addToDB(req.db, dbOp.MEME_COLLECTION, normalizedMeme);
 
       res.status(200);
@@ -191,13 +194,13 @@ drawCoordinates = (drawingCoordinates, context) => {
 
 router.post("/like", function(req, res) {
   let db = req.db;
-  const { memeId, username, isDislike } = req.body;
-  console.log(memeId + " " + username + " " + isDislike)
-  if (memeId && username && isDislike !== undefined) {
+  const { memeId, username, date, isDislike } = req.body;
+  console.log(memeId + " " + username + " " + date + " " + isDislike)
+  if (memeId && username && date && isDislike !== undefined) {
       if (isDislike === true) {
-        dbOp.dislikeMeme(db, memeId, username)
+        dbOp.dislikeMeme(db, memeId, username, date)
       } else {
-        dbOp.likeMeme(db, memeId, username)
+        dbOp.likeMeme(db, memeId, username, date)
       }
       res.status(200);
       res.send();
@@ -224,8 +227,9 @@ router.post("/comment", function(req, res) {
 router.post("/view", function(req, res) {
     let db = req.db;
     const memeId = req.body.memeId;
+    const date = req.body.date;
     if (memeId) {
-        dbOp.viewMeme(db, memeId)
+        dbOp.viewMeme(db, memeId, date)
         res.status(200);
         res.send();
     } else {

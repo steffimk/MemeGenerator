@@ -13,19 +13,32 @@ import CommentIcon from '@material-ui/icons/Comment';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ShareIcon from '@material-ui/icons/Share';
 import ShareDialog from '../shareDialog/Share';
+import SearchDialog from "../search/SearchDialog";
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+
 
 class Gallery extends React.Component {
+
   constructor() {
     super();
     this.state = {
       isAuthenticated: true,
+      // contains all images without filters
+      all_images: [],
+      // contains the creation_time of the most current image
+      all_images_max_creation_time: Date.now(),
+      // contains the creation_time of the oldest image
+      all_images_min_creation_time: 0,
+      // contains images filtered/ordered as defined in search
       images: [],
+      searchOpen: false,
       likedMemeIds: [],
       isPlaying: false,
       playIcon: 'fas fa-fw fa-play',
       isRandom: false,
       openShare: false,
-      currentShareId: undefined,
+      currentShareId: undefined
     };
   }
 
@@ -52,25 +65,35 @@ class Gallery extends React.Component {
     }
   }
 
-  get_memes() {
-    authorizedFetch(MEMES_ENDPOINT, 'GET', {}, this.isNotAuthenticated).then((json) => {
-      console.log(json.data);
-      this.setState({
-        images: json.data.memes,
-      });
-      this.getLikedMemeIds(json.data.memes, localStorage.getItem(LS_USERNAME));
-    });
-  }
+    get_memes() {
+        authorizedFetch(MEMES_ENDPOINT, 'GET', {}, this.isNotAuthenticated)
+        .then(json => {
+            let times = json.data.memes
+                .map((meme) => meme.creation_time)
+                .filter(Boolean);	// this filters undefined values as undefined is falsy
 
-  getLikedMemeIds(memes, username) {
-    if (username && memes.length > 0) {
-      const likedMemeIds = memes
-        .filter((meme) => meme.likes && meme.likes.includes(username)) // meme has likes and they include this user
-        .map((meme) => meme._id);
-      this.setState({ likedMemeIds: likedMemeIds });
-      console.log('likedMemeIds: ' + likedMemeIds);
+            let max = Math.max(...times);
+            let min = Math.min(...times);
+
+            this.setState({
+                'all_images_max_creation_time': max,
+                'all_images_min_creation_time': min,
+                'all_images': json.data.memes,
+                'images': json.data.memes,
+            })
+            this.getLikedMemeIds(json.data.memes, localStorage.getItem(LS_USERNAME))
+        });
     }
-  }
+
+    getLikedMemeIds(memes, username) {
+        if (username && memes.length > 0){
+            const likedMemeIds = memes
+              .filter((meme) => meme.likes && meme.likes.includes(username)) // meme has likes and they include this user
+              .map((meme) => meme._id);
+            this.setState({ likedMemeIds: likedMemeIds })
+            console.log("likedMemeIds: " + likedMemeIds)
+        }
+    }
 
   handleChangePlaying = () => {
     this.setState({ isPlaying: !this.state.isPlaying });
@@ -104,51 +127,66 @@ class Gallery extends React.Component {
     let images = this.state.images.map((e) => this.renderImage(e, this.props.location.pathname));
     let slices = distributeImagesToColumns(images);
 
-    return (
-      <div>
-        <CustomAppBar></CustomAppBar>
-        <div className="gallery-container">
-          <div className="image-gallery" style={gallery_style}>
-            <div className="column">
-              <Link to="/editor" className="image-container create-meme">
-                <h1>+</h1>
-                <p>Create new Meme</p>
-              </Link>
-              {slices[0]}
+        return (
+          <div>
+            <CustomAppBar>
+                <IconButton
+                    color="inherit"
+                    aria-label="Search, sort and Filter"
+                    onClick={() => this.setState({'searchOpen': true})}
+                >
+                    <SearchIcon />
+                </IconButton>
+            </CustomAppBar>
+            <div className="gallery-container">
+              <div className="image-gallery" style={gallery_style}>
+                <div className="column">
+                  <Link to="/editor" className="image-container create-meme">
+                    <h1>+</h1>
+                    <p>Create new Meme</p>
+                  </Link>
+                  {slices[0]}
+                </div>
+                <div>
+                  {this.state.images.length < 1 && (
+                    <h1>There are no memes created and published until now. Be the first one!</h1>
+                  )}
+                </div>
+                <div className="column">{slices[1]}</div>
+                <div className="column">{slices[2]}</div>
+                <div className="column">{slices[3]}</div>
+              </div>
+              <SingleImage
+                images={this.state.images}
+                id={id}
+                isNotAuthenticated={this.isNotAuthenticated}
+                likeImage={this.likeImage}
+                parentRoute=""
+                isPlaying={this.state.isPlaying}
+                playIcon={this.state.playIcon}
+                isRandom={this.state.isRandom}
+                changePlaying={this.handleChangePlaying}
+                stopPlaying={this.handleStopPlaying}
+                changeRandom={this.handleChangeRandom}
+                viewMeme={this.viewMeme}
+              />
+              <ShareDialog
+                open={this.state.openShare}
+                handleClose={() => this.setState({ openShare: false })}
+                imageId={this.state.currentShareId}
+                isGallery={true}
+              />
             </div>
-            <div>
-              {this.state.images.length < 1 && (
-                <h1>There are no memes created and published until now. Be the first one!</h1>
-              )}
-            </div>
-            <div className="column">{slices[1]}</div>
-            <div className="column">{slices[2]}</div>
-            <div className="column">{slices[3]}</div>
+            <SearchDialog
+                 open={this.state.searchOpen}
+                 onClose={() => {this.setState({searchOpen: false})}}
+                 onChange={(searchParams) => {this.onSearchChange(searchParams)}}
+                 max={this.state.all_images_max_creation_time}
+                 min={this.state.all_images_min_creation_time}
+            />
           </div>
-          <SingleImage
-            images={this.state.images}
-            id={id}
-            isNotAuthenticated={this.isNotAuthenticated}
-            likeImage={this.likeImage}
-            parentRoute=""
-            isPlaying={this.state.isPlaying}
-            playIcon={this.state.playIcon}
-            isRandom={this.state.isRandom}
-            changePlaying={this.handleChangePlaying}
-            stopPlaying={this.handleStopPlaying}
-            changeRandom={this.handleChangeRandom}
-            viewMeme={this.viewMeme}
-          />
-          <ShareDialog
-            open={this.state.openShare}
-            handleClose={() => this.setState({ openShare: false })}
-            imageId={this.state.currentShareId}
-            isGallery={true}
-          />
-        </div>
-      </div>
-    );
-  }
+        );
+    }
 
   renderImage(image, currentRoute) {
     let imageRoute;
@@ -160,11 +198,11 @@ class Gallery extends React.Component {
     let favIconColor = 'primary';
     const likeCount = image.likes ? image.likes.length : 0;
     const commentCount = image.comments ? image.comments.length : 0;
-    const viewCount = image.views ? image.views : 0;
+    const viewCount = image.views ? image.views.length : 0;
     if (this.state.likedMemeIds.includes(image._id)) favIconColor = 'secondary';
     return (
       <div className="image-container" id={image._id}>
-        <Link to={imageRoute} key={image._id} onClick={() => this.viewMeme(image._id)}>
+        <Link to={imageRoute} key={image._id} onClick={() => this.viewMeme(image._id, Date.now())}>
           <img src={image.img} alt={image.name} />
         </Link>
         <div className="image-title">
@@ -205,46 +243,75 @@ class Gallery extends React.Component {
     );
   }
 
-  viewMeme = (id) => {
-    viewMeme(id, this.isNotAuthenticated);
-    let newImages = this.state.images.map((img) => {
-      if (img._id === id) {
-        if (img.views) {
-          img.views++;
-        } else {
-          img.views = 1;
-        }
-      }
-      return img;
-    });
-    this.setState({ images: newImages });
-  };
-
-  likeImage = (id, isDislike) => {
-    const username = localStorage.getItem(LS_USERNAME)
-    authorizedFetch(LIKE_ENDPOINT, 'POST', JSON.stringify({memeId: id, username: username, isDislike: isDislike}), this.isNotAuthenticated)
-    .catch((error) => { console.error('Error:', error) });
-    let newImages = this.state.images.map(img => {
-        if(img._id === id) {
-            if (img.likes && img.likes.includes(username) && isDislike) {
-              img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes
-            } else if (img.likes && !isDislike) {
-                img.likes.push(username)
-            } else if (!isDislike) {
-                img.likes = [username]
+    viewMeme = (id, date) => {
+        viewMeme(id, date, this.isNotAuthenticated);
+        let newImages = this.state.images.map((img) => {
+            if (img._id === id) {
+                if (img.views) {
+                    img.views.push(Date.now());
+                } else {
+                    img.views = [Date.now()];
+                }
             }
-        }
-        return img
-    })
-    var newLikedMemeIds = this.state.likedMemeIds
-    if (isDislike && newLikedMemeIds.includes(id)) {
-      newLikedMemeIds.splice(newLikedMemeIds.indexOf(id),1)
-    } else if (!isDislike && !newLikedMemeIds.includes(id)) {
-      newLikedMemeIds.push(id)
-    }
-    this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
-  }
+            return img;
+        });
+        this.setState({ images: newImages });
+    };
 
+    likeImage = (id, isDislike) => {
+        const username = localStorage.getItem(LS_USERNAME)
+        const like = {username: username, date: Date.now(), isDislike: isDislike}
+        authorizedFetch(LIKE_ENDPOINT,
+            'POST',
+            JSON.stringify({memeId: id, username: username, date: Date.now(), isDislike: isDislike}),
+            this.isNotAuthenticated)
+        .catch((error) => { console.error('Error:', error) });
+        let newImages = this.state.images.map(img => {
+            if(img._id === id) {
+                if(img.likeLogs) {
+                    img.likeLogs.push(like);
+                } else {
+                    img.likeLogs = [like];
+                }
+                if (img.likes && img.likes.includes(username) && isDislike) {
+                    img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes
+                    // Do nothing. User alredy likes meme.
+                } else if (img.likes && !isDislike) {
+                    img.likes.push(username)
+                } else if (!isDislike) {
+                    img.likes = [username]
+                }
+            }
+            return img
+        })
+        var newLikedMemeIds = this.state.likedMemeIds
+        if (isDislike && newLikedMemeIds.includes(id)) {
+            newLikedMemeIds.splice(newLikedMemeIds.indexOf(id),1)
+        } else if (!isDislike && !newLikedMemeIds.includes(id)) {
+            newLikedMemeIds.push(id)
+        }
+        this.setState({ images: newImages, likedMemeIds: newLikedMemeIds })
+    }
+
+    onSearchChange(searchParams) {
+        let filteredImages = this.state.all_images.filter((value, index, list) => {
+            return !value.hasOwnProperty("creation_time") || (value.hasOwnProperty("creation_time") &&
+                value.creation_time < Math.max(...searchParams.timeRange) &&
+                value.creation_time > Math.min(...searchParams.timeRange))
+        })
+
+        filteredImages.sort((a, b) => {
+            let order = 1;
+            if(a._id < b._id){
+                order = -1;
+            }else{
+                order = 1;
+            }
+            return order * (searchParams.order ? 1 : -1);
+        });
+
+        this.setState({'images': filteredImages})
+    }
 }
 
 /*

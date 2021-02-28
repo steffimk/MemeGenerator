@@ -14,9 +14,12 @@ import PlayIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import RandomIcon from '@material-ui/icons/Shuffle';
 import ClearIcon from '@material-ui/icons/Clear';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
 import Comments from './Comments';
 import Likes from './Likes';
 import ShareDialog from '../shareDialog/Share';
+import ChartsDialog from "../chartsDialog/ChartsDialog";
+
 export default class SingleImage extends React.Component {
   constructor(props) {
     super(props);
@@ -24,12 +27,14 @@ export default class SingleImage extends React.Component {
       openComments: false,
       openLikes: false,
       openShare: false,
+      openCharts: false
     };
   }
 
   setOpenComments = (areOpen) => this.setState({ openComments: areOpen });
   setOpenLikes = (areOpen) => this.setState({ openLikes: areOpen });
   setOpenShare = (areOpen) => this.setState({ openShare: areOpen });
+  setOpenCharts = (areOpen) => this.setState({openCharts: areOpen});
 
   getRandomId = () => {
     return this.props.images[Math.floor(Math.random() * this.props.images.length)]._id;
@@ -73,6 +78,11 @@ export default class SingleImage extends React.Component {
           likeCount = image.likes.length;
           if (image.likes.includes(localStorage.getItem(LS_USERNAME))) favIconColor = 'secondary';
         }
+        let likeLogs = image.likeLogs ? image.likeLogs : [];
+        let creation_time = image.creation_time;
+        let views = image.views;
+
+        let nextRandom = this.getRandomId();
         return (
           <div className="modal">
             <AppBar position="fixed" style={{ top: '0', bottom: 'auto', backgroundColor: 'rgba(0,0,0,0.9)' }}>
@@ -88,7 +98,7 @@ export default class SingleImage extends React.Component {
             <Link
               className="modal-nav modal-left"
               to={parentRoute + prev_image._id}
-              onClick={() => this.props.viewMeme(prev_image._id)}
+              onClick={() => this.props.viewMeme(prev_image._id, Date.now())}
             />
             <img
               src={imageSrc}
@@ -99,7 +109,7 @@ export default class SingleImage extends React.Component {
               id="nextLink"
               className="modal-nav modal-right"
               to={parentRoute + next_image._id}
-              onClick={() => this.props.viewMeme(next_image._id)}
+              onClick={() => this.props.viewMeme(next_image._id, Date.now())}
             />
             <AppBar position="fixed" style={{ top: 'auto', bottom: '0', backgroundColor: 'rgba(0,0,0,0.9)' }}>
               <Toolbar>
@@ -118,11 +128,18 @@ export default class SingleImage extends React.Component {
                   </div>
                 )}
                 <Link
-                  id="randomButton"
                   className="modal-shuffle"
                   style={{ marginRight: '200px', marginLeft: isGallery ? '' : window.innerWidth * 0.2 }}
-                  to={parentRoute + this.getRandomId()}>
-                  <Button name="random" variant="contained" size="small" color="primary">
+                  to={parentRoute + nextRandom}>
+                  <Button name="random"
+                          variant="contained"
+                          size="small"
+                          color="primary"
+                          id="randomButton"
+                          onClick={() => {
+                              console.log("next random ", nextRandom);
+                              this.props.viewMeme(nextRandom, Date.now())
+                          }}>
                     Shuffle
                   </Button>
                 </Link>
@@ -143,6 +160,9 @@ export default class SingleImage extends React.Component {
                 </Badge>
                 <Fab size="small" onClick={() => this.setOpenComments(true)} style={{ marginRight: '20px' }}>
                   <CommentIcon />
+                </Fab>
+                <Fab size="small" onClick={() => this.setOpenCharts(true)} style={{marginRight: '20px'}}>
+                  <ShowChartIcon />
                 </Fab>
                 <Fab size="small" onClick={() => downloadImage(imageSrc)} style={{ marginRight: '20px' }}>
                   <CloudDownloadIcon />
@@ -172,6 +192,13 @@ export default class SingleImage extends React.Component {
               handleClose={() => this.setOpenShare(false)}
               imageId={image._id}
               isGallery={isGallery}
+            />
+            <ChartsDialog
+                open={this.state.openCharts}
+                handleClose={() => this.setOpenCharts(false)}
+                likes={likeLogs}
+                creation_time={creation_time}
+                views={views}
             />
           </div>
         );
