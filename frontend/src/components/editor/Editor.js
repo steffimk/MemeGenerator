@@ -10,13 +10,16 @@ import {
   API_ENDPOINT,
   TEMPLATE_ENDPOINT,
   MEMES_ENDPOINT,
-  CREATE_ENDPOINT
+  CREATE_ENDPOINT,
+  MEME_FROM_TEMPLATE_ENDPOINT,
+  MEME_FROM_TEMPLATE_ID_ENDPOINT
 } from '../../communication/requests';
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button, Paper } from '@material-ui/core';
 import NewMeme from '../newMemeDialog/NewMeme';
 import Gif from './Gif';
 import { LS_USERNAME } from '../../constants';
+import StatisticChart from "./StatisticChart";
 
 class App extends React.Component {
 
@@ -46,7 +49,11 @@ class App extends React.Component {
       canvasSize: {width: "97%", height: "90%"},
       drawingCoordinates: [],
       imageDescription: "",
-      isGif: false
+      isGif: false,
+
+      generation_array: [],
+      like_array: [],
+      view_array: []
     }
     this.imageCarousel = React.createRef();
   }
@@ -162,10 +169,40 @@ class App extends React.Component {
     console.log("meme to save ", memeToSave)
 
     authorizedFetch(MEMES_ENDPOINT, 'POST', JSON.stringify(memeToSave), this.isNotAuthenticated)
-    .catch((error) => {
-      console.error('Error:', error);
-      return false;
-    });
+        .catch((error) => {
+          console.error('Error:', error);
+          return false;
+        });
+
+    if (this.state.currentImage._id) {
+      const endpointWithParam = `${MEME_FROM_TEMPLATE_ID_ENDPOINT}/${this.state.currentImage._id}`;
+
+      console.log("endpointWithParam ", endpointWithParam)
+
+      authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+          .then((json) => {
+            this.setNewDataOfMemeForTemplate(json.memes)
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            return false;
+          });
+    } else {
+
+      const endpointWithParam = `${MEME_FROM_TEMPLATE_ENDPOINT}/${encodeURIComponent(this.state.currentImage.url)}`;
+
+      console.log("endpointWithParam ", endpointWithParam)
+
+      authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+          .then((json) => {
+            this.setNewDataOfMemeForTemplate(json.memes)
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            return false;
+          });
+    }
+
   }
 
   /**
@@ -235,6 +272,92 @@ class App extends React.Component {
     }
   }
 
+  setNewDataOfMemeForTemplate = (memes) => {
+
+    let generation_array = [[{type: 'date', label: 'Time'}, {type:'number', label:'Generations'}]];
+
+    if(!memes || memes.length <= 0) {
+      generation_array.push([new Date(Date.now()), 0]);
+      this.setState({generation_array: generation_array})
+
+    } else {
+
+      generation_array.push([new Date(memes[0].creation_time), 0]);
+      memes.forEach((meme, index) => {
+        generation_array.push([new Date(meme.creation_time), index + 1]);
+        this.setState({generation_array: generation_array})
+      })
+    }
+
+    let like_array = [[{type: 'date', label: 'Time'}, {type:'number', label:'Likes'}]];
+
+    if(!memes || memes.length <= 0) {
+      like_array.push([new Date(Date.now()), 0]);
+      this.setState({like_array: like_array})
+
+    } else {
+
+      like_array.push([new Date(memes[0].creation_time), 0]);
+
+      let like_times = [];
+
+      memes.forEach((meme) => {
+        if (meme.likeLogs) {
+          meme.likeLogs.forEach(like => {
+            like_times.push({date: like.date, isDislike: like.isDislike})
+          })
+        }
+      })
+
+      like_times.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(a.date) - new Date(b.date);
+      });
+
+      let likesCount = 0;
+      like_times.forEach((like) => {
+        likesCount = like.isDislike ? likesCount - 1 : likesCount + 1;
+        like_array.push([new Date(like.date), likesCount]);
+      })
+
+      this.setState({like_array: like_array})
+    }
+
+    let view_array = [[{type: 'date', label: 'Time'}, {type:'number', label:'Views'}]];
+
+    if(!memes || memes.length <= 0) {
+      view_array.push([new Date(Date.now()), 0]);
+      this.setState({view_array: view_array});
+
+    } else {
+      view_array.push([new Date(memes[0].creation_time), 0]);
+
+      let view_times = [];
+
+      memes.forEach((meme) => {
+        if (meme.views && meme.views.length > 0) {
+          meme.views.forEach(view => {
+            view_times.push(view)
+          })
+        }
+      })
+
+      view_times.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(a) - new Date(b);
+      });
+
+      view_times.forEach((view, index) => {
+        view_array.push([new Date(view), index + 1]);
+      })
+
+      this.setState({view_array: view_array})
+    }
+
+  }
+
   /**
    * Call when a new meme template is being edited
    * @param {object} image that is now the main template in the editor
@@ -277,6 +400,35 @@ class App extends React.Component {
       if (newCurrentImage.hasOwnProperty("addedImgInfo")) {
         return newCurrentImage.addedImgInfo;
       } else return [];
+    }
+
+    if (newCurrentImage._id) {
+      const endpointWithParam = `${MEME_FROM_TEMPLATE_ID_ENDPOINT}/${newCurrentImage._id}`;
+
+      console.log("endpointWithParam ", endpointWithParam)
+
+      authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+          .then((json) => {
+            this.setNewDataOfMemeForTemplate(json.memes)
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            return false;
+          });
+    } else {
+
+      const endpointWithParam = `${MEME_FROM_TEMPLATE_ENDPOINT}/${encodeURIComponent(newCurrentImage.url)}`;
+
+      console.log("endpointWithParam ", endpointWithParam)
+
+      authorizedFetch(endpointWithParam, 'GET', {}, this.isNotAuthenticated)
+          .then((json) => {
+            this.setNewDataOfMemeForTemplate(json.memes)
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            return false;
+          });
     }
 
     const imageInfo =  (newCurrentImage.hasOwnProperty("imageInfo") ? newCurrentImage.imageInfo : {size: null, x:0, y:0});
@@ -398,6 +550,11 @@ class App extends React.Component {
                     addCoordinate={this.addDrawingCoordinate}
                  />
               }
+            <StatisticChart
+                generateData={this.state.generation_array}
+                viewData={this.state.view_array}
+                likeData={this.state.like_array}
+            />
           </div>
           <Paper
             className="control right"

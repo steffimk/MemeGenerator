@@ -10,9 +10,12 @@ export const LIKE_ENDPOINT = API_ENDPOINT + 'like'
 export const COMMENT_ENDPOINT = API_ENDPOINT + 'comment'
 export const SINGLE_MEME_ENDPOINT = API_ENDPOINT + 'meme'
 export const VIEW_ENDPOINT = API_ENDPOINT + 'view'
+export const MEME_FROM_TEMPLATE_ENDPOINT = API_ENDPOINT + 'templateurl'
+export const MEME_FROM_TEMPLATE_ID_ENDPOINT = API_ENDPOINT + 'templateid'
 
 export function authorizedFetch(endpoint, method, bodyJson, isNotAuthenticatedCallback) {
   const jwt = localStorage.getItem(LS_JWT);
+  console.log(endpoint)
   if (method === 'GET') {
     return fetch(endpoint, {
       method: method,
