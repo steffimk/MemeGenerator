@@ -44,3 +44,10 @@ services:
     command: bash -c "npm install && npm start"
     depends_on:
       - backend
+
+  dataimport:
+    build:
+      context: ./datamigration
+      dockerfile: Dockerfile
+    links:
+      - mongo
