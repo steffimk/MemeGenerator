@@ -51,3 +51,9 @@ npm start &
 7. Get any previously created image with the memeId: http://localhost:3030/meme/{insertIdOfMeme}
     This returns a json with the following structure: {"success": _true/false_, "image": _dataURL_}.
     Success is false when there is no meme with the entered ID. The field dataURL contains the dataURL of the meme in case success is true.
+   
+8. Create a complex meme out of multiple images and multiple captions. This requires a valid json web token.
+   Example:
+    ```
+        curl 'http://localhost:3030/create' -H 'Authorization: <valid-jwt>' --data-raw '{"currentImage":{"id":"181913649","name":"Drake Hotline Bling","url":"https://i.imgflip.com/30b1gx.jpg","width":1200,"height":1200,"box_count":3,"source":"imgflip"},"imageInfo":{"size":"36","x":0,"y":0},"captions":["Caption 1","Caption 2","Caption 3"],"captionPositions_X":[50,50,"6"],"captionPositions_Y":[10,55,"84"],"fontSize":45,"isItalic":true,"isBold":true,"fontColor":"#51ff02","addedImages":[{"id":"112126428","name":"Distracted Boyfriend","url":"https://i.imgflip.com/1ur9b0.jpg","width":1200,"height":800,"box_count":3,"source":"imgflip"},{"id":"91538330","name":"X, X Everywhere","url":"https://i.imgflip.com/1ihzfe.jpg","width":2118,"height":1440,"box_count":2,"source":"imgflip"}],"addedImgPositions_X":["78","50"],"addedImgPositions_Y":["16","95"],"addedImgSizes":["25","16"],"canvasSize":{"width":565,"height":565}}'
+    ```

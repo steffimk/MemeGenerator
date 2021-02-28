@@ -4,6 +4,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { authorizedFetch, COMMENT_ENDPOINT } from '../../communication/requests';
 import { randomColor, dialogStyle, LS_USERNAME } from '../../constants'
+
+/**
+ * A Dialog showing all comments of a meme.
+ */
 export default class Comments extends Component {
 
   constructor(props) {
@@ -17,6 +21,9 @@ export default class Comments extends Component {
 
   changeComment = (e) => this.setState({ newComment: e.target.value })
 
+  /**
+   * Sends a POST request containing the new comment to the backend
+   */
   submitNewComment = () => {
     const commentSubmit = { username: this.username, comment: this.state.newComment, date: Date() }
     const requestBody = { memeId: this.props.meme._id, comment: commentSubmit }
@@ -26,6 +33,10 @@ export default class Comments extends Component {
     this.setState({ comments: [...this.state.comments, commentSubmit], newComment: '' })
   }
 
+  /**
+   * Renders a single comment
+   * @param {*} comment - the comment to be rendered
+   */
   renderComment = (comment) => {
     return (
       <Card variant="outlined" style={{ marginBottom: '10px', maxWidth: '325px' }}>

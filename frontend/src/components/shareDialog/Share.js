@@ -28,13 +28,13 @@ export default class ShareDialog extends Component {
   render() {
     var shareUrl = MEME_URL
     var isDisabled = true
-    var message = "To share your meme, upload it marked as \'public\' or \'unlisted\' and open it in your meme history."
+    var message = "To share your meme, upload it marked as 'public' or 'unlisted' and open it in your meme history."
     const title = "MemeGenerator - Check out this meme!"
     const hashtag = "MemeGenerator"
     if(this.props.imageId) {
       shareUrl += '/' + this.props.imageId
       isDisabled = false
-      message = "Make sure the meme you share is not marked as \'private\'."
+      message = "Make sure the meme you share is not marked as 'private'."
     }
     if(this.props.isGallery === true) message = '' 
 

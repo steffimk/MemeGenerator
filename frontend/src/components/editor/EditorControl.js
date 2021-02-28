@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import Dictaphone from '../speechToText/Dictaphone'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+
+/**
+ * This component contains all elements the template can be edited with in order to create a meme.
+ */
 export default class EditorControl extends React.Component {
 
   constructor(props){

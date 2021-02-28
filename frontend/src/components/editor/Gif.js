@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * View of the gif template being edited. Part of the editor.
+ */
 export default class Gif extends React.Component {
     
     render() {

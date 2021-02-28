@@ -12,7 +12,7 @@ function getTemplatesFromImgFlip(){
 }
 
 /**
- * Repondes with all templates of the user
+ * Respondes with all templates of the user
  */
 router.get('/:username', function(req, res, next){
     let db = req.db;
