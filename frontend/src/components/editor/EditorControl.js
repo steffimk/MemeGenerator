@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Dictaphone from '../../Dictaphone'
+import Dictaphone from '../speechToText/Dictaphone'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 export default class EditorControl extends React.Component {
