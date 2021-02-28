@@ -14,7 +14,7 @@ const Dictaphone = (props) => {
  
   React.useEffect(() => {
     if(transcript !== '' && voiceOn ) {
-      console.log("Dictaphone " + props.field + " with text : " + transcript);
+      console.log("Dictaphone " + props.field + " with text: " + transcript);
       props.result(transcript);
     }
   },[interimTranscript, finalTranscript]);
@@ -26,7 +26,7 @@ const Dictaphone = (props) => {
   }
 
   /**
-   * Start listening and reset old transcrpt.
+   * Start listening and reset old transcript.
    */
   const startListening = () => {
     resetTranscript();
