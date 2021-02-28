@@ -1,12 +1,12 @@
 import React from 'react';
 import { IconButton } from '@material-ui/core';
-import {PlayArrow, Save, Stop } from '@material-ui/icons';
+import {PlayArrow, Stop } from '@material-ui/icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 
 const Dictaphone = (props) => {
  
-  const { transcript, resetTranscript,finalTranscript, interimTranscript, listening } = useSpeechRecognition();
+  const { transcript, resetTranscript,finalTranscript, interimTranscript } = useSpeechRecognition();
   const [voiceOn, setVoiceOn] = React.useState();
  
   React.useEffect(() => {
