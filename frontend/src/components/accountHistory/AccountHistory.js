@@ -90,7 +90,7 @@ class AccountHistory extends Component {
             if(img.likeLogs) {
                 img.likeLogs.push(like);
             } else {
-                img.likeLogs = like;
+                img.likeLogs = [like];
             }
             if (img.likes && img.likes.includes(username) && isDislike) {
                 img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes

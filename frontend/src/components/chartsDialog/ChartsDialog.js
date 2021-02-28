@@ -16,7 +16,7 @@ export default class ChartsDialog extends Component {
 
     getDataArray = () => {
 
-        let data_array = [[{type: 'date', label: 'Day'}, {type: 'number', label:'Likes'}]];
+        let data_array = [[{type: 'date', label: 'Time'}, {type: 'number', label:'Likes'}]];
         let likesCount = 0;
         data_array.push([new Date(this.props.creation_time), likesCount]);
 
@@ -29,7 +29,7 @@ export default class ChartsDialog extends Component {
     }
 
     getDataArrayView = () => {
-        let data_array = [[{type: 'date', label: 'Day'}, 'Views']];
+        let data_array = [[{type: 'date', label: 'Time'}, {type:'number', label:'Views'}]];
         data_array.push([new Date(this.props.creation_time), 0]);
 
         this.props.views.forEach((view, index) => {
@@ -47,6 +47,7 @@ export default class ChartsDialog extends Component {
     }
 
     renderChart = () => {
+        console.log("render chart data ", this.state.data)
         return(
             <div>
             <Select
@@ -58,11 +59,12 @@ export default class ChartsDialog extends Component {
                 <MenuItem value="views">Views</MenuItem>
             </Select>
             <Chart
-                width={'900'}
-                height={'500'}
+                width={'900px'}
+                height={'500px'}
                 chartType="Line"
                 loader={<div>Loading Chart</div>}
                 data={this.state.data}
+                /*
                 options={{
                     width: '900',
                     height: '500',
@@ -78,7 +80,7 @@ export default class ChartsDialog extends Component {
                             }
                         }
                     }
-                }}
+                }}*/
             />
             </div>
         )

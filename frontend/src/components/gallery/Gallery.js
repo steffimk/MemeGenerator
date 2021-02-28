@@ -198,7 +198,7 @@ class Gallery extends React.Component {
     let favIconColor = 'primary';
     const likeCount = image.likes ? image.likes.length : 0;
     const commentCount = image.comments ? image.comments.length : 0;
-    const viewCount = image.viewCount ? image.viewCount : 0;
+    const viewCount = image.views ? image.views.length : 0;
     if (this.state.likedMemeIds.includes(image._id)) favIconColor = 'secondary';
     return (
       <div className="image-container" id={image._id}>
@@ -271,7 +271,7 @@ class Gallery extends React.Component {
                 if(img.likeLogs) {
                     img.likeLogs.push(like);
                 } else {
-                    img.likeLogs = like;
+                    img.likeLogs = [like];
                 }
                 if (img.likes && img.likes.includes(username) && isDislike) {
                     img.likes.splice(img.likes.indexOf(username),1) // Remove username from likes

@@ -51,7 +51,7 @@ router.post("/", function (req, res){
           captions, captionPositions, fontColor, fontSize, isItalic, isBold, privacyLabel
       }
       normalizedMeme.views = []
-      normalizedMeme.viewCout = 0 // set views to 0
+      normalizedMeme.viewCount = 0 // set views to 0
       dbOp.addToDB(req.db, dbOp.MEME_COLLECTION, normalizedMeme);
 
       res.status(200);
