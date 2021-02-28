@@ -18,26 +18,7 @@ export default class StatisticChart extends Component {
     }
 
     render() {
-        if(this.state.value === "") {
-            return (
-                <div className="flex-container" >
-                    <h1>Statistics</h1>
-                    <FormControl>
-                        <InputLabel>Data</InputLabel>
-                        <Select
-                            labelId="select-label"
-                            id="select"
-                            value={this.state.value}
-                            onChange={this.handleChangeChart}>
-                            <MenuItem value="generated">Generation</MenuItem>
-                            <MenuItem value="like">Likes</MenuItem>
-                            <MenuItem value="views">Views</MenuItem>
-                        </Select>
-                    </FormControl>
-                </div>
-            );
-        }
-        let data = [];
+        let data;
         switch (this.state.value) {
             case('like'):
                 data = this.props.likeData;
@@ -65,13 +46,16 @@ export default class StatisticChart extends Component {
                         <MenuItem value="views">Views</MenuItem>
                     </Select>
                 </FormControl>
-                <Chart
-                    width={'100%'}
-                    height={'40%'}
-                    chartType="Line"
-                    loader={<div>Loading Chart</div>}
-                    data={data}
-                />
+                {this.state.value !== "" ?
+                    <Chart
+                        width={'100%'}
+                        height={'40%'}
+                        chartType="Line"
+                        loader={<div>Loading Chart</div>}
+                        data={data}
+                    />
+                    : <div/>
+                }
             </div>
         );
     }
