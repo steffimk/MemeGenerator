@@ -20,8 +20,18 @@
     "morgan": "~1.9.1",
     "njwt": "^1.0.0",
     "node-fetch": "^2.6.1",
-    "node-pre-gyp": "^0.17.0",
-    "puppeteer": "^7.1.0",
-    "secure-random": "^1.1.2"
+    "puppeteer": "^7.1.0"
+  },
+  "commented_dependencies": {
+    "atob": "Decoding of base64 string",
+    "canvas": "Server-side meme creation",
+    "cors": "CORS",
+    "crypto": "Password: Salt and hash",
+    "jszip": "Zipping of images",
+    "monk": "Easier handling of MongoDB in Node.js",
+    "morgan": "Logging",
+    "njwt": "Json Web Token",
+    "node-fetch": "Fetching",
+    "puppeteer": "Screenshots (headless chrome)"
   }
 }

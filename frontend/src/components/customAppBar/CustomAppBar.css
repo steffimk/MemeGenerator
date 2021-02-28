@@ -1,0 +1,8 @@
+.CustomAppBar {
+    font-size: 25px;
+}
+
+.MuiToolbar-root {
+    display: flex;
+    justify-content: space-between;
+}

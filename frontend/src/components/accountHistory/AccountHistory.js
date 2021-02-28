@@ -2,7 +2,7 @@ import { Button, GridList, GridListTile, GridListTileBar, IconButton } from '@ma
 import React, { Component } from 'react'
 import { Link, Redirect, withRouter } from 'react-router-dom'
 import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
-import CustomAppBar from '../CustomAppBar/CustomAppBar'
+import CustomAppBar from '../customAppBar/CustomAppBar'
 import SingleImage from '../gallery/SingleImage'
 import './AccountHistory.css'
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
@@ -87,6 +87,7 @@ class AccountHistory extends Component {
     .catch((error) => { console.error('Error:', error) });
     let newMemes = this.state.ownMemes.map(img => {
         if(img._id === id) {
+            // Like logs for Charts
             if(img.likeLogs) {
                 img.likeLogs.push(like);
             } else {
@@ -118,7 +119,7 @@ class AccountHistory extends Component {
     if (!this.state.isAuthenticated) return <Redirect to="/login" />;
     // try to get image id from url
     const { id } = this.props.match.params;
-    const isMeme = this.state.ownMemes.filter((meme) => meme._id === id).length > 0 ? true : false
+    const isMeme = this.state.ownMemes.filter((meme) => meme._id === id).length > 0
     const currentRoute = this.props.location.pathname
     const renderedMemes = this.state.ownMemes.map((meme) => this.renderImage(meme, meme.img, currentRoute, true));
     const renderedTemplates = this.state.ownTemplates.map((template) =>

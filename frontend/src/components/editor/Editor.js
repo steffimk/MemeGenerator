@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import './Editor.css';
-import CustomAppBar from "../CustomAppBar/CustomAppBar";
+import CustomAppBar from "../customAppBar/CustomAppBar";
 import ImageCarousel from "./ImageCarousel";
 import TemplateGallery from "./TemplateGallery";
 import EditorControl from "./EditorControl";
@@ -51,9 +51,10 @@ class App extends React.Component {
       imageDescription: "",
       isGif: false,
 
-      generation_array: [],
-      like_array: [],
-      view_array: []
+      //Data to render Charts for template
+      generateData: [],
+      likeData: [],
+      viewData: []
     }
     this.imageCarousel = React.createRef();
   }
@@ -115,6 +116,7 @@ class App extends React.Component {
 
   /**
    * Send information for Meme to backend to create it
+   * Set result as canvas image (ready to save)
    * @returns {Promise<void>}
    */
   generateMemeBackend = async () => {
@@ -147,6 +149,13 @@ class App extends React.Component {
     });
   }
 
+  /**
+   * Save meme to DB
+   * @param privacyLabel privacy label can be public (shown in gallery),
+   * unlisted (not shown in gallery but can be searched), private (not shown in gallery, can't be searched)
+   * Also get new data for template chart
+   * @returns {Promise<void>}
+   */
   handleSaveAsMeme = async (privacyLabel) => {
     const memeToSave = {
       username: localStorage.getItem(LS_USERNAME),
@@ -168,12 +177,14 @@ class App extends React.Component {
 
     console.log("meme to save ", memeToSave)
 
+    //Save meme to DB
     authorizedFetch(MEMES_ENDPOINT, 'POST', JSON.stringify(memeToSave), this.isNotAuthenticated)
         .catch((error) => {
           console.error('Error:', error);
           return false;
         });
 
+    //Get new data for template chart
     if (this.state.currentImage._id) {
       const endpointWithParam = `${MEME_FROM_TEMPLATE_ID_ENDPOINT}/${this.state.currentImage._id}`;
 
@@ -272,88 +283,91 @@ class App extends React.Component {
     }
   }
 
+  /**
+   * Get Data of Generations, Likes and Views (of Generated memes) from memes with this template
+   * @param memes memes that are saved in the DB with this template
+   */
   setNewDataOfMemeForTemplate = (memes) => {
 
-    let generation_array = [[{type: 'date', label: 'Time'}, {type:'number', label:'Generations'}]];
+    //Create data Array for generation
+    let generateData = [[{type: 'date', label: 'Time'}, {type:'number', label:'Generations'}]];
 
     if(!memes || memes.length <= 0) {
-      generation_array.push([new Date(Date.now()), 0]);
-      this.setState({generation_array: generation_array})
+      generateData.push([new Date(Date.now()), 0]);
+      this.setState({generateData: generateData})
 
     } else {
 
-      generation_array.push([new Date(memes[0].creation_time), 0]);
+      generateData.push([new Date(memes[0].creation_time), 0]);
       memes.forEach((meme, index) => {
-        generation_array.push([new Date(meme.creation_time), index + 1]);
-        this.setState({generation_array: generation_array})
+        generateData.push([new Date(meme.creation_time), index + 1]);
+        this.setState({generateData: generateData})
       })
     }
 
-    let like_array = [[{type: 'date', label: 'Time'}, {type:'number', label:'Likes'}]];
+    //Create data array for likes
+    let likeData = [[{type: 'date', label: 'Time'}, {type:'number', label:'Likes'}]];
 
     if(!memes || memes.length <= 0) {
-      like_array.push([new Date(Date.now()), 0]);
-      this.setState({like_array: like_array})
+      likeData.push([new Date(Date.now()), 0]);
+      this.setState({likeData: likeData})
 
     } else {
 
-      like_array.push([new Date(memes[0].creation_time), 0]);
+      likeData.push([new Date(memes[0].creation_time), 0]);
 
-      let like_times = [];
+      let likeTimes = [];
 
       memes.forEach((meme) => {
         if (meme.likeLogs) {
           meme.likeLogs.forEach(like => {
-            like_times.push({date: like.date, isDislike: like.isDislike})
+            likeTimes.push({date: like.date, isDislike: like.isDislike})
           })
         }
       })
 
-      like_times.sort(function (a, b) {
-        // Turn your strings into dates, and then subtract them
-        // to get a value that is either negative, positive, or zero.
+      likeTimes.sort(function (a, b) {
         return new Date(a.date) - new Date(b.date);
       });
 
       let likesCount = 0;
-      like_times.forEach((like) => {
+      likeTimes.forEach((like) => {
         likesCount = like.isDislike ? likesCount - 1 : likesCount + 1;
-        like_array.push([new Date(like.date), likesCount]);
+        likeData.push([new Date(like.date), likesCount]);
       })
 
-      this.setState({like_array: like_array})
+      this.setState({likeData: likeData})
     }
 
-    let view_array = [[{type: 'date', label: 'Time'}, {type:'number', label:'Views'}]];
+    // Create data array for views
+    let viewData = [[{type: 'date', label: 'Time'}, {type:'number', label:'Views'}]];
 
     if(!memes || memes.length <= 0) {
-      view_array.push([new Date(Date.now()), 0]);
-      this.setState({view_array: view_array});
+      viewData.push([new Date(Date.now()), 0]);
+      this.setState({viewData: viewData});
 
     } else {
-      view_array.push([new Date(memes[0].creation_time), 0]);
+      viewData.push([new Date(memes[0].creation_time), 0]);
 
-      let view_times = [];
+      let viewTimes = [];
 
       memes.forEach((meme) => {
         if (meme.views && meme.views.length > 0) {
           meme.views.forEach(view => {
-            view_times.push(view)
+            viewTimes.push(view)
           })
         }
       })
 
-      view_times.sort(function (a, b) {
-        // Turn your strings into dates, and then subtract them
-        // to get a value that is either negative, positive, or zero.
+      viewTimes.sort(function (a, b) {
         return new Date(a) - new Date(b);
       });
 
-      view_times.forEach((view, index) => {
-        view_array.push([new Date(view), index + 1]);
+      viewTimes.forEach((view, index) => {
+        viewData.push([new Date(view), index + 1]);
       })
 
-      this.setState({view_array: view_array})
+      this.setState({viewData: viewData})
     }
 
   }
@@ -402,6 +416,7 @@ class App extends React.Component {
       } else return [];
     }
 
+    // Get new data for template chart
     if (newCurrentImage._id) {
       const endpointWithParam = `${MEME_FROM_TEMPLATE_ID_ENDPOINT}/${newCurrentImage._id}`;
 
@@ -551,9 +566,9 @@ class App extends React.Component {
                  />
               }
             <StatisticChart
-                generateData={this.state.generation_array}
-                viewData={this.state.view_array}
-                likeData={this.state.like_array}
+                generateData={this.state.generateData}
+                viewData={this.state.viewData}
+                likeData={this.state.likeData}
             />
           </div>
           <Paper

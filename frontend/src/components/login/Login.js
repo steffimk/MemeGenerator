@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import CustomAppBar from '../CustomAppBar/CustomAppBar'
+import CustomAppBar from '../customAppBar/CustomAppBar'
 import { LS_JWT, LS_USERNAME } from '../../constants'
 
 import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from '../../communication/requests'
