@@ -139,14 +139,14 @@ export default class SearchDialog extends React.Component{
                 .filter(Boolean)	// this filters undefined values as undefined is falsy
                 .map((likes) => likes.length);
 
-            let max_likes = Math.max(...likes);
+            let max_likes = Math.max(...likes,1);
 
             let views = all_images
                 .map((meme) => meme.views)
                 .filter(Boolean)
                 .map((views) => views.length)
 
-            let max_views = Math.max(...views)
+            let max_views = Math.max(...views,1)
 
             this.setState({
                 "timeRange": [min_times, max_times],
