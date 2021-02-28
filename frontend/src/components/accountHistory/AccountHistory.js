@@ -2,7 +2,7 @@ import { Button, GridList, GridListTile, GridListTileBar, IconButton } from '@ma
 import React, { Component } from 'react'
 import { Link, Redirect, withRouter } from 'react-router-dom'
 import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT, TEMPLATE_ENDPOINT } from '../../communication/requests'
-import CustomAppBar from '../customAppBar/CustomAppBar'
+import CustomAppBar from '../CustomAppBar/CustomAppBar'
 import SingleImage from '../gallery/SingleImage'
 import './AccountHistory.css'
 import FullscreenIcon from '@material-ui/icons/Fullscreen';

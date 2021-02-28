@@ -1,7 +1,7 @@
 import React from 'react';
 import './Gallery.css';
 import { Redirect } from 'react-router-dom'
-import CustomAppBar from '../customAppBar/CustomAppBar';
+import CustomAppBar from '../CustomAppBar/CustomAppBar';
 import {Link, withRouter} from "react-router-dom";
 import SingleImage, { downloadImage } from "./SingleImage";
 import { authorizedFetch, viewMeme, LIKE_ENDPOINT, MEMES_ENDPOINT } from '../../communication/requests';
