@@ -15,6 +15,7 @@ import {
 import AudioDescription from "../textToSpeech/AudioDescription"
 import { Button, Paper } from '@material-ui/core';
 import NewMeme from '../newMemeDialog/NewMeme';
+import Gif from './Gif';
 import { LS_USERNAME } from '../../constants';
 
 class App extends React.Component {
@@ -44,7 +45,8 @@ class App extends React.Component {
       addedImgSizes: [],
       canvasSize: {width: "97%", height: "90%"},
       drawingCoordinates: [],
-      imageDescription: ""
+      imageDescription: "",
+      isGif: false
     }
     this.imageCarousel = React.createRef();
   }
@@ -95,9 +97,13 @@ class App extends React.Component {
   }
 
   generateMeme = () => {
-    const carouselCanvas = this.imageCarousel.current.canvasRef.current;
-    const dataURL = carouselCanvas.toDataURL()
-    this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
+    if(this.state.isGif){
+      this.setState({ canvasImage: this.state.currentImage.url, newMemeDialogIsOpen: true })
+    }else {
+      const carouselCanvas = this.imageCarousel.current.canvasRef.current;
+      const dataURL = carouselCanvas.toDataURL()
+      this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
+    }
   }
 
   /**
@@ -211,15 +217,21 @@ class App extends React.Component {
    * @param {object} image clicked on in the gallery on the left
    */
   onClickedOnImageInGallery = (newCurrentImage) => {
+      // "data:image/gif"
+    let dataType = "gif";
+    let checkStr = newCurrentImage.url;
+
     if (!this.state.isInAddImageMode){
-      this.onChangeCurrentImage(newCurrentImage)
+      this.onChangeCurrentImage(newCurrentImage);
+      console.log("isGif" + checkStr.includes(dataType));
+      this.setState({isGif: checkStr.includes(dataType) });
     } else {
       this.setState({ 
         addedImages: [...this.state.addedImages, newCurrentImage],
         addedImgSizes: [...this.state.addedImgSizes, 50],
         addedImgPositions_X: [...this.state.addedImgPositions_X, 0],
         addedImgPositions_Y: [...this.state.addedImgPositions_Y, 0],
-        isInAddImageMode: false })
+        isInAddImageMode: false });
     }
   }
 
@@ -358,27 +370,34 @@ class App extends React.Component {
             />
           </Paper>
           <div className="middle">
-            <ImageCarousel
-              ref={this.imageCarousel}
-              image={this.state.currentImage}
-              imageInfo={this.state.imageInfo}
-              captions={this.state.captions}
-              title={this.state.title}
-              fontSize={this.state.fontSize}
-              isItalic={this.state.isItalic}
-              isBold={this.state.isBold}
-              fontColor={this.state.fontColor}
-              captionPositions_X={this.state.captionPositions_X}
-              captionPositions_Y={this.state.captionPositions_Y}
-              addedImages={this.state.addedImages}
-              addedImgSizes={this.state.addedImgSizes}
-              addedImgPositions_X={this.state.addedImgPositions_X}
-              addedImgPositions_Y={this.state.addedImgPositions_Y}
-              canvasSize={this.state.canvasSize}
-              setCanvasSize={this.setCanvasSize.bind(this)}
-              coordinates={this.state.drawingCoordinates}
-              addCoordinate={this.addDrawingCoordinate}
-            />
+              {this.state.isGif
+                ?<Gif
+                    src={this.state.currentImage.url}
+                    title={this.state.title}
+                 />
+
+                :<ImageCarousel
+                    ref={this.imageCarousel}
+                    image={this.state.currentImage}
+                    imageInfo={this.state.imageInfo}
+                    captions={this.state.captions}
+                    title={this.state.title}
+                    fontSize={this.state.fontSize}
+                    isItalic={this.state.isItalic}
+                    isBold={this.state.isBold}
+                    fontColor={this.state.fontColor}
+                    captionPositions_X={this.state.captionPositions_X}
+                    captionPositions_Y={this.state.captionPositions_Y}
+                    addedImages={this.state.addedImages}
+                    addedImgSizes={this.state.addedImgSizes}
+                    addedImgPositions_X={this.state.addedImgPositions_X}
+                    addedImgPositions_Y={this.state.addedImgPositions_Y}
+                    canvasSize={this.state.canvasSize}
+                    setCanvasSize={this.setCanvasSize.bind(this)}
+                    coordinates={this.state.drawingCoordinates}
+                    addCoordinate={this.addDrawingCoordinate}
+                 />
+              }
           </div>
           <Paper
             className="control right"
@@ -415,6 +434,7 @@ class App extends React.Component {
               imageInfo={this.state.imageInfo}
               imageDescription={this.state.imageDescription}
               handleAddCaption={this.handleAddCaption}
+              isGif={this.state.isGif}
             />
             <Button
               name="saveTemplateButton"
@@ -426,12 +446,14 @@ class App extends React.Component {
               Save as template
             </Button>
             <Button
-              name="saveTemsaveButtonplateButton"
+              name="saveMemeButton"
               variant="contained"
               size="small"
               color="secondary"
               onClick={this.generateMeme}
-              style={{ marginTop: '10px', display: 'block' }}>
+              style={{ marginTop: '10px', display: 'block' }}
+
+              >
               Generate meme local
             </Button>
             <Button
