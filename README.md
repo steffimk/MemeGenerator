@@ -1,5 +1,7 @@
 # OMM Meme App 2021
 
+[Repository](https://gitlab.lrz.de/omm2021-official/grouptask02)
+
 ## Usage
 
 Start the stack by calling
