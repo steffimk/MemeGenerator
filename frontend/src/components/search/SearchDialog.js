@@ -231,6 +231,7 @@ export default class SearchDialog extends React.Component{
                         Desc
                     </label>
                     <TextField
+                        value={this.state.search}
                         id="search-box"
                         label="Search"
                         placeholder="titles, captions, comments, template id, ..."
@@ -239,7 +240,7 @@ export default class SearchDialog extends React.Component{
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => this.props.onClose()} color="primary">
+                    <Button onClick={() => {this.filterImages(); this.props.onClose()}} color="primary">
                         Ok
                     </Button>
                 </DialogActions>
