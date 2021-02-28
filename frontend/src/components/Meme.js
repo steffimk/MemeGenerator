@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 import { SINGLE_MEME_ENDPOINT } from '../communication/requests'
-
+/**
+ * A component to display nothing but a single meme.
+ */
 class Meme extends Component {
 
   constructor() {
@@ -11,6 +13,9 @@ class Meme extends Component {
     }
   }
 
+  /**
+   * Fetch the meme with its id once the component mounted
+   */
   componentDidMount() {
     const { id } = this.props.match.params;
     const ENDPOINT = `${SINGLE_MEME_ENDPOINT}/${id}`;

@@ -4,6 +4,10 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import './NewTemplateDialog.css';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField} from "@material-ui/core";
 
+/**
+ * This dialog enables the user to generate a new template by uploading an image or gif,
+ * taking a photo with the webcam, passing an image url or taking a screenshot of a website.
+ */
 export default class NewTemplateDialog extends React.Component{
 
     constructor(props) {
