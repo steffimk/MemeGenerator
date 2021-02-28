@@ -9,7 +9,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
  */
 const Dictaphone = (props) => {
  
-  const { transcript, resetTranscript,finalTranscript, interimTranscript, listening } = useSpeechRecognition();
+  const { transcript, resetTranscript,finalTranscript, interimTranscript } = useSpeechRecognition();
   const [voiceOn, setVoiceOn] = React.useState();
  
   React.useEffect(() => {
