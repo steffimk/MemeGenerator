@@ -11,8 +11,6 @@ import reportWebVitals from './reportWebVitals';
 import AccountHistory from './components/accountHistory/AccountHistory';
 import Meme from './components/Meme';
 
-
-
 function Router() {
   return (
     <Switch>

@@ -52,10 +52,11 @@ router.post('/', function(req, res){
         isPositiveInteger(height) &&
         isPositiveInteger(box_count)
     ){
+        let creation_time = Date.now();
 
         // ignore any unknown values in the input data
         const normalizedTemplate = {
-            name, url, username, width, height, box_count, captions,
+            name, creation_time, url, username, width, height, box_count, captions,
             captionPositions, fontColor, fontSize, isItalic, isBold,
             imageInfo, addedImages, addedImgInfo, canvasSize, drawingCoordinates,
             imageDescription
