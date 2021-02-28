@@ -183,7 +183,9 @@ export default class EditorControl extends React.Component {
             color="primary"
             size="small"
             onClick={this.props.handleAddCaption} 
-            style={{ display: 'block', marginTop: '10px', marginBottom: '10px' }}>
+            style={{ display: 'block', marginTop: '10px', marginBottom: '10px' }}
+            disabled={this.props.isGif}
+            >
             Add an extra caption
         </Button>)
 
@@ -200,7 +202,9 @@ export default class EditorControl extends React.Component {
             color="primary"
             size="small"
             onClick={this.props.switchToAddImageMode}
-            style={{ display: 'block', marginTop: '10px', marginBottom: '10px'}}>
+            style={{ display: 'block', marginTop: '10px', marginBottom: '10px'}}
+            disabled={this.props.isGif}
+            >
           {(this.props.isInAddImageMode === true) ? "Cancel add image" : "Add Image"}
         </Button>)
       
@@ -265,6 +269,7 @@ export default class EditorControl extends React.Component {
           size="small"
           value={this.props.canvasSize.width}
           onChange={(e) => this.props.setCanvasSize({width: e.target.value, height: this.props.canvasSize.height})}
+          disabled={this.props.isGif}
           style={{ marginTop: '10px', display: 'block' }}
         />
         <TextField
@@ -275,6 +280,7 @@ export default class EditorControl extends React.Component {
           size="small"
           value={this.props.canvasSize.height}
           onChange={(e) => this.props.setCanvasSize({height: e.target.value, width: this.props.canvasSize.width})}
+          disabled={this.props.isGif}
           style={{ marginTop: '10px', display: 'block' }}
         />
         <Button
@@ -322,5 +328,6 @@ EditorControl.propTypes = {
   imageInfo: PropTypes.object.isRequired,
   imageDescription: PropTypes.string.isRequired,
   handleAddCaption: PropTypes.func.isRequired,
-  newDictatedCaption: PropTypes.func.isRequired
+  newDictatedCaption: PropTypes.func.isRequired,
+  isGif: PropTypes.bool.isRequired
 }
