@@ -90,9 +90,13 @@ class App extends React.Component {
   }
 
   generateMeme = () => {
-    const carouselCanvas = this.imageCarousel.current.canvasRef.current;
-    const dataURL = carouselCanvas.toDataURL()
-    this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
+    if(this.state.isGif){
+      this.setState({ canvasImage: this.state.currentImage.url, newMemeDialogIsOpen: true })
+    }else {
+      const carouselCanvas = this.imageCarousel.current.canvasRef.current;
+      const dataURL = carouselCanvas.toDataURL()
+      this.setState({ canvasImage: dataURL, newMemeDialogIsOpen: true });
+    }
   }
 
   handleSaveAsMeme = async (privacyLabel) => {
@@ -410,7 +414,7 @@ class App extends React.Component {
               Save as template
             </Button>
             <Button
-              name="saveTemsaveButtonplateButton"
+              name="saveMemeButton"
               variant="contained"
               size="small"
               color="secondary"
