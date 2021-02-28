@@ -156,6 +156,11 @@ router.get('/:id', function(req, res){
   }
 });
 
+/**
+ * Decodes an array of data urls, generates files from them and sends them in a zip file in the response
+ * @param {[String]} dataUrls - the data urls of the images
+ * @param {*} response - the http response
+ */
 function zipImages(dataUrls, response) {
   var zip = new JSZip();
   var memesFolder = zip.folder("memes");
@@ -181,6 +186,12 @@ function zipImages(dataUrls, response) {
     .on('finish', () => console.log('memes.zip written.'));
 }
 
+/**
+ * Generates a DataURL from a given image and two captions
+ * @param {*} img - the image
+ * @param {*} captionTop - the first caption
+ * @param {*} captionBottom - the second caption
+ */
 function generateDataUrl(img, captionTop, captionBottom){
   const canvas = createCanvas(img.width, img.height);
   const context = canvas.getContext('2d');

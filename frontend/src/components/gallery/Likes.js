@@ -3,8 +3,15 @@ import PropTypes from 'prop-types';
 import { Avatar, Button, Card, CardHeader, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 import { randomColor, dialogStyle } from '../../constants'
 
+/**
+ * A dialog showing the usernames of all users that liked this meme.
+ */
 export default class Likes extends Component {
 
+  /**
+   * Renders a single like
+   * @param {String} username - The name of the user
+   */
   renderLike = (username) => {
     return (<Card variant="outlined" style={{ marginBottom: '10px' }}>
         <CardHeader

@@ -5,6 +5,10 @@ import './TemplateGallery.css';
 import {Button} from "@material-ui/core";
 import NewTemplateDialog from "../newTemplateDialog/NewTemplateDialog"
 import { authorizedFetch } from '../../communication/requests';
+
+/**
+ * A Gallery containing all templates the user can choose from in the Editor.
+ */
 export default class TemplateGallery extends React.Component {
 
     constructor(props){
@@ -21,6 +25,9 @@ export default class TemplateGallery extends React.Component {
         this.get_memeTemplates();
     }
 
+    /**
+     * Gets the templates from the backend
+     */
     get_memeTemplates() {
         authorizedFetch( this.props.templateEndpoint, 'GET', {}, () => this.props.setIsAuthenticated(false))
         .then(json => {
@@ -38,12 +45,20 @@ export default class TemplateGallery extends React.Component {
             }).catch(e => console.log(e))
     }
 
+    /**
+     * Adds a template locally
+     * @param {*} template - the template to be added
+     */
     addTemplate(template) {
         console.log(template)
         template.id = "local_" + template.url.substr(0, 10)
         this.setState({"templates": [template, ...this.state.templates], "modalOpen": false})
     }
 
+    /**
+     * Checks if the mouse is currenty hovering over an image
+     * @param {*} e 
+     */
     setIsHovering = (e) => {
         if (e.type === "mouseenter") {
             this.setState({imageKeyMouseHovering: e._targetInst.key})
@@ -54,6 +69,10 @@ export default class TemplateGallery extends React.Component {
         }
     }
 
+    /**
+     * Renders the message of a tooltip.
+     * @param {*} image 
+     */
     getTitle(image) {
         if (image.id !== this.state.imageKeyMouseHovering) {
             return ""
@@ -62,6 +81,10 @@ export default class TemplateGallery extends React.Component {
         }
     }
 
+    /**
+     * Renders the view of an image
+     * @param {*} image 
+     */
     renderImage(image) {
         return <img 
                 src={image.url}

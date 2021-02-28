@@ -9,6 +9,9 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import EditIcon from '@material-ui/icons/Edit'
 import { LS_USERNAME } from '../../constants'
 
+/**
+ * This component gives an overview over the own memes and templates.
+ */
 class AccountHistory extends Component {
   constructor(props) {
     super(props);
@@ -28,6 +31,9 @@ class AccountHistory extends Component {
     this.setState({ isAuthenticated: false})
   }
 
+  /**
+   * Gets the own memes from the backend
+   */
   getOwnMemes = () => {
     const username = localStorage.getItem(LS_USERNAME);
     const endpointWithParam = `${MEMES_ENDPOINT}${username}`;
@@ -36,6 +42,9 @@ class AccountHistory extends Component {
       .catch((e) => console.log(e));
   };
 
+  /**
+   * Gets the own templates from the backend
+   */
   getOwnTemplates = () => {
     const username = localStorage.getItem(LS_USERNAME);
     const endpointWithParam = `${TEMPLATE_ENDPOINT}/${username}`;
@@ -44,6 +53,13 @@ class AccountHistory extends Component {
       .catch((e) => console.log(e));
   };
 
+  /**
+   * 
+   * @param {*} image 
+   * @param {*} imageSrc 
+   * @param {*} currentRoute 
+   * @param {*} isMeme 
+   */
   renderImage = (image, imageSrc, currentRoute, isMeme) => {
     let imageRoute;
     if (currentRoute.slice(-1) === '/') {

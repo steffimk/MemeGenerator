@@ -21,7 +21,11 @@ import Gif from './Gif';
 import { LS_USERNAME } from '../../constants';
 import StatisticChart from "./StatisticChart";
 
-class App extends React.Component {
+/**
+ * The Editor component contains a gallery containing all templates, the canvas with the template the user is
+ * currently editing and an Editor Control with which the meme is created.
+ */
+class Editor extends React.Component {
 
   constructor() {
     super();
@@ -650,4 +654,4 @@ class App extends React.Component {
   }
 }
 
-export default withRouter(App);
+export default withRouter(Editor);
