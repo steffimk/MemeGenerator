@@ -22,9 +22,6 @@ export default class NewTemplateDialog extends React.Component{
     }
 
 
-    /**
-     * Call when user clicks on the 'AddTemplate'-Button
-     */
     onSave(){
         // TODO verify if some template was added
         let snapshot = this.getSnapshotFromStream();
@@ -175,10 +172,10 @@ export default class NewTemplateDialog extends React.Component{
                     </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.onClose} color="primary">
+                    <Button onClick={() => (this.onClose())} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={this.onSave} color="primary">
+                    <Button onClick={() => this.onSave()} color="primary">
                         Add template
                     </Button>
                 </DialogActions>

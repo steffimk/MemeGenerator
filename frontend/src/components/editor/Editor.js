@@ -271,7 +271,8 @@ class Editor extends React.Component {
   onClickedOnImageInGallery = (newCurrentImage) => {
       // "data:image/gif"
     let dataType = "gif";
-    let checkStr = newCurrentImage.url;
+    let checkStr = (newCurrentImage.url).split(",")[0];
+    console.log(checkStr)
 
     if (!this.state.isInAddImageMode){
       this.onChangeCurrentImage(newCurrentImage);
